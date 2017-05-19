@@ -19,24 +19,25 @@
     "module": {
       "available": "[IN PROGRESS] Command module has been found..."
     },
-    "folder": {
-      "create": "[IN PROGRESS] Creating project folder...",
-      "deletion": "[IN PROGRESS] Deleting existing project folder..."
+    "directory": {
+      "create": "[IN PROGRESS] Creating project directory...",
+      "deletion": "[IN PROGRESS] Deleting existing project directory..."
     },
     "template": {
-      "clone": "[IN PROGRESS] cloning template from git repo."
+      "clone": "[IN PROGRESS] Cloning template from git repo..."
     },
     "dependencies": {
       "install": "[IN PROGRESS] Installing template dependencies."
     }
   },
   "prompt": {
-    "folder": {
-      "deletion": "[CONFIRM] (Y|YES|N|NO) Are you sure you want to delete : "
+    "directory": {
+      "deletion": "[CONFIRM] (y|yes|n|no) Are you sure you want to delete %s (y|yes|n|no) ? "
     }
   },
   "error": {
     "command": {
+      "create": "[ERROR] Project could not be created.",
       "notFound": "[ERROR] Command not found. Check help below.",
       "notImplemented": "[ERROR] This command is not yet implemented.",
       "aborted": "[NOTICE] Operation aborted."
@@ -44,19 +45,31 @@
     "argument": {
       "missing": "[ERROR] Missing command argument. Check help below."
     },
-    "folder": {
-      "resolve": "[ERROR] Could not resolve project folder name.",
-      "create": "[ERROR] Could not create project folder.",
-      "deletion": "[ERROR] Could not delete project folder."
+    "directory": {
+      "resolve": "[ERROR] Could not resolve project directory name.",
+      "create": "[ERROR] Could not create project directory.",
+      "deletion": "[ERROR] Could not delete project directory."
     },
     "template": {
       "clone": "[ERROR] Could not clone template from git repo.",
       "notFound": "[ERROR] Could not find this template."
+    },
+    "dependencies": {
+      "install": "[ERROR] Could not install project dependencies."
     }
   },
-  "success": {
+  "done": {
     "command": {
-      "create": "[COMMAND] Project created."
+      "create": "[DONE] New electron project created !"
+    },
+    "directory": {
+      "created": "[DONE] Project directory created !"
+    },
+    "dependencies": {
+      "install": "[DONE] Project dependencies installed !"
+    },
+    "template": {
+      "cloned": "[DONE] Project template cloned from git repo !"
     }
   }
 }

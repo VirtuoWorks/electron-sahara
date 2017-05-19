@@ -27,13 +27,13 @@ exports = module.exports = (function(argv){
             if (fs.existsSync(`${__dirname}/sahara/${this.command}.js`)) {
               console.log(chalk.gray(messages.info.command[this.command]));
               require(`./sahara/${this.command}.js`).exec(this.args).then((success) => {
-                console.log(chalk.green());
+                console.log(chalk.green(success));
               }, (error) => {
                 console.log(chalk.red(error));
               });
             } else {
               require('./sahara/help').exec(argv).then((success) => {
-                console.log(chalk.green());
+                console.log(chalk.green(success));
               }, (error) => {
                 console.log(chalk.red(error));
               });
@@ -41,7 +41,7 @@ exports = module.exports = (function(argv){
         } else {
           console.log(chalk.red(messages.error.argument.missing));
           require('./sahara/help').exec(this.args).then((success) => {
-            console.log(chalk.green());
+            console.log(chalk.green(success));
           }, (error) => {
             console.log(chalk.red(error));
           });

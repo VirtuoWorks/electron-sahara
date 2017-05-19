@@ -1,13 +1,10 @@
 'use strict';
 
-const fs = require('fs');
 const path = require('path');
 const childProcess = require('child_process');
-  
+
 const ora = require('ora');
-const del = require('del');
 const chalk = require('chalk');
-const prompt = require('prompt');
 const simpleGit = require('simple-git');
 
 const command = require('./sahara');
@@ -18,197 +15,114 @@ exports = module.exports = (function(){
 
   var Create = function(){
 
-    this.cmd;
-    this.mkdir;
-    this.folder;
-    this.spinner;
-    this.template;
-
     this.exec = function(args){
       return new Promise((resolve, reject) => {
         if (Array.isArray(args) && args.length > 0) {
 
-          this.folder = args.shift();
-          this.template = args.shift();
-          if (this.template === '-f') {
-             this.force = '-f';
-             this.template = 'vanilla';
-          } else {
-             this.force = args.shift();
-          };
+          var projectDirectoryName = args.shift();
+          var projectTemplate = args.shift() || 'vanilla';
 
-          if (this.folder) {
-            this.mkdir = path.resolve(path.normalize(`${this.workingDirectory}${path.sep}${this.folder}`));
-            if (this.folder != this.mkdir) {
-              this.removeFolder().then((success) => {
-                this.createFolder().then((success) => {
-                  this.cloneTemplate().then((success) => {
-                    resolve(success);
+          if (projectDirectoryName) {
+
+            var projectAbsolutePath = path.resolve(path.normalize(`${this.workingDirectory}${path.sep}${this.projectDirectoryName}`));
+
+            this.deleteDirectory(projectAbsolutePath).then((success) => {
+              this.createDirectory(projectAbsolutePath).then((success) => {
+                console.log(chalk.green(success));
+                this.cloneProjectTemplate(projectTemplate, projectAbsolutePath).then((success) => {
+                  console.log(chalk.green(success));
+                  this.installProjectDependencies(projectAbsolutePath).then((success) => {
+                    console.log(chalk.green(success));
+                    resolve(messages.done.command.create);
                   }, (error) => {
-                    reject(error);
+                    if (error) {
+                      console.log(chalk.red(error));
+                    }
+                    this.deleteDirectory(projectAbsolutePath, true).then((success) => {
+                      reject(messages.error.command.create);
+                    }, (error) => {
+                      reject(messages.error.command.create);
+                    });
                   });
                 }, (error) => {
                   if (error) {
-                    console.log(chalk.red(error.message));
+                    console.log(chalk.red(error));
                   };
-                  reject(messages.error.folder.create);
+                  this.deleteDirectory(projectAbsolutePath, true).then((success) => {
+                    reject(messages.error.command.create);
+                  }, (error) => {
+                    reject(messages.error.command.create);
+                  });
                 });
-              }, (error) => { 
+              }, (error) => {
                 if (error) {
-                  console.log(chalk.yellow(error));
+                  console.log(chalk.red(error));
                 };
-                reject(messages.error.folder.create);
+                reject(messages.error.command.create);
               });
-            } else {
-              reject(messages.error.folder.resolve);
-            }
+            }, (error) => {
+              if (error) {
+                console.log(chalk.yellow(error));
+              };
+              reject(messages.error.command.create);
+            });
           } else {
-            reject(messages.error.argument.missing);
+            console.log(chalk.red(messages.error.argument.missing));
+            reject(messages.error.command.create);
           }
         } else {
-          reject(messages.error.argument.missing);
+          console.log(chalk.red(messages.error.argument.missing));
+          reject(messages.error.command.create);
         }
       });
     };
 
-    this.installDependencies = function() {
-      console.log(chalk.gray(messages.info.dependencies.install));
+    this.installProjectDependencies = function(projectAbsolutePath) {
       return new Promise((resolve, reject) => {
-        reject();
-      });
-    };
+        var command = `cd ${projectAbsolutePath} && npm install`;
 
-    this.createFolder = function (mkdir) {
-      var mkdir = mkdir || this.mkdir;
+        var spinner = ora({
+          text: chalk.gray(messages.info.dependencies.install),
+          spinner: 'pong',
+          color: 'grey'
+        });
 
-      console.log(chalk.gray(messages.info.folder.create));
-      return new Promise((resolve, reject) => {
-        if (mkdir) {
-          fs.access(mkdir, (error) => {
-            if (error) {
-              fs.mkdir(mkdir, (error) => {
-                if (error) {
-                  reject(error);
-                } else {
-                  resolve();
-                };
-              });
+        spinner.start();
+
+        childProcess.exec(command, (error, stdout, stderr) => {
+          if (error) {
+            spinner.fail(chalk.red(messages.info.dependencies.install));
+            reject(error);
+          } else {
+            if (stderr) {
+              spinner.fail(chalk.red(messages.info.dependencies.install));
+              reject(stderr);
             } else {
-              resolve();
-            };
-          });
-        } else {
-          reject();
-        }
+              spinner.succeed(chalk.green(messages.info.dependencies.install));
+              resolve(messages.done.dependencies.install);
+            }
+          }
+        });
       });
     };
 
-    this.cloneTemplate = function(template, mkdir) {
-      var mkdir = mkdir || this.mkdir
-      var template = template || this.template;
-
-      var spinner = ora({
-        text: chalk.gray(messages.info.template.clone),
-        spinner: 'pong',
-      });
-      spinner.start();
+    this.cloneProjectTemplate = function(projectTemplate, projectAbsolutePath) {
+      console.log(chalk.gray(messages.info.template.clone));
  
       return new Promise((resolve, reject) => {
-        if (templates[template]) {
-          simpleGit().outputHandler((command, stdout, stderr) => {
-            if (stderr) {
-              if (stderr) {
-                spinner.fail(chalk.red(messages.info.template.clone));
-                var error = '';
-                stderr.on('data', (chunk) => {
-                  error += chunk;
-                });
-                stderr.on('end', () => {
-                  error = error.toString();
-                  reject(`${message} ${error}`);
-                });
-              } else {
-                spinner.fail(chalk.red(messages.info.template.clone));
-                reject(messages.error.template.clone);
-              }
+        if (templates[projectTemplate]) {
+          simpleGit().clone(templates[projectTemplate], projectAbsolutePath).then((error, success) => {
+            if (error) {
+              console.log(chalk.red(error));
+              reject(messages.error.template.clone);
             } else {
-              if (stdout) {
-                spinner.succeed(chalk.green(messages.info.template.clone));
-                stdout.on('end', () => {
-                  resolve(messages.success.command.create);
-                });
-              } else {
-                spinner.succeed(chalk.green(messages.info.template.clone));
-                resolve(messages.success.command.create);
-              }
+              resolve(messages.done.template.cloned);
             }
-          }).silent(true).clone(templates[template], mkdir);
+          });
         } else {
-          spinner.fail(chalk.red(messages.info.template.clone));
           reject(messages.error.template.notFound);
         }
       });
-    };
-
-    this.removeFolder = function(mkdir) {
-      var force = ((this.mkdir && this.force && this.force === '-f') || !!mkdir);
-      var mkdir = mkdir || this.mkdir;
-
-      if (force) {
-        console.log(chalk.gray(messages.info.folder.deletion));
-        return new Promise((resolve, reject) => {
-          if (this.folder != this.mkdir) {
-            del([this.mkdir], {dryRun: true}).then((paths) => {
-              if (paths.length) {
-                prompt.start();
-                prompt.get({
-                  description: messages.prompt.folder.deletion + paths.join(', '),
-                  type: 'string',
-                  pattern: /^(y|yes|n|no)$/i,
-                  message: 'Wrong input',
-                  required: true
-                }, (error, result) => {
-                  if (error) {
-                    reject(messages.error.command.aborted);
-                  } else {
-                    if (result.question) {
-                      if (result.question.toLowerCase()[0] == 'y') {
-                        var spinner = ora({
-                          text: chalk.gray(messages.info.folder.deletion),
-                          spinner: 'pong',
-                          color: 'grey'
-                        });
-                        spinner.start();
-                        del([mkdir]).then((paths) => {
-                          spinner.succeed(chalk.green(messages.info.folder.deletion));
-                          resolve(messages.error.folder.deletion);
-                        }).catch(function(error){
-                          spinner.succeed(chalk.red(messages.info.folder.deletion));
-                          reject(messages.error.folder.deletion);
-                        });
-                      } else {
-                        reject(messages.error.command.aborted);
-                      }
-                    } else {
-                      reject(messages.error.command.aborted);
-                    }
-                  };
-                });
-              } else {
-                resolve();
-              };
-            }).catch(function(error){
-              reject(messages.error.folder.deletion);
-            });
-          } else {
-            reject(messages.error.folder.deletion);
-          }
-        });
-      } else {
-        return new Promise((resolve, reject) => {
-          resolve();
-        });
-      };
     };
 
   };
