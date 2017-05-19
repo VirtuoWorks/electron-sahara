@@ -1,0 +1,19 @@
+{
+  "name": "electron-sahara",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VirtuoWorks/electron-sahara.git"
+  },
+  "author": "Sami Radi <sami.radi@virtuoworks.com> (http://www.virtuoworks.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/VirtuoWorks/electron-sahara/issues"
+  },
+  "homepage": "https://github.com/VirtuoWorks/electron-sahara#readme"
+}
