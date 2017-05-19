@@ -24,20 +24,31 @@ exports = module.exports = (function(){
 
           if (projectDirectoryName) {
 
-            var projectAbsolutePath = path.resolve(path.normalize(`${this.workingDirectory}${path.sep}${this.projectDirectoryName}`));
+            var projectAbsolutePath = path.resolve(path.normalize(`${this.workingDirectory}${path.sep}${projectDirectoryName}`));
 
-            this.deleteDirectory(projectAbsolutePath).then((success) => {
-              this.createDirectory(projectAbsolutePath).then((success) => {
-                console.log(chalk.green(success));
-                this.cloneProjectTemplate(projectTemplate, projectAbsolutePath).then((success) => {
+            if (projectAbsolutePath) {
+              this.deleteDirectory(projectAbsolutePath).then((success) => {
+                this.createDirectory(projectAbsolutePath).then((success) => {
                   console.log(chalk.green(success));
-                  this.installProjectDependencies(projectAbsolutePath).then((success) => {
+                  this.cloneProjectTemplate(projectTemplate, projectAbsolutePath).then((success) => {
                     console.log(chalk.green(success));
-                    resolve(messages.done.command.create);
+                    this.installProjectDependencies(projectAbsolutePath).then((success) => {
+                      console.log(chalk.green(success));
+                      resolve(messages.done.command.create);
+                    }, (error) => {
+                      if (error) {
+                        console.log(chalk.red(error));
+                      }
+                      this.deleteDirectory(projectAbsolutePath, true).then((success) => {
+                        reject(messages.error.command.create);
+                      }, (error) => {
+                        reject(messages.error.command.create);
+                      });
+                    });
                   }, (error) => {
                     if (error) {
                       console.log(chalk.red(error));
-                    }
+                    };
                     this.deleteDirectory(projectAbsolutePath, true).then((success) => {
                       reject(messages.error.command.create);
                     }, (error) => {
@@ -48,24 +59,18 @@ exports = module.exports = (function(){
                   if (error) {
                     console.log(chalk.red(error));
                   };
-                  this.deleteDirectory(projectAbsolutePath, true).then((success) => {
-                    reject(messages.error.command.create);
-                  }, (error) => {
-                    reject(messages.error.command.create);
-                  });
+                  reject(messages.error.command.create);
                 });
               }, (error) => {
                 if (error) {
-                  console.log(chalk.red(error));
+                  console.log(chalk.yellow(error));
                 };
                 reject(messages.error.command.create);
               });
-            }, (error) => {
-              if (error) {
-                console.log(chalk.yellow(error));
-              };
+            } else {
+              console.log(chalk.red(messages.error.directory.resolve));
               reject(messages.error.command.create);
-            });
+            }
           } else {
             console.log(chalk.red(messages.error.argument.missing));
             reject(messages.error.command.create);

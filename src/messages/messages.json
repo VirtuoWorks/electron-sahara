@@ -60,7 +60,7 @@
   },
   "done": {
     "command": {
-      "create": "[DONE] New electron project created !"
+      "create": "[DONE] New Sahara project created !"
     },
     "directory": {
       "created": "[DONE] Project directory created !"
