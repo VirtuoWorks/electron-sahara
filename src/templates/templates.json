@@ -1,0 +1,6 @@
+{
+  "vanilla" : "https://github.com/VirtuoWorks/electon-sahara-template-vanilla.git",
+  "react" : "https://github.com/VirtuoWorks/electon-sahara-template-react.git",
+  "angular2" : "https://github.com/VirtuoWorks/electon-sahara-template-angular2.git",
+  "vuejs" : "https://github.com/VirtuoWorks/electon-sahara-template-vuejs.git"
+}

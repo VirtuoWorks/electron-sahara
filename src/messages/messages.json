@@ -1,0 +1,62 @@
+{
+  "info": {
+    "exec": "Starting sahara cli...",
+    "command": {
+      "create": "[COMMAND] Create",
+      "help": "[COMMAND] Help",
+      "info": "[COMMAND] Information",
+      "requirements": "[COMMAND] Requirements",
+      "platform": "[COMMAND] Platform",
+      "prepare": "[COMMAND] Prepare",
+      "compile": "[COMMAND] Compile",
+      "build": "[COMMAND] Build",
+      "clean": "[COMMAND] Clean",
+      "run": "[COMMAND] Run"
+    },
+    "arguments": {
+      "available": "[IN PROGRESS] Command arguments were provided..."
+    },
+    "module": {
+      "available": "[IN PROGRESS] Command module has been found..."
+    },
+    "folder": {
+      "create": "[IN PROGRESS] Creating project folder...",
+      "deletion": "[IN PROGRESS] Deleting existing project folder..."
+    },
+    "template": {
+      "clone": "[IN PROGRESS] cloning template from git repo."
+    },
+    "dependencies": {
+      "install": "[IN PROGRESS] Installing template dependencies."
+    }
+  },
+  "prompt": {
+    "folder": {
+      "deletion": "[CONFIRM] (Y|YES|N|NO) Are you sure you want to delete : "
+    }
+  },
+  "error": {
+    "command": {
+      "notFound": "[ERROR] Command not found. Check help below.",
+      "notImplemented": "[ERROR] This command is not yet implemented.",
+      "aborted": "[NOTICE] Operation aborted."
+    },
+    "argument": {
+      "missing": "[ERROR] Missing command argument. Check help below."
+    },
+    "folder": {
+      "resolve": "[ERROR] Could not resolve project folder name.",
+      "create": "[ERROR] Could not create project folder.",
+      "deletion": "[ERROR] Could not delete project folder."
+    },
+    "template": {
+      "clone": "[ERROR] Could not clone template from git repo.",
+      "notFound": "[ERROR] Could not find this template."
+    }
+  },
+  "success": {
+    "command": {
+      "create": "[COMMAND] Project created."
+    }
+  }
+}

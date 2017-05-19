@@ -1,0 +1,12 @@
+.DS_Store
+.idea
+.nyc_output
+.nyc_output/*
+npm-debug.log
+coverage
+coverage/*
+node_modules
+node_modules/*
+!test/node_modules
+!test/node_modules/*
+.coveralls.yml
