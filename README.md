@@ -1,9 +1,14 @@
+[![NPM Version][npm-image]][npm-url]
+[![NPM Downloads][downloads-image]][downloads-url]
+[![Build Status][travis-image]][travis-url]
+[![Test Coverage][coveralls-image]][coveralls-url]
+
 # Electron Sahara
 
  - **Desktop apps with HTML, CSS & JS** 
  - **Target multiple platforms with one code base** 
  - **Free and open source**
-
+ 
 **Electron Sahara** is an *Apache Cordova like* command line utility for **electron**. 
 Supported platforms :
 
@@ -74,3 +79,16 @@ From the command line, run ``sahara run <platform name>``.
 
  - [Node.js](https://nodejs.org/en/download/) (>=4.7)
  - [Git](https://git-scm.com/downloads)
+
+ ## License
+
+[MIT](LICENSE)
+
+[npm-image]: https://img.shields.io/npm/v/@virtuoworks/electron-sahara.svg
+[npm-url]: https://www.npmjs.com/package/@virtuoworks/electron-sahara
+[downloads-image]: https://img.shields.io/npm/dm/@virtuoworks/electron-sahara.svg
+[downloads-url]: https://www.npmjs.com/package/@virtuoworks/electron-sahara
+[travis-image]: https://api.travis-ci.org/VirtuoWorks/electron-sahara.svg?branch=master
+[travis-url]: https://travis-ci.org/VirtuoWorks/electron-sahara.svg
+[coveralls-image]: https://coveralls.io/repos/github/VirtuoWorks/electron-sahara/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/VirtuoWorks/electron-sahara?branch=master
