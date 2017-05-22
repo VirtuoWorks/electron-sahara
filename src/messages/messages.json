@@ -27,7 +27,10 @@
       "clone": "[IN PROGRESS] Cloning template from git repo..."
     },
     "dependencies": {
-      "install": "[IN PROGRESS] Installing template dependencies."
+      "install": "[IN PROGRESS] Installing template dependencies..."
+    },
+    "packager": {
+      "loaded": "[IN PROGRESS] Electron Packager loaded successfully..."
     }
   },
   "prompt": {
@@ -40,10 +43,17 @@
       "create": "[ERROR] Project could not be created.",
       "notFound": "[ERROR] Command not found. Check help below.",
       "notImplemented": "[ERROR] This command is not yet implemented.",
-      "aborted": "[NOTICE] Operation aborted."
+      "aborted": "[NOTICE] Operation aborted.",
+      "platform": "[ERROR] Platform action could not be done.",
+      "prepare": "[ERROR] Project could not be prepared.",
+      "compile": "[ERROR] Project could not be compiled."
     },
     "argument": {
       "missing": "[ERROR] Missing command argument. Check help below."
+    },
+    "action": {
+      "invalid": "[ERROR] Invalid action. Check help below.",
+      "notImplemented": "[ERROR] This action is not yet implemented."
     },
     "directory": {
       "resolve": "[ERROR] Could not resolve project directory name.",
@@ -56,11 +66,16 @@
     },
     "dependencies": {
       "install": "[ERROR] Could not install project dependencies."
+    },
+    "packager": {
+      "resolve": "[ERROR] Could not resolve electron-packager path.",
+      "require": "[ERROR] Could not load electron-packager module."
     }
   },
   "done": {
     "command": {
-      "create": "[DONE] New Sahara project created !"
+      "create": "[DONE] New Sahara project created !",
+      "platform": "[DONE] Platform action has been successful !"
     },
     "directory": {
       "created": "[DONE] Project directory created !"

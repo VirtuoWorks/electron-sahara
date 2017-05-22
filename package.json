@@ -1,12 +1,9 @@
 {
   "name": "@virtuoworks/electron-sahara",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "preferGlobal": true,
   "description": "Electron Sahara : Command line utility for electron",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "engines": {
     "node": ">=4.7.0"
   },

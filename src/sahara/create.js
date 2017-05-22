@@ -33,7 +33,9 @@ exports = module.exports = (function(){
                   this.cloneProjectTemplate(projectTemplate, projectAbsolutePath).then((success) => {
                     console.log(chalk.green(success));
                     this.installProjectDependencies(projectAbsolutePath).then((success) => {
-                      console.log(chalk.green(success));
+                      if (success) {
+                        console.log(chalk.green(success));
+                      };
                       resolve(messages.done.command.create);
                     }, (error) => {
                       if (error) {

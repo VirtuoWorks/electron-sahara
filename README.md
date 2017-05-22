@@ -40,7 +40,7 @@ Templates allow you to use preexisting code to jumpstart your project. Navigate 
 
 Available templates :
 
--  `` simple ``
+-  `` vanilla `` (default)
 -  `` react ``
 -  `` angular2 ``
 -  `` vuejs ``
@@ -65,15 +65,15 @@ sahara platform add windows
 ```
 Available platforms :
 
--  `` windows``
--  `` macos ``
--  `` linux ``
+-  `` win32`` (for Windows (32/64 bit))
+-  `` darwin `` (for OS X (also known as macOS))
+-  `` linux `` (for Linux (x86/x86_64))
 
 ## Run your app
 
 From the command line, run ``sahara run <platform name>``.
 
-`` sahara run windows ``
+`` sahara run win32 ``
 
 ## Requirements
 
