@@ -15,7 +15,10 @@ exports = module.exports = (function(){
 
   var Create = function(){
 
-    this.exec = function(args){
+    this.apiCall;
+
+    this.exec = function(args, apiCall){
+      this.apiCall = apiCall || false;
       return new Promise((resolve, reject) => {
         if (Array.isArray(args) && args.length > 0) {
 
