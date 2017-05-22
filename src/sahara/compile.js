@@ -1,7 +1,6 @@
 'use strict';
 
-const path = require('path');
-
+const ora = require('ora');
 const chalk = require('chalk');
 
 const command = require('./sahara');
@@ -24,7 +23,7 @@ exports = module.exports = (function(){
               if (success) {
                 console.log(chalk.green(success));
               }
-              this[`${platform}Compile`](platform).then((success) => {
+              this[`${platform}Compile`]().then((success) => {
                 if (success) {
                   console.log(chalk.green(success));
                 };
@@ -53,14 +52,16 @@ exports = module.exports = (function(){
     };
 
     this.requireElectronPackager = function() {
+
+      console.log(chalk.grey(messages.info.packager.loading));
+
       return new Promise((resolve, reject) => {
         try {
-          var electronPackagerPath = path.resolve(path.normalize(`${this.workingDirectory}${path.sep}node_modules${path.sep}electron-packager`));
-          var electronPackagerResolved = require.resolve(electronPackagerPath);
-          if (electronPackagerResolved) {
+          var electronPackagerPath = this.getAbsolutePathTo(`node_modules/electron-packager`);
+          if (electronPackagerPath) {
             try {
-              this.electronPackager = require(electronPackagerResolved);
-              resolve(messages.info.packager.loaded);
+              this.electronPackager = require(electronPackagerPath);
+              resolve(messages.done.packager.loaded);
             } catch (error) {
               reject(messages.error.packager.require);
             };
@@ -73,24 +74,109 @@ exports = module.exports = (function(){
       });
     };
 
-    this.win32Compile = function(platform) {
+    this.compilePlatform = function(platform, options) {
+      var options = options || {};
       return new Promise((resolve, reject) => {
-        // TODO !!!
-        reject(messages.error.action.notImplemented);
+        var sourceDirectory = this.getAbsolutePathTo(`platforms/${platform}/platform_app`);
+
+        if (!sourceDirectory) {
+          console.log(chalk.red(messages.error.directory.resolve.replace(/%s/g, sourceDirectory)));
+          reject(messages.error.packager.build.replace(/%s/g, `${platform}`));
+          return;
+        };
+
+        var outputDirectory = this.getAbsolutePathTo(`platforms/${platform}/build`);
+
+        if (!outputDirectory) {
+          console.log(chalk.red(messages.error.directory.resolve.replace(/%s/g, sourceDirectory)));
+          reject(messages.error.packager.build.replace(/%s/g, `${platform}`));
+          return;
+        };
+
+        // Target platform
+        options.platform = `${platform}`;
+        // Source directory.
+        options.dir = sourceDirectory;
+        // Target directory
+        options.out = outputDirectory;
+
+        var spinner = ora({
+          text: chalk.gray(messages.info.packager.building.replace(/%s/g, `${platform}`)),
+          spinner: 'pong',
+          color: 'grey'
+        });
+
+        spinner.start();
+
+        this.electronPackager(options, (error, success) => {
+          if (error) {
+            spinner.fail(chalk.red(messages.info.packager.building.replace(/%s/g, `${platform}`)));
+            if (error.message) {
+              console.log(chalk.red(error.message));
+            } else {
+               console.log(chalk.red(error));
+            }
+            reject(messages.error.packager.build.replace(/%s/g, `${platform}`));
+          } else {
+            spinner.succeed(chalk.green(messages.info.packager.building.replace(/%s/g, `${platform}`)));
+            resolve(messages.done.packager.built.replace(/%s/g, `${platform}`));
+          };
+        });
+
+      });
+    };
+
+    this.win32Compile = function() {
+      return new Promise((resolve, reject) => {
+        var options = {
+          quiet:true,
+          asar: true,
+          arch: 'x64', 
+          prune: true,
+          overwrite: true
+        };
+
+        this.compilePlatform('win32', options).then((success) => {
+          resolve(success);
+        }, (error) => {
+          reject(error);
+        });
       });
     };
 
     this.darwinCompile = function() {
       return new Promise((resolve, reject) => {
-        // TODO !!!
-        reject(messages.error.action.notImplemented);
+        var options = {
+          quiet:true,
+          asar: true,
+          arch: 'x64', 
+          prune: true,
+          overwrite: true
+        };
+
+        this.compilePlatform('darwin', options).then((success) => {
+          resolve(success);
+        }, (error) => {
+          reject(error);
+        });
       });
     };
 
     this.linuxCompile = function() {
       return new Promise((resolve, reject) => {
-        // TODO !!!
-        reject(messages.error.action.notImplemented);
+        var options = {
+          quiet:true,
+          asar: true,
+          arch: 'x64', 
+          prune: true,
+          overwrite: true
+        };
+
+        this.compilePlatform('linux', options).then((success) => {
+          resolve(success);
+        }, (error) => {
+          reject(error);
+        });
       });
     };
 

@@ -213,8 +213,9 @@ exports = module.exports = (function(argv){
           console.log(chalk.red(error));
         }
       });
-    };
-    sahara.apiCall = true;
+    } else {
+      sahara.apiCall = true;
+    }
     return sahara;
   };
 })();

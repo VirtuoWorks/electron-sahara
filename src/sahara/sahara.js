@@ -1,10 +1,13 @@
 'use strict';
 
 const fs = require('fs');
+const path = require('path');
+
 const ora = require('ora');
 const del = require('del');
 const chalk = require('chalk');
 const prompt = require('prompt');
+
 const messages = require('../messages/messages');
 
 exports = module.exports = (function(){
@@ -31,8 +34,16 @@ exports = module.exports = (function(){
       });
     };
 
+    Sahara.prototype.getAbsolutePathTo = function (file) {
+      var basePath = `${this.workingDirectory}${path.sep}`;
+      var normalizedPath = path.normalize(`${basePath}${file}`);
+      if (normalizedPath) {
+        return path.resolve(normalizedPath);
+      };
+    }
+
     Sahara.prototype.createDirectory = function (absolutePath) {
-      console.log(chalk.gray(messages.info.directory.create));
+      console.log(chalk.gray(messages.info.directory.create.replace(/%s/g, absolutePath)));
 
       return new Promise((resolve, reject) => {
         if (absolutePath) {
@@ -42,15 +53,15 @@ exports = module.exports = (function(){
                 if (error) {
                   reject(error.message);
                 } else {
-                  resolve(messages.done.directory.created);
+                  resolve(messages.done.directory.created.replace(/%s/g, absolutePath));
                 };
               });
             } else {
-              resolve(messages.done.directory.created);
+              resolve(messages.done.directory.created.replace(/%s/g, absolutePath));
             };
           });
         } else {
-          reject(messages.error.directory.create);
+          reject(messages.error.directory.create.replace(/%s/g, absolutePath));
         }
       });
     };
@@ -61,9 +72,9 @@ exports = module.exports = (function(){
           if (paths.length) {
             if (force || this.apiCall) {
               del([absolutePath]).then((paths) => {
-                resolve(messages.info.directory.deletion);
+                resolve(messages.info.directory.deletion.replace(/%s/g, absolutePath));
               }).catch(function(error){
-                reject(messages.error.directory.deletion);
+                reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
               });
             } else {
               prompt.start();
@@ -80,17 +91,17 @@ exports = module.exports = (function(){
                   if (result.question) {
                     if (result.question.toLowerCase()[0] == 'y') {
                       var spinner = ora({
-                        text: chalk.gray(messages.info.directory.deletion),
+                        text: chalk.gray(messages.info.directory.deletion.replace(/%s/g, absolutePath)),
                         spinner: 'pong',
                         color: 'grey'
                       });
                       spinner.start();
                       del([absolutePath]).then((paths) => {
-                        spinner.succeed(chalk.green(messages.info.directory.deletion));
-                        resolve(messages.error.directory.deletion);
+                        spinner.succeed(chalk.green(messages.info.directory.deletion.replace(/%s/g, absolutePath)));
+                        resolve(messages.error.directory.deletion.replace(/%s/g, absolutePath));
                       }).catch(function(error){
-                        spinner.fail(chalk.red(messages.info.directory.deletion));
-                        reject(messages.error.directory.deletion);
+                        spinner.fail(chalk.red(messages.info.directory.deletion.replace(/%s/g, absolutePath)));
+                        reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
                       });
                     } else {
                       reject(messages.error.command.aborted);
@@ -105,7 +116,7 @@ exports = module.exports = (function(){
             resolve();
           };
         }).catch(function(error){
-          reject(messages.error.directory.deletion);
+          reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
         });
       });
     };

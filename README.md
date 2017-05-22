@@ -50,24 +50,48 @@ Example :
 sahara create MyApp angular2
 ```
 
-## Add a platform
+## Prepare a platform
 
-After creating a Sahara project, navigate to the project directory. From the project directory, you need to add a platform for which you want to build your app.
+After creating a Sahara project, navigate to the project directory. From the project directory, you need to prepare a platform for which you want to build your app.
 
-To add a platform, type ``sahara platform add <platform name>``.
+To prepare a platform, type ``sahara prepare <platform name>``.
 
-For a complete list of platforms you can add, run ``sahara platform``.
+For a complete list of platforms you can run ``sahara prepare``.
 
 Example :
 ```
 cd MyApp
-sahara platform add windows
+sahara prepare win32
 ```
 Available platforms :
 
 -  `` win32`` (for Windows (32/64 bit))
 -  `` darwin `` (for OS X (also known as macOS))
 -  `` linux `` (for Linux (x86/x86_64))
+
+## Compile a platform
+
+After having prepared a platform, navigate to the project directory. From the project directory, you can compile a release for a platform.
+
+To compile a platform, type ``sahara compile <platform name>``.
+
+For a complete list of platforms you can run ``sahara compile``.
+
+Example :
+```
+cd MyApp
+sahara compile win32
+```
+
+## Prepare AND Compile a platform
+
+If you which to perform both operations in a row, navigate to the project directory. From the project directory, type ``sahara build <platform name>``.
+
+Example :
+```
+cd MyApp
+sahara build win32
+```
 
 ## Run your app
 

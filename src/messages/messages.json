@@ -20,8 +20,11 @@
       "available": "[IN PROGRESS] Command module has been found..."
     },
     "directory": {
-      "create": "[IN PROGRESS] Creating project directory...",
-      "deletion": "[IN PROGRESS] Deleting existing project directory..."
+      "create": "[IN PROGRESS] Creating directory [%s]...",
+      "deletion": "[IN PROGRESS] Deleting project directory [%s]..."
+    },
+    "files": {
+      "copy": "[IN PROGRESS] Copying files..."
     },
     "template": {
       "clone": "[IN PROGRESS] Cloning template from git repo..."
@@ -30,12 +33,16 @@
       "install": "[IN PROGRESS] Installing template dependencies..."
     },
     "packager": {
-      "loaded": "[IN PROGRESS] Electron Packager loaded successfully..."
+      "loading": "[IN PROGRESS] Loading Electron Packager...",
+      "building": "[IN PROGRESS] Electron Packager is building a release for platform [%s]..."
+    },
+    "platform": {
+      "prepare": "[IN PROGRESS] Plateform [%s] is being prepared...."
     }
   },
   "prompt": {
     "directory": {
-      "deletion": "[CONFIRM] (y|yes|n|no) Are you sure you want to delete %s (y|yes|n|no) ? "
+      "deletion": "[CONFIRM] (y|yes|n|no) Are you sure you want to delete [%s] (y|yes|n|no) ? "
     }
   },
   "error": {
@@ -45,8 +52,9 @@
       "notImplemented": "[ERROR] This command is not yet implemented.",
       "aborted": "[NOTICE] Operation aborted.",
       "platform": "[ERROR] Platform action could not be done.",
-      "prepare": "[ERROR] Project could not be prepared.",
-      "compile": "[ERROR] Project could not be compiled."
+      "prepare": "[ERROR] Could not prepare platform.",
+      "compile": "[ERROR] Platform could not be compiled.",
+      "build": "[ERROR] Could not build platform."
     },
     "argument": {
       "missing": "[ERROR] Missing command argument. Check help below."
@@ -56,9 +64,9 @@
       "notImplemented": "[ERROR] This action is not yet implemented."
     },
     "directory": {
-      "resolve": "[ERROR] Could not resolve project directory name.",
-      "create": "[ERROR] Could not create project directory.",
-      "deletion": "[ERROR] Could not delete project directory."
+      "resolve": "[ERROR] Could not resolve [%s] directory name.",
+      "create": "[ERROR] Could not create [%s] directory.",
+      "deletion": "[ERROR] Could not delete [%s] directory."
     },
     "template": {
       "clone": "[ERROR] Could not clone template from git repo.",
@@ -69,22 +77,37 @@
     },
     "packager": {
       "resolve": "[ERROR] Could not resolve electron-packager path.",
-      "require": "[ERROR] Could not load electron-packager module."
+      "require": "[ERROR] Could not load electron-packager module.",
+      "build": "[ERROR] Could not build release for platform [%s] with electron-packager."
+    },
+    "platform": {
+      "prepare": "[ERROR] Could not prepare [%s] platform.",
+      "invalid": "[ERROR] Platform [%s] is invalid."
     }
   },
   "done": {
     "command": {
       "create": "[DONE] New Sahara project created !",
-      "platform": "[DONE] Platform action has been successful !"
+      "prepare": "[DONE] Platform has been successfully prepared !",
+      "compile": "[DONE] Platform has been successfully compiled !",
+      "platform": "[DONE] Platform action has been successful !",
+      "build": "[DONE] Platform has been built successfully !"
     },
     "directory": {
-      "created": "[DONE] Project directory created !"
+      "created": "[DONE] Directory [%s] created !"
     },
     "dependencies": {
       "install": "[DONE] Project dependencies installed !"
     },
     "template": {
       "cloned": "[DONE] Project template cloned from git repo !"
+    },
+    "platform": {
+      "prepare": "[DONE] Plateform [%s] has been successfully prepared !"
+    },
+    "packager": {
+      "loaded": "[DONE] Electron Packager loaded successfully !",
+      "built": "[DONE] Release has been build for platform [%s] !"
     }
   }
 }

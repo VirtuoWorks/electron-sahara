@@ -1,6 +1,5 @@
 'use strict';
 
-const path = require('path');
 const childProcess = require('child_process');
 
 const ora = require('ora');
@@ -27,7 +26,7 @@ exports = module.exports = (function(){
 
           if (projectDirectoryName) {
 
-            var projectAbsolutePath = path.resolve(path.normalize(`${this.workingDirectory}${path.sep}${projectDirectoryName}`));
+            var projectAbsolutePath = this.getAbsolutePathTo(projectDirectoryName);
 
             if (projectAbsolutePath) {
               this.deleteDirectory(projectAbsolutePath).then((success) => {
@@ -73,7 +72,7 @@ exports = module.exports = (function(){
                 reject(messages.error.command.create);
               });
             } else {
-              console.log(chalk.red(messages.error.directory.resolve));
+              console.log(chalk.red(messages.error.directory.resolve.replace(/%s/g, projectAbsolutePath)));
               reject(messages.error.command.create);
             }
           } else {
