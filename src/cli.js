@@ -16,135 +16,203 @@ exports = module.exports = (function(argv){
     };
 
     Cli.prototype.exec = function(argv) {
-      if (Array.isArray(argv) && argv.length > 2) {
-        console.log(chalk.gray(messages.info.exec));
+      return new Promise((resolve, reject) => {
+        if (Array.isArray(argv) && argv.length > 2) {
+          console.log(chalk.gray(messages.info.exec));
 
-        this.argv = argv || process.argv;
+          this.argv = argv || process.argv;
 
-        if (this[this.argv[2]]) {
-          this.command = this.argv[2];
-          this.args = this.argv.slice(3,this.argv.length) || [];
-          if (this.args.length) {
-              if (fs.existsSync(`${__dirname}/sahara/${this.command}.js`)) {
-                console.log(chalk.gray(messages.info.command[this.command]));
-                require(`./sahara/${this.command}.js`).exec(this.args).then((success) => {
-                  console.log(chalk.green(success));
-                }, (error) => {
-                  console.log(chalk.red(error));
-                });
-              } else {
-                require('./sahara/help').exec(argv).then((success) => {
-                  console.log(chalk.green(success));
-                }, (error) => {
-                  console.log(chalk.red(error));
-                });
-              }
+          if (this[this.argv[2]]) {
+            this.command = this.argv[2];
+            this.args = this.argv.slice(3,this.argv.length) || [];
+            if (this.args.length) {
+                if (fs.existsSync(`${__dirname}/sahara/${this.command}.js`)) {
+                  console.log(chalk.gray(messages.info.command[this.command]));
+                  require(`./sahara/${this.command}.js`).exec(this.args).then((success) => {
+                    resolve(success);
+                  }, (error) => {
+                    reject(error);
+                  });
+                } else {
+                  require('./sahara/help').exec(argv).then((success) => {
+                    resolve(success);
+                  }, (error) => {
+                    reject(error);
+                  });
+                }
+            } else {
+              console.log(chalk.red(messages.error.argument.missing));
+              require('./sahara/help').exec(this.args).then((success) => {
+                resolve(success);
+              }, (error) => {
+                reject(error);
+              });
+            }
           } else {
-            console.log(chalk.red(messages.error.argument.missing));
-            require('./sahara/help').exec(this.args).then((success) => {
-              console.log(chalk.green(success));
+            console.log(chalk.red(messages.error.command.notFound));
+            require('./sahara/help').exec(argv).then((success) => {
+              resolve(success);
             }, (error) => {
-              console.log(chalk.red(error));
+              reject(error);
             });
-          }
+          };
         } else {
-          console.log(chalk.red(messages.error.command.notFound));
           require('./sahara/help').exec(argv).then((success) => {
-            console.log(chalk.green());
+            resolve(success);
           }, (error) => {
-            console.log(chalk.red(error));
+            reject(error);
           });
         };
-      } else {
-        require('./sahara/help').exec(argv).then((success) => {
-          console.log(chalk.green());
-        }, (error) => {
-          console.log(chalk.red(error));
-        });
-      };
-      return this;
+      });
     };
 
     // sahara create <command>
     // Create a project
     Cli.prototype.create = function(args){
-      this.exec(['','','create'].concat(args));
-      return this;
+      return new Promise((resolve, reject) => {
+        this.exec(['','','create'].concat(args)).then((success) => {
+          resolve(success);
+        }, (error) => {
+          reject(error);
+        });
+      });
     };
 
     // sahara start <command>
     // Start your project
     Cli.prototype.start = function(args){
-      this.exec(['','','start'].concat(args));
-      return this;
+      return new Promise((resolve, reject) => {
+        this.exec(['','','start'].concat(args)).then((success) => {
+          resolve(success);
+        }, (error) => {
+          reject(error);
+        });
+      });
     };
 
     // sahara help <command>
     // Get help for a command
     Cli.prototype.help = function(args){
-      this.exec(['','','help'].concat(args));
-      return this;
+      return new Promise((resolve, reject) => {
+        this.exec(['','','help'].concat(args)).then((success) => {
+          resolve(success);
+        }, (error) => {
+          reject(error);
+        });
+      });
     };
 
     // sahara info <command>
     // Generate project information
     Cli.prototype.info = function(args){
-      this.exec(['','','info'].concat(args));
-      return this;
+      return new Promise((resolve, reject) => {
+        this.exec(['','','info'].concat(args)).then((success) => {
+          resolve(success);
+        }, (error) => {
+          reject(error);
+        });
+      });
     };
  
     // sahara requirements <command>
     // Checks and print out all the requirements for specified platforms 
     Cli.prototype.requirements = function(args){
-      this.exec(['','','requirements'].concat(args));
-      return this;
+      return new Promise((resolve, reject) => {
+        this.exec(['','','requirements'].concat(args)).then((success) => {
+          resolve(success);
+        }, (error) => {
+          reject(error);
+        });
+      });
     };
  
     // sahara platform <command>
     // Manage project platforms
     Cli.prototype.platform = function(args){
-      this.exec(['','','platform'].concat(args));
-      return this;
+      return new Promise((resolve, reject) => {
+        this.exec(['','','platform'].concat(args)).then((success) => {
+          resolve(success);
+        }, (error) => {
+          reject(error);
+        });
+      });
     };
 
     // sahara prepare <command>
     // Copy files into platform(s) for building
     Cli.prototype.prepare = function(args){
-      this.exec(['','','prepare'].concat(args));
-      return this;
+      return new Promise((resolve, reject) => {
+        this.exec(['','','prepare'].concat(args)).then((success) => {
+          resolve(success);
+        }, (error) => {
+          reject(error);
+        });
+      });
     };
 
     // sahara compile <command>
     // Build platform(s)
     Cli.prototype.compile = function(args){
-      this.exec(['','','compile'].concat(args));
-      return this;
+      return new Promise((resolve, reject) => {
+        this.exec(['','','compile'].concat(args)).then((success) => {
+          resolve(success);
+        }, (error) => {
+          reject(error);
+        });
+      });
     };
 
     // sahara prepare && sahara compile
     Cli.prototype.build = function(args){
-      this.exec(['','','build'].concat(args));
-      return this;
+      return new Promise((resolve, reject) => {
+        this.exec(['','','build'].concat(args)).then((success) => {
+          resolve(success);
+        }, (error) => {
+          reject(error);
+        });
+      });
     };
 
     // sahara clean <command>
     // Cleanup project from build artifacts
     Cli.prototype.clean = function(args){
-      this.exec(['','','clean'].concat(args));
-      return this;
+      return new Promise((resolve, reject) => {
+        this.exec(['','','clean'].concat(args)).then((success) => {
+          resolve(success);
+        }, (error) => {
+          reject(error);
+        });
+      });
     };
 
     // sahara run <command>
     // Run project (including prepare && compile)
     Cli.prototype.run = function(args){
-      this.exec(['','','run'].concat(args));
-      return this;
+      return new Promise((resolve, reject) => {
+        this.exec(['','','run'].concat(args)).then((success) => {
+          resolve(success);
+        }, (error) => {
+          reject(error);
+        });
+      });
     };
 
     return new Cli();
   };
 
   return function(argv) {
-    return cli().exec(argv);
+    var sahara = cli();
+    if (Array.isArray(argv) && argv.length) {
+      sahara.exec(argv).then((success) => {
+        if (success) {
+          console.log(chalk.green(success));
+        }
+      }, (error) => {
+        if (error) {
+          console.log(chalk.red(error));
+        }
+      });
+    };
+    return sahara;
   };
 })();
