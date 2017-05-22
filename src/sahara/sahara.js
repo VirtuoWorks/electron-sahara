@@ -10,7 +10,9 @@ const messages = require('../messages/messages');
 exports = module.exports = (function(){
   
   var sahara = function(){
+
     var Sahara = function(){
+      this.apiCall;
       this.saharaDirectory;
       this.workingDirectory;
     };
@@ -22,7 +24,8 @@ exports = module.exports = (function(){
       return this;
     };
     
-    Sahara.prototype.exec = function(args) {
+    Sahara.prototype.exec = function(args, apiCall) {
+      this.apiCall = apiCall || false;
       return new Promise((resolve, reject) => {
         reject(messages.error.command.notImplemented);
       });
@@ -56,8 +59,7 @@ exports = module.exports = (function(){
       return new Promise((resolve, reject) => {
        del([absolutePath], {dryRun: true}).then((paths) => {
           if (paths.length) {
-            if (force) {
-              this.bypass = false;
+            if (force || this.apiCall) {
               del([absolutePath]).then((paths) => {
                 resolve(messages.info.directory.deletion);
               }).catch(function(error){
@@ -84,7 +86,6 @@ exports = module.exports = (function(){
                       });
                       spinner.start();
                       del([absolutePath]).then((paths) => {
-                        this.bypass = absolutePath;
                         spinner.succeed(chalk.green(messages.info.directory.deletion));
                         resolve(messages.error.directory.deletion);
                       }).catch(function(error){

@@ -13,6 +13,7 @@ exports = module.exports = (function(argv){
       this.args;
       this.argv;
       this.command;
+      this.apiCall;
     };
 
     Cli.prototype.exec = function(argv) {
@@ -28,13 +29,13 @@ exports = module.exports = (function(argv){
             if (this.args.length) {
                 if (fs.existsSync(`${__dirname}/sahara/${this.command}.js`)) {
                   console.log(chalk.gray(messages.info.command[this.command]));
-                  require(`./sahara/${this.command}.js`).exec(this.args).then((success) => {
+                  require(`./sahara/${this.command}.js`).exec(this.args, this.apiCall).then((success) => {
                     resolve(success);
                   }, (error) => {
                     reject(error);
                   });
                 } else {
-                  require('./sahara/help').exec(argv).then((success) => {
+                  require('./sahara/help').exec(argv, this.apiCall).then((success) => {
                     resolve(success);
                   }, (error) => {
                     reject(error);
@@ -42,7 +43,7 @@ exports = module.exports = (function(argv){
                 }
             } else {
               console.log(chalk.red(messages.error.argument.missing));
-              require('./sahara/help').exec(this.args).then((success) => {
+              require('./sahara/help').exec(this.args, this.apiCall).then((success) => {
                 resolve(success);
               }, (error) => {
                 reject(error);
@@ -50,14 +51,14 @@ exports = module.exports = (function(argv){
             }
           } else {
             console.log(chalk.red(messages.error.command.notFound));
-            require('./sahara/help').exec(argv).then((success) => {
+            require('./sahara/help').exec(argv, this.apiCall).then((success) => {
               resolve(success);
             }, (error) => {
               reject(error);
             });
           };
         } else {
-          require('./sahara/help').exec(argv).then((success) => {
+          require('./sahara/help').exec(argv, this.apiCall).then((success) => {
             resolve(success);
           }, (error) => {
             reject(error);
@@ -213,6 +214,7 @@ exports = module.exports = (function(argv){
         }
       });
     };
+    sahara.apiCall = true;
     return sahara;
   };
 })();
