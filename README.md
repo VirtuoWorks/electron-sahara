@@ -114,5 +114,5 @@ From the command line, run ``sahara run <platform name>``.
 [downloads-url]: https://www.npmjs.com/package/@virtuoworks/electron-sahara
 [travis-image]: https://api.travis-ci.org/VirtuoWorks/electron-sahara.svg?branch=master
 [travis-url]: https://travis-ci.org/VirtuoWorks/electron-sahara.svg
-[coveralls-image]: https://coveralls.io/repos/github/VirtuoWorks/electron-sahara/badge.svg?branch=master
+[coveralls-image]: https://coveralls.io/repos/github/VirtuoWorks/electron-sahara/badge.svg?branch=master&seed=3426236
 [coveralls-url]: https://coveralls.io/github/VirtuoWorks/electron-sahara?branch=master
