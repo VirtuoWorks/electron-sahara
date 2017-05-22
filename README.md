@@ -20,7 +20,7 @@ Sahara command-line runs on Node.js and is available on NPM. Follow platform spe
 
 Example :
 ```
-npm install -g electron-sahara
+npm install -g @virtuoworks/electron-sahara
 ```
 
 ## Create a project
