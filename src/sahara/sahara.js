@@ -43,7 +43,7 @@ exports = module.exports = (function(){
           this.settings = require(settingsFilePath);
           this.cliOptions.verbose && console.log(chalk.yellow(messages.info.sahara.projectDirectory));
         } catch(exception) {
-          this.cliOptions.verbose && console.log(chalk.red(messages.error.sahara.configurationFile.replace(/%s/g, exception.message)));
+          console.log(chalk.red(messages.error.sahara.configurationFile.replace(/%s/g, exception.message)));
         };
       } catch(exception) {
         this.cliOptions.verbose && console.log(chalk.yellow(messages.info.sahara.notAProjectDirectory));
@@ -54,7 +54,7 @@ exports = module.exports = (function(){
     Sahara.prototype.exec = function(args, apiCall) {
       this.apiCall = apiCall || false;
       return new Promise((resolve, reject) => {
-        reject(messages.error.command.notImplemented);
+        return reject(messages.error.command.notImplemented);
       });
     };
 
@@ -67,9 +67,9 @@ exports = module.exports = (function(){
       };
       return new Promise((resolve, reject) => {
         if (absolutePath) {
-          resolve(absolutePath);
+          return resolve(absolutePath);
         } else {
-          reject(messages.error.directory.resolve.replace(/%s/g, normalizedPath));
+          return reject(messages.error.directory.resolve.replace(/%s/g, normalizedPath));
         };
       });
     };
@@ -83,17 +83,17 @@ exports = module.exports = (function(){
             if (error) {
               fs.mkdir(absolutePath, (error) => {
                 if (error) {
-                  reject(error.message);
+                  return reject(error.message);
                 } else {
-                  resolve(messages.done.directory.created.replace(/%s/g, absolutePath));
+                  return resolve(messages.done.directory.created.replace(/%s/g, absolutePath));
                 };
               });
             } else {
-              resolve(messages.done.directory.created.replace(/%s/g, absolutePath));
+              return resolve(messages.done.directory.created.replace(/%s/g, absolutePath));
             };
           });
         } else {
-          reject(messages.error.directory.create.replace(/%s/g, absolutePath));
+          return reject(messages.error.directory.create.replace(/%s/g, absolutePath));
         }
       });
     };
@@ -104,9 +104,9 @@ exports = module.exports = (function(){
           if (paths.length) {
             if (force || this.apiCall) {
               del([absolutePath]).then((paths) => {
-                resolve(messages.info.directory.deletion.replace(/%s/g, absolutePath));
+                return resolve(messages.info.directory.deletion.replace(/%s/g, absolutePath));
               }).catch(function(error){
-                reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
+                return reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
               });
             } else {
               prompt.start();
@@ -118,7 +118,7 @@ exports = module.exports = (function(){
                 required: true
               }, (error, result) => {
                 if (error) {
-                  reject(messages.error.command.aborted);
+                  return reject(messages.error.command.aborted);
                 } else {
                   if (result.question) {
                     if (result.question.toLowerCase()[0] == 'y') {
@@ -130,25 +130,25 @@ exports = module.exports = (function(){
                       spinner.start();
                       del([absolutePath]).then((paths) => {
                         spinner.succeed(chalk.green(messages.info.directory.deletion.replace(/%s/g, absolutePath)));
-                        resolve(messages.error.directory.deletion.replace(/%s/g, absolutePath));
+                        return resolve(messages.error.directory.deletion.replace(/%s/g, absolutePath));
                       }).catch(function(error){
                         spinner.fail(chalk.red(messages.info.directory.deletion.replace(/%s/g, absolutePath)));
-                        reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
+                        return reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
                       });
                     } else {
-                      reject(messages.error.command.aborted);
+                      return reject(messages.error.command.aborted);
                     }
                   } else {
-                    reject(messages.error.command.aborted);
+                    return reject(messages.error.command.aborted);
                   }
                 };
               });
             };
           } else {
-            resolve();
+            return resolve();
           };
         }).catch(function(error){
-          reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
+          return reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
         });
       });
     };

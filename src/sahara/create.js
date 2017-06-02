@@ -20,65 +20,69 @@ exports = module.exports = (function(){
       this.apiCall = apiCall || false;
       return new Promise((resolve, reject) => {
         if (Array.isArray(args) && args.length > 0) {
+          if (!this.settings) {
+            var projectDirectoryName = args.shift();
+            var projectTemplate = args.shift() || 'vanilla';
 
-          var projectDirectoryName = args.shift();
-          var projectTemplate = args.shift() || 'vanilla';
-
-          if (projectDirectoryName) {
-            var projectAbsolutePath = this.getAbsolutePathTo(projectDirectoryName).then((projectAbsolutePath) => {
-              this.deleteDirectory(projectAbsolutePath).then((success) => {
-                this.createDirectory(projectAbsolutePath).then((success) => {
-                  this.cliOptions.verbose && console.log(chalk.green(success));
-                  this.cloneProjectTemplate(projectTemplate, projectAbsolutePath).then((success) => {
+            if (projectDirectoryName) {
+              var projectAbsolutePath = this.getAbsolutePathTo(projectDirectoryName).then((projectAbsolutePath) => {
+                this.deleteDirectory(projectAbsolutePath).then((success) => {
+                  this.createDirectory(projectAbsolutePath).then((success) => {
                     this.cliOptions.verbose && console.log(chalk.green(success));
-                    this.installProjectDependencies(projectAbsolutePath).then((success) => {
-                      if (success) {
-                        this.cliOptions.verbose && console.log(chalk.green(success));
-                      };
-                      resolve(messages.done.command.create);
+                    this.cloneProjectTemplate(projectTemplate, projectAbsolutePath).then((success) => {
+                      this.cliOptions.verbose && console.log(chalk.green(success));
+                      this.installProjectDependencies(projectAbsolutePath).then((success) => {
+                        if (success) {
+                          this.cliOptions.verbose && console.log(chalk.green(success));
+                        };
+                        return resolve(messages.done.command.create);
+                      }, (error) => {
+                        if (error) {
+                          console.log(chalk.red(error));
+                        }
+                        this.deleteDirectory(projectAbsolutePath, true).then((success) => {
+                          return reject(messages.error.command.create);
+                        }, (error) => {
+                          return reject(messages.error.command.create);
+                        });
+                      });
                     }, (error) => {
                       if (error) {
-                        this.cliOptions.verbose && console.log(chalk.red(error));
-                      }
+                        console.log(chalk.red(error));
+                      };
                       this.deleteDirectory(projectAbsolutePath, true).then((success) => {
-                        reject(messages.error.command.create);
+                        return reject(messages.error.command.create);
                       }, (error) => {
-                        reject(messages.error.command.create);
+                        return reject(messages.error.command.create);
                       });
                     });
                   }, (error) => {
                     if (error) {
-                      this.cliOptions.verbose && console.log(chalk.red(error));
+                      console.log(chalk.red(error));
                     };
-                    this.deleteDirectory(projectAbsolutePath, true).then((success) => {
-                      reject(messages.error.command.create);
-                    }, (error) => {
-                      reject(messages.error.command.create);
-                    });
+                    return reject(messages.error.command.create);
                   });
                 }, (error) => {
                   if (error) {
-                    this.cliOptions.verbose && console.log(chalk.red(error));
+                    console.log(chalk.red(error));
                   };
-                  reject(messages.error.command.create);
+                  return reject(messages.error.command.create);
                 });
               }, (error) => {
-                if (error) {
-                  this.cliOptions.verbose && console.log(chalk.red(error));
-                };
-                reject(messages.error.command.create);
+                console.log(chalk.red(error));
+                return reject(messages.error.command.create);
               });
-            }, (error) => {
-              this.cliOptions.verbose && console.log(chalk.red(error));
-              reject(messages.error.command.create);
-            });
+            } else {
+              console.log(chalk.red(messages.error.argument.missing));
+              return reject(messages.error.command.create);
+            }
           } else {
-            this.cliOptions.verbose && console.log(chalk.red(messages.error.argument.missing));
-            reject(messages.error.command.create);
+            console.log(chalk.red(messages.error.sahara.projectDirectory));
+            return reject(messages.error.command.create);
           }
         } else {
-          this.cliOptions.verbose && console.log(chalk.red(messages.error.argument.missing));
-          reject(messages.error.command.create);
+          console.log(chalk.red(messages.error.argument.missing));
+          return reject(messages.error.command.create);
         }
       });
     };
@@ -98,14 +102,14 @@ exports = module.exports = (function(){
         childProcess.exec(command, (error, stdout, stderr) => {
           if (error) {
             spinner.fail(chalk.red(messages.info.dependencies.install));
-            reject(error);
+            return reject(error);
           } else {
             if (stderr) {
               spinner.fail(chalk.red(messages.info.dependencies.install));
-              reject(stderr);
+              return reject(stderr);
             } else {
               spinner.succeed(chalk.green(messages.info.dependencies.install));
-              resolve(messages.done.dependencies.install);
+              return resolve(messages.done.dependencies.install);
             }
           }
         });
@@ -119,14 +123,14 @@ exports = module.exports = (function(){
         if (templates[projectTemplate]) {
           simpleGit().clone(templates[projectTemplate], projectAbsolutePath).then((error, success) => {
             if (error) {
-              this.cliOptions.verbose && console.log(chalk.red(error));
-              reject(messages.error.template.clone);
+              console.log(chalk.red(error));
+              return reject(messages.error.template.clone);
             } else {
-              resolve(messages.done.template.cloned);
+              return resolve(messages.done.template.cloned);
             }
           });
         } else {
-          reject(messages.error.template.notFound);
+          return reject(messages.error.template.notFound);
         }
       });
     };

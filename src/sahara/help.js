@@ -19,44 +19,39 @@ exports = module.exports = (function(){
           command = args.shift() || 'sahara';
         }
 
-        var filePath;
-        switch (command) {
-          case '-v':
-            var packageFile = require('../../package.json');
-            resolve(packageFile.version);
-            return;
-          break;
-          default:
-            var filePath = this.helpFilesFolder + path.sep + command;
-        }
-
-        fs.readFile(filePath, (error, data) => {
-          if (error) {
-            filePath = this.helpFilesFolder + path.sep + 'sahara';
-            fs.readFile(filePath, (error, data) => {
-              if (error) {
-                this.cliOptions.verbose && console.log(chalk.red(messages.error.help.missingSaharaHelpFile));
-                reject(error);
-              } else {
-                resolve(data.toString());
-              };
-            });
-          } else {
-            if (data.toString()) {
-              resolve(data.toString());
-            } else {
+        if (this.cliOptions.version) {
+          var packageFile = require('../../package.json');
+          return resolve(packageFile.version);
+        } else {
+          var filePath = this.helpFilesFolder + path.sep + command;
+          fs.readFile(filePath, (error, data) => {
+            if (error) {
               filePath = this.helpFilesFolder + path.sep + 'sahara';
               fs.readFile(filePath, (error, data) => {
                 if (error) {
-                  this.cliOptions.verbose && console.log(chalk.red(messages.error.help.missingSaharaHelpFile));
-                  reject(error);
+                  console.log(chalk.red(messages.error.help.missingSaharaHelpFile));
+                  return reject(error);
                 } else {
-                  resolve(data.toString());
+                  return resolve(data.toString());
                 };
               });
-            }
-          };
-        });
+            } else {
+              if (data.toString()) {
+                return resolve(data.toString());
+              } else {
+                filePath = this.helpFilesFolder + path.sep + 'sahara';
+                fs.readFile(filePath, (error, data) => {
+                  if (error) {
+                    console.log(chalk.red(messages.error.help.missingSaharaHelpFile));
+                    return reject(error);
+                  } else {
+                    return resolve(data.toString());
+                  };
+                });
+              }
+            };
+          });
+        };
       });
     };
   };

@@ -62,7 +62,9 @@
       "build": "[ERROR] Could not build platform."
     },
     "sahara": {
-      "configurationFile": "[ERROR] Check your configuration file. Error(s) detected (%s)."
+      "configurationFile": "[ERROR] Check your configuration file. Error(s) detected (%s).",
+      "projectDirectory": "[ERROR] Sahara.json file found. Your working directory is a Sahara project directory (e.g. cd ..).",
+      "notAProjectDirectory": "[ERROR] Sahara.json file not found. Not working in a Sahara project directory (e.g. cd pathToMySaharaProject)."
     },
     "argument": {
       "missing": "[ERROR] Missing command argument. Check help below."

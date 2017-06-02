@@ -25,20 +25,20 @@ exports = module.exports = (function(){
               if (success) {
                 this.cliOptions.verbose && console.log(chalk.green(success));
               };
-              resolve(messages.done.command.platform);
+              return resolve(messages.done.command.platform);
             }, (error) => {
               if (error) {
-                this.cliOptions.verbose && console.log(chalk.red(error));
+                console.log(chalk.red(error));
               };
-              reject(messages.error.command.platform);
+              return reject(messages.error.command.platform);
             });
           } else {
-            this.cliOptions.verbose && console.log(chalk.red(messages.error.action.invalid));
-            reject(messages.error.command.platform);
+            console.log(chalk.red(messages.error.action.invalid));
+            return reject(messages.error.command.platform);
           }
         } else {
-          this.cliOptions.verbose && console.log(chalk.red(messages.error.argument.missing));
-          reject(messages.error.command.platform);
+          console.log(chalk.red(messages.error.argument.missing));
+          return reject(messages.error.command.platform);
         }
       });
     };
@@ -46,14 +46,14 @@ exports = module.exports = (function(){
     this.addPlatform = function (platform) {
       return new Promise((resolve, reject) => {
         // TODO !!!
-        reject(messages.error.action.notImplemented);
+        return reject(messages.error.action.notImplemented);
       });
     };
 
     this.removePlatform = function (platform) {
       return new Promise((resolve, reject) => {
         // TODO !!!
-        reject(messages.error.action.notImplemented);
+        return reject(messages.error.action.notImplemented);
       });
     };
 
