@@ -9,7 +9,8 @@ module.exports = {
     },
     "rules": {
         "semi": 0,
-        "require-jsdoc": "off"
+        "require-jsdoc": "off",
+        "comma-dangle": ["error", "never"]
     }
 
 };

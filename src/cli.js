@@ -6,11 +6,9 @@ const chalk = require('chalk');
 const options = require('./sahara/sahara/options');
 const messages = require('./sahara/sahara/messages');
 
-exports = module.exports = (function(argv){
-
-  var cli = function() {
-
-    var Cli = function(){
+exports = module.exports = (function(argv) {
+  let cli = function() {
+    let Cli = function() {
       this.args;
       this.argv;
       this.command;
@@ -25,11 +23,13 @@ exports = module.exports = (function(argv){
         if (Array.isArray(this.argv) && this.argv.length > 2) {
           if (this[this.argv[2]]) {
             this.command = this.argv[2];
-            this.args = this.argv.slice(3,this.argv.length) || [];
+            this.args = this.argv.slice(3, this.argv.length) || [];
             if (this.args.length) {
                 if (fs.existsSync(`${__dirname}/sahara/${this.command}.js`)) {
                   this.options.verbose && console.log(chalk.yellow(messages.info.command[this.command]));
-                  require(`./sahara/${this.command}.js`).setCliOptions(this.options).exec(this.args, this.apiCall).then((success) => {
+                  require(`./sahara/${this.command}.js`)
+                  .setCliOptions(this.options)
+                  .exec(this.args, this.apiCall).then((success) => {
                     return resolve(success);
                   }, (error) => {
                     return reject(error);
@@ -52,7 +52,7 @@ exports = module.exports = (function(argv){
             }
           } else {
             if (this.argv[2]) {
-              this.args = this.argv.slice(2,this.argv.length) || [];
+              this.args = this.argv.slice(2, this.argv.length) || [];
             } else {
               console.log(chalk.red(messages.error.command.notFound));
               this.args = [];
@@ -74,9 +74,9 @@ exports = module.exports = (function(argv){
       });
     };
 
-    Cli.prototype.extractCliOptionsFrom = function(argv){
+    Cli.prototype.extractCliOptionsFrom = function(argv) {
       if (Array.isArray(argv)) {
-        var filtered = argv.filter((arg) => {
+        let filtered = argv.filter((arg) => {
           if(options[arg]) {
             this.options[options[arg]] = true;
             return false;
@@ -93,9 +93,9 @@ exports = module.exports = (function(argv){
 
     // sahara create <command>
     // Create a project
-    Cli.prototype.create = function(args){
+    Cli.prototype.create = function(args) {
       return new Promise((resolve, reject) => {
-        this.exec(['','','create'].concat(args)).then((success) => {
+        this.exec(['', '', 'create'].concat(args)).then((success) => {
           return resolve(success);
         }, (error) => {
           return reject(error);
@@ -105,9 +105,9 @@ exports = module.exports = (function(argv){
 
     // sahara start <command>
     // Start your project
-    Cli.prototype.start = function(args){
+    Cli.prototype.start = function(args) {
       return new Promise((resolve, reject) => {
-        this.exec(['','','start'].concat(args)).then((success) => {
+        this.exec(['', '', 'start'].concat(args)).then((success) => {
           return resolve(success);
         }, (error) => {
           return reject(error);
@@ -117,9 +117,9 @@ exports = module.exports = (function(argv){
 
     // sahara help <command>
     // Get help for a command
-    Cli.prototype.help = function(args){
+    Cli.prototype.help = function(args) {
       return new Promise((resolve, reject) => {
-        this.exec(['','','help'].concat(args)).then((success) => {
+        this.exec(['', '', 'help'].concat(args)).then((success) => {
           return resolve(success);
         }, (error) => {
           return reject(error);
@@ -129,33 +129,33 @@ exports = module.exports = (function(argv){
 
     // sahara info <command>
     // Generate project information
-    Cli.prototype.info = function(args){
+    Cli.prototype.info = function(args) {
       return new Promise((resolve, reject) => {
-        this.exec(['','','info'].concat(args)).then((success) => {
+        this.exec(['', '', 'info'].concat(args)).then((success) => {
           return resolve(success);
         }, (error) => {
           return reject(error);
         });
       });
     };
- 
+
     // sahara requirements <command>
-    // Checks and print out all the requirements for specified platforms 
-    Cli.prototype.requirements = function(args){
+    // Checks and print out all the requirements for specified platforms
+    Cli.prototype.requirements = function(args) {
       return new Promise((resolve, reject) => {
-        this.exec(['','','requirements'].concat(args)).then((success) => {
+        this.exec(['', '', 'requirements'].concat(args)).then((success) => {
           return resolve(success);
         }, (error) => {
           return reject(error);
         });
       });
     };
- 
+
     // sahara platform <command>
     // Manage project platforms
-    Cli.prototype.platform = function(args){
+    Cli.prototype.platform = function(args) {
       return new Promise((resolve, reject) => {
-        this.exec(['','','platform'].concat(args)).then((success) => {
+        this.exec(['', '', 'platform'].concat(args)).then((success) => {
           return resolve(success);
         }, (error) => {
           return reject(error);
@@ -165,9 +165,9 @@ exports = module.exports = (function(argv){
 
     // sahara prepare <command>
     // Copy files into platform(s) for building
-    Cli.prototype.prepare = function(args){
+    Cli.prototype.prepare = function(args) {
       return new Promise((resolve, reject) => {
-        this.exec(['','','prepare'].concat(args)).then((success) => {
+        this.exec(['', '', 'prepare'].concat(args)).then((success) => {
           return resolve(success);
         }, (error) => {
           return reject(error);
@@ -177,9 +177,9 @@ exports = module.exports = (function(argv){
 
     // sahara compile <command>
     // Build platform(s)
-    Cli.prototype.compile = function(args){
+    Cli.prototype.compile = function(args) {
       return new Promise((resolve, reject) => {
-        this.exec(['','','compile'].concat(args)).then((success) => {
+        this.exec(['', '', 'compile'].concat(args)).then((success) => {
           return resolve(success);
         }, (error) => {
           return reject(error);
@@ -188,9 +188,9 @@ exports = module.exports = (function(argv){
     };
 
     // sahara prepare && sahara compile
-    Cli.prototype.build = function(args){
+    Cli.prototype.build = function(args) {
       return new Promise((resolve, reject) => {
-        this.exec(['','','build'].concat(args)).then((success) => {
+        this.exec(['', '', 'build'].concat(args)).then((success) => {
           return resolve(success);
         }, (error) => {
           return reject(error);
@@ -200,9 +200,9 @@ exports = module.exports = (function(argv){
 
     // sahara clean <command>
     // Cleanup project from build artifacts
-    Cli.prototype.clean = function(args){
+    Cli.prototype.clean = function(args) {
       return new Promise((resolve, reject) => {
-        this.exec(['','','clean'].concat(args)).then((success) => {
+        this.exec(['', '', 'clean'].concat(args)).then((success) => {
           return resolve(success);
         }, (error) => {
           return reject(error);
@@ -212,9 +212,9 @@ exports = module.exports = (function(argv){
 
     // sahara run <command>
     // Run project (including prepare && compile)
-    Cli.prototype.run = function(args){
+    Cli.prototype.run = function(args) {
       return new Promise((resolve, reject) => {
-        this.exec(['','','run'].concat(args)).then((success) => {
+        this.exec(['', '', 'run'].concat(args)).then((success) => {
           return resolve(success);
         }, (error) => {
           return reject(error);
@@ -226,7 +226,7 @@ exports = module.exports = (function(argv){
   };
 
   return function(argv) {
-    var sahara = cli();
+    let sahara = cli();
     if (Array.isArray(argv) && argv.length) {
       sahara.exec(argv).then((success) => {
         if (success) {

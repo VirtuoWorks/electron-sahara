@@ -10,11 +10,9 @@ const prompt = require('prompt');
 
 const messages = require('./sahara/messages');
 
-exports = module.exports = (function(){
-  
-  var sahara = function(){
-
-    var Sahara = function(){
+exports = module.exports = (function() {
+  let sahara = function() {
+    let Sahara = function() {
       this.apiCall;
       this.settings;
       this.cliOptions = {};
@@ -36,7 +34,7 @@ exports = module.exports = (function(){
 
     Sahara.prototype.setCommandSettings = function() {
       // Loads Sahara settings file if available
-      var settingsFilePath = path.normalize(process.cwd() + path.sep + 'sahara.json');
+      let settingsFilePath = path.normalize(process.cwd() + path.sep + 'sahara.json');
       try {
         fs.accessSync(settingsFilePath);
         try {
@@ -58,10 +56,10 @@ exports = module.exports = (function(){
       });
     };
 
-    Sahara.prototype.getAbsolutePathTo = function (file) {
-      var basePath = this.workingDirectory + path.sep;
-      var normalizedPath = path.normalize(basePath + file);
-      var absolutePath;
+    Sahara.prototype.getAbsolutePathTo = function(file) {
+      let basePath = this.workingDirectory + path.sep;
+      let normalizedPath = path.normalize(basePath + file);
+      let absolutePath;
       if (normalizedPath) {
         absolutePath = path.resolve(normalizedPath);
       };
@@ -74,7 +72,7 @@ exports = module.exports = (function(){
       });
     };
 
-    Sahara.prototype.createDirectory = function (absolutePath) {
+    Sahara.prototype.createDirectory = function(absolutePath) {
       this.cliOptions.verbose && console.log(chalk.yellow(messages.info.directory.create.replace(/%s/g, absolutePath)));
 
       return new Promise((resolve, reject) => {
@@ -105,7 +103,7 @@ exports = module.exports = (function(){
             if (force || this.apiCall) {
               del([absolutePath]).then((paths) => {
                 return resolve(messages.info.directory.deletion.replace(/%s/g, absolutePath));
-              }).catch(function(error){
+              }).catch(function(error) {
                 return reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
               });
             } else {
@@ -122,7 +120,7 @@ exports = module.exports = (function(){
                 } else {
                   if (result.question) {
                     if (result.question.toLowerCase()[0] == 'y') {
-                      var spinner = ora({
+                      let spinner = ora({
                         text: chalk.yellow(messages.info.directory.deletion.replace(/%s/g, absolutePath)),
                         spinner: 'pong',
                         color: 'yellow'
@@ -131,7 +129,7 @@ exports = module.exports = (function(){
                       del([absolutePath]).then((paths) => {
                         spinner.succeed(chalk.green(messages.info.directory.deletion.replace(/%s/g, absolutePath)));
                         return resolve(messages.error.directory.deletion.replace(/%s/g, absolutePath));
-                      }).catch(function(error){
+                      }).catch(function(error) {
                         spinner.fail(chalk.red(messages.info.directory.deletion.replace(/%s/g, absolutePath)));
                         return reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
                       });
@@ -147,7 +145,7 @@ exports = module.exports = (function(){
           } else {
             return resolve();
           };
-        }).catch(function(error){
+        }).catch(function(error) {
           return reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
         });
       });
@@ -156,9 +154,9 @@ exports = module.exports = (function(){
     return new Sahara();
   };
 
-  var Command = function(){};
+  let Command = function() {};
 
-  Command.prototype = (function(){
+  Command.prototype = (function() {
     return sahara().init();
   })();
 

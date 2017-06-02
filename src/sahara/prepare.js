@@ -7,15 +7,13 @@ const ncp = require('ncp').ncp;
 const command = require('./sahara');
 const messages = require('./sahara/messages');
 
-exports = module.exports = (function(){
-
-  var Prepare = function(){
-
-    this.exec = function(args){
+exports = module.exports = (function() {
+  let Prepare = function() {
+    this.exec = function(args) {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args) && args.length > 0) {
           if (!!this.settings) {
-            var platform = args.shift() || process.platform;
+            let platform = args.shift() || process.platform;
 
             if (this[`${platform}Prepare`]) {
               this.getAbsolutePathTo(`platforms`).then((platformsAbsolutePath) => {
@@ -64,14 +62,13 @@ exports = module.exports = (function(){
 
       return new Promise((resolve, reject) => {
         if (platform && this[`${platform}Prepare`]) {
-          
           this.getAbsolutePathTo(`platforms/${platform}`).then((platformAbsolutePath) => {
             this.deleteDirectory(platformAbsolutePath).then((success) => {
               this.createDirectory(platformAbsolutePath).then((success) => {
                 this.cliOptions.verbose && console.log(chalk.green(success));
                 this.getAbsolutePathTo(`platforms/${platform}/platform_app`).then((appAbsolutePath) => {
                   this.getAbsolutePathTo(`platforms/${platform}/platform_app`).then((platformAppAbsolutePath) => {
-                    var spinner = ora({
+                    let spinner = ora({
                       text: chalk.yellow(messages.info.files.copy),
                       spinner: 'pong',
                       color: 'yellow'
@@ -79,7 +76,7 @@ exports = module.exports = (function(){
 
                     spinner.start();
 
-                    ncp(appAbsolutePath, platformAppAbsolutePath, function (error) {
+                    ncp(appAbsolutePath, platformAppAbsolutePath, function(error) {
                       if (error) {
                         spinner.fail(chalk.red(messages.info.files.copy));
                         if (error) {
@@ -150,7 +147,6 @@ exports = module.exports = (function(){
         });
       });
     };
-
   };
 
   Prepare.prototype = command;

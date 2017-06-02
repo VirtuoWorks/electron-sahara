@@ -3,10 +3,9 @@
 const command = require('./sahara');
 const messages = require('./sahara/messages');
 
-exports = module.exports = (function(){
+exports = module.exports = (function() {
+  let Clean = function() {
 
-  var Clean = function(){
-    
   };
 
   Clean.prototype = command;

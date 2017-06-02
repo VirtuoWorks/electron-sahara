@@ -6,17 +6,15 @@ const chalk = require('chalk');
 const command = require('./sahara');
 const messages = require('./sahara/messages');
 
-exports = module.exports = (function(){
-
-  var Compile = function(){
-
+exports = module.exports = (function() {
+  let Compile = function() {
     this.electronPackager;
 
-    this.exec = function(args){
+    this.exec = function(args) {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args) && args.length > 0) {
           if (!!this.settings) {
-            var platform = args.shift() || process.platform;
+            let platform = args.shift() || process.platform;
 
             if (this[`${platform}Compile`]) {
               this.requireElectronPackager().then((success) => {
@@ -77,7 +75,7 @@ exports = module.exports = (function(){
     };
 
     this.compilePlatform = function(platform, options) {
-      var options = options || {};
+      options = options || {};
       return new Promise((resolve, reject) => {
         this.getAbsolutePathTo(`platforms/${platform}/platform_app`).then((sourceDirectory) => {
           this.getAbsolutePathTo(`platforms/${platform}/build`).then((outputDirectory) => {
@@ -88,7 +86,7 @@ exports = module.exports = (function(){
             // Target directory
             options.out = outputDirectory;
 
-            var spinner = ora({
+            let spinner = ora({
               text: chalk.yellow(messages.info.packager.building.replace(/%s/g, `${platform}`)),
               spinner: 'pong',
               color: 'yellow'
@@ -123,10 +121,10 @@ exports = module.exports = (function(){
 
     this.win32Compile = function() {
       return new Promise((resolve, reject) => {
-        var options = {
-          quiet:true,
+        let options = {
+          quiet: true,
           asar: true,
-          arch: 'x64', 
+          arch: 'x64',
           prune: true,
           overwrite: true
         };
@@ -141,10 +139,10 @@ exports = module.exports = (function(){
 
     this.darwinCompile = function() {
       return new Promise((resolve, reject) => {
-        var options = {
-          quiet:true,
+        let options = {
+          quiet: true,
           asar: true,
-          arch: 'x64', 
+          arch: 'x64',
           prune: true,
           overwrite: true
         };
@@ -159,10 +157,10 @@ exports = module.exports = (function(){
 
     this.linuxCompile = function() {
       return new Promise((resolve, reject) => {
-        var options = {
-          quiet:true,
+        let options = {
+          quiet: true,
           asar: true,
-          arch: 'x64', 
+          arch: 'x64',
           prune: true,
           overwrite: true
         };
@@ -174,7 +172,6 @@ exports = module.exports = (function(){
         });
       });
     };
-
   };
 
   Compile.prototype = command;

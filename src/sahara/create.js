@@ -10,22 +10,20 @@ const command = require('./sahara');
 const messages = require('./sahara/messages');
 const templates = require('./create/templates');
 
-exports = module.exports = (function(){
-
-  var Create = function(){
-
+exports = module.exports = (function() {
+  let Create = function() {
     this.apiCall;
 
-    this.exec = function(args, apiCall){
+    this.exec = function(args, apiCall) {
       this.apiCall = apiCall || false;
       return new Promise((resolve, reject) => {
         if (Array.isArray(args) && args.length > 0) {
           if (!this.settings) {
-            var projectDirectoryName = args.shift();
-            var projectTemplate = args.shift() || 'vanilla';
+            let projectDirectoryName = args.shift();
+            let projectTemplate = args.shift() || 'vanilla';
 
             if (projectDirectoryName) {
-              var projectAbsolutePath = this.getAbsolutePathTo(projectDirectoryName).then((projectAbsolutePath) => {
+              this.getAbsolutePathTo(projectDirectoryName).then((projectAbsolutePath) => {
                 this.deleteDirectory(projectAbsolutePath).then((success) => {
                   this.createDirectory(projectAbsolutePath).then((success) => {
                     this.cliOptions.verbose && console.log(chalk.green(success));
@@ -89,9 +87,9 @@ exports = module.exports = (function(){
 
     this.installProjectDependencies = function(projectAbsolutePath) {
       return new Promise((resolve, reject) => {
-        var command = `cd ${projectAbsolutePath} && npm install`;
+        let command = `cd ${projectAbsolutePath} && npm install`;
 
-        var spinner = ora({
+        let spinner = ora({
           text: chalk.yellow(messages.info.dependencies.install),
           spinner: 'pong',
           color: 'yellow'
@@ -118,7 +116,7 @@ exports = module.exports = (function(){
 
     this.cloneProjectTemplate = function(projectTemplate, projectAbsolutePath) {
       this.cliOptions.verbose && console.log(chalk.yellow(messages.info.template.clone));
- 
+
       return new Promise((resolve, reject) => {
         if (templates[projectTemplate]) {
           simpleGit().clone(templates[projectTemplate], projectAbsolutePath).then((error, success) => {
@@ -134,7 +132,6 @@ exports = module.exports = (function(){
         }
       });
     };
-
   };
 
   Create.prototype = command;

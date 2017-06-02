@@ -1,24 +1,19 @@
 'use strict';
 
-const path = require('path');
-
 const chalk = require('chalk');
 
 const command = require('./sahara');
 const messages = require('./sahara/messages');
 
-exports = module.exports = (function(){
-
-  var Platform = function(){
-
+exports = module.exports = (function() {
+  let Platform = function() {
     this.electronPackager;
 
-    this.exec = function(args){
+    this.exec = function(args) {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args) && args.length > 0) {
-
-          var action = args.shift();
-          var platform = args.shift() || process.platform;
+          let action = args.shift();
+          let platform = args.shift() || process.platform;
 
           if (this[`${action}Platform`]) {
             this[`${action}Platform`](platform).then((success) => {
@@ -43,21 +38,19 @@ exports = module.exports = (function(){
       });
     };
 
-    this.addPlatform = function (platform) {
+    this.addPlatform = function(platform) {
       return new Promise((resolve, reject) => {
         // TODO !!!
         return reject(messages.error.action.notImplemented);
       });
     };
 
-    this.removePlatform = function (platform) {
+    this.removePlatform = function(platform) {
       return new Promise((resolve, reject) => {
         // TODO !!!
         return reject(messages.error.action.notImplemented);
       });
     };
-
-
   };
 
   Platform.prototype = command;

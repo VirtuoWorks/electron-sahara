@@ -7,15 +7,13 @@ const compile = require('./compile');
 const command = require('./sahara');
 const messages = require('./sahara/messages');
 
-exports = module.exports = (function(){
-
-  var Build = function(){
-
-    this.exec = function(args){
+exports = module.exports = (function() {
+  let Build = function() {
+    this.exec = function(args) {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args) && args.length > 0) {
           if (!!this.settings) {
-            var platform = args.shift() || process.platform;
+            let platform = args.shift() || process.platform;
 
             prepare.exec([platform]).then((success) => {
               if (success) {

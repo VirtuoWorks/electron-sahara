@@ -1,16 +1,24 @@
-var assert = require('assert');
-var childProcess = require('child_process');
+'use strict';
+
+let assert = require('assert');
+let childProcess = require('child_process');
 
 describe('Sahara', function() {
-  it('Should be required for direct API use', function() {
-    assert.doesNotThrow(function() {
-      var sahara = require('../index.js');
+  describe('Sahara messages.json map', function() {
+    it('Should be required', function() {
+      assert.doesNotThrow(function() {
+        require('../src/sahara/sahara/messages');
+      });
     });
   });
-  it('Should provide an object when required for direct API use', function() {
-    assert.strictEqual(typeof require('../index.js'), 'object');
+  describe('Sahara options.json map', function() {
+    it('Should be required', function() {
+      assert.doesNotThrow(function() {
+        require('../src/sahara/sahara/options');
+      });
+    });
   });
-  it('Should be executed as a binary command', function(done) {
+  it('Should be executed as a CLI', function(done) {
     childProcess.exec('node ./bin/sahara', function(error, stdout, stderr) {
       if (error) {
         done(error);
@@ -19,10 +27,18 @@ describe('Sahara', function() {
       }
     });
   });
-  var cliCommands = ['create', 'start', 'help', 'info', 'requirements', 'platform', 'prepare', 'compile', 'build', 'clean', 'run'];
-  var apiMethods = ['exec'].concat(cliCommands);
+  it('Should be required for direct API use', function() {
+    assert.doesNotThrow(function() {
+      require('../index.js');
+    });
+  });
+  it('Should provide an object when required for direct API use', function() {
+    assert.strictEqual(typeof require('../index.js'), 'object');
+  });
+  let cliCommands = ['create', 'start', 'help', 'info', 'requirements', 'platform', 'prepare', 'compile', 'build', 'clean', 'run'];
+  let apiMethods = ['exec'].concat(cliCommands);
   describe('API', function() {
-    var sahara;
+    let sahara;
     beforeEach(function() {
       sahara = require('../index.js');
     });
@@ -38,6 +54,7 @@ describe('Sahara', function() {
   describe('CLI', function() {
     cliCommands.forEach(function(command) {
       it(`Should provide a "${command}" command`, function(done) {
+        this.timeout(0);
         childProcess.exec(`node ./bin/sahara ${command}`, function(error, stdout, stderr) {
           if (error) {
             done(error);
@@ -47,16 +64,8 @@ describe('Sahara', function() {
         });
       });
     });
-    it('Should not crash when provided an unknown command', function(done) {
-      childProcess.exec('node ./bin/sahara unknown', function(error, stdout, stderr) {
-        if (error) {
-          done(error);
-        } else {
-          done();
-        }
-      });
-    });
     it('Should not crash when no command is provided', function(done) {
+      this.timeout(0);
       childProcess.exec('node ./bin/sahara', function(error, stdout, stderr) {
         if (error) {
           done(error);
@@ -65,41 +74,30 @@ describe('Sahara', function() {
         }
       });
     });
-  });
-});
-
-describe('Sahara messages', function() {
-  it('Should be required', function() {
-    assert.doesNotThrow(function() {
-      var messages = require('../src/sahara/sahara/messages');
+    it('Should not crash when provided an unknown command', function(done) {
+      this.timeout(0);
+      childProcess.exec('node ./bin/sahara unknown', function(error, stdout, stderr) {
+        if (error) {
+          done(error);
+        } else {
+          done();
+        }
+      });
     });
   });
 });
 
 describe('Sahara API methods', function() {
-  var sahara, messages;
+  let sahara;
+  let messages;
   before(function() {
     sahara = require('../index.js');
     messages = require('../src/sahara/sahara/messages');
   });
   describe('"create" method', function() {
-    /*
-    it('Should be able to create a new "Vanilla" project in "TestApp" folder', function(done) {
-      this.timeout(0);
-      sahara.cli().create(['TestApp']).then((success) {
-        if (success === messages.done.command.create) {
-          done();
-        } else {
-          done('New "Vanilla" project successfully created, but incorrect message was returned');
-        }
-      }, (error) {
-        done('Unable to create new "Vanilla" project');
-      });
-    });
-    */
     it('Should not be able to create a project with an invalid directory name', function(done) {
       this.timeout(0);
-      var invalidDirName = (process.platform === 'mac') ? ':' : '/';
+      let invalidDirName = (process.platform === 'mac') ? ':' : '/';
       sahara.cli().create([invalidDirName]).then(function(success) {
         done('Project created in empty folder');
       }, function(error) {
@@ -110,25 +108,5 @@ describe('Sahara API methods', function() {
         }
       });
     });
-    /*
-    it('Should not be able to create a project with missing argument', function(done) {
-      this.timeout(0);
-      sahara.cli().create([]).then((success) {
-      }, (error) {
-      });
-    });
-    */
   });
-  /*
-  describe('"help" method', function() {
-    it('Should display programm help', function(done) {
-      
-    });
-  });
-
-  describe('"platform" method', function() {
-    it('Should ...', function(done) {
-      
-    });
-  });*/
 });
