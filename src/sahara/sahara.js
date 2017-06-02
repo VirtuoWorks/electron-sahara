@@ -64,7 +64,7 @@ exports = module.exports = (function() {
         absolutePath = path.resolve(normalizedPath);
       };
       return new Promise((resolve, reject) => {
-        if (absolutePath) {
+        if (absolutePath && absolutePath != this.workingDirectory) {
           return resolve(absolutePath);
         } else {
           return reject(messages.error.directory.resolve.replace(/%s/g, normalizedPath));

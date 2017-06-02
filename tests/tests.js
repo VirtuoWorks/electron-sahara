@@ -63,6 +63,16 @@ describe('Sahara', function() {
           }
         });
       });
+      it(`Should provide help for "${command}" command`, function(done) {
+        this.timeout(0);
+        childProcess.exec(`node ./bin/sahara help ${command}`, function(error, stdout, stderr) {
+          if (error) {
+            done(error);
+          } else {
+            done();
+          }
+        });
+      });
     });
     it('Should not crash when no command is provided', function(done) {
       this.timeout(0);
@@ -84,10 +94,20 @@ describe('Sahara', function() {
         }
       });
     });
+    it('Should provide help for an unknown command', function(done) {
+      this.timeout(0);
+      childProcess.exec(`node ./bin/sahara help unknown`, function(error, stdout, stderr) {
+        if (error) {
+          done(error);
+        } else {
+          done();
+        }
+      });
+    });
   });
 });
 
-describe('Sahara API methods', function() {
+describe('Sahara API', function() {
   let sahara;
   let messages;
   before(function() {
@@ -95,16 +115,69 @@ describe('Sahara API methods', function() {
     messages = require('../src/sahara/sahara/messages');
   });
   describe('"create" method', function() {
-    it('Should not be able to create a project with an invalid directory name', function(done) {
+    it('Should be able to create a project with a valid directory name', function(done) {
       this.timeout(0);
-      let invalidDirName = (process.platform === 'mac') ? ':' : '/';
-      sahara.cli().create([invalidDirName]).then(function(success) {
-        done('Project created in empty folder');
+      let dir = 'MyApp';
+      sahara.cli().create([dir]).then(function(success) {
+        done();
+      }, function(error) {
+        if (error === messages.error.command.create) {
+          done('Project was not created, but Sahara reported an error.');
+        } else {
+          done('Project was not created. Sahara crashed.');
+        }
+      });
+    });
+    it('Should be able to create a project with a valid directory name and a valid template name', function(done) {
+      this.timeout(0);
+      let dir = 'MyApp';
+      let template = 'vanilla';
+      sahara.cli().create([dir, template]).then(function(success) {
+        done();
+      }, function(error) {
+        if (error === messages.error.command.create) {
+          done('Project was not created, but Sahara reported an error.');
+        } else {
+          done('Project was not created. Sahara crashed.');
+        }
+      });
+    });
+    it('Should not be able to create a project without a directory name', function(done) {
+      this.timeout(0);
+      sahara.cli().create([]).then(function(success) {
+        done('Project created in empty folder.');
       }, function(error) {
         if (error === messages.error.command.create) {
           done();
         } else {
-          done('Project was not created, but incorrect message was returned');
+          done('Project was not created, but wrong message was returned.');
+        }
+      });
+    });
+    it('Should not be able to create a project with an invalid directory name', function(done) {
+      this.timeout(0);
+      let invalidDirName = (process.platform === 'mac') ? ':' : '/';
+      sahara.cli().create([invalidDirName]).then(function(success) {
+        done('Project created in invalid folder.');
+      }, function(error) {
+        if (error === messages.error.command.create) {
+          done();
+        } else {
+          done('Project was not created, but wrong message was returned.');
+        }
+      });
+    });
+    it('Should not be able to create a project with a valid directory name and an invalid template name', function(done) {
+      this.timeout(0);
+      let dir = 'MyApp';
+      let invalidTemplate = 'unknown';
+      sahara.cli().create([dir, invalidTemplate]).then(function(success) {
+        done('Project created with unknown template.');
+      }, function(error) {
+        if (error === messages.error.command.create) {
+          done();
+        } else {
+          done('Project was not created, but wrong message was returned.');
         }
       });
     });
