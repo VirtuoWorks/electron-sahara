@@ -19,27 +19,27 @@ exports = module.exports = (function(){
 
           prepare.exec([platform]).then((success) => {
             if (success) {
-              console.log(chalk.green(success));
+              this.cliOptions.verbose && console.log(chalk.green(success));
             };
             compile.exec([platform]).then((success) => {
               if (success) {
-                console.log(chalk.green(success));
+                this.cliOptions.verbose && console.log(chalk.green(success));
               };
               resolve(messages.done.command.build);
             }, (error) => {
               if (error) {
-                console.log(chalk.red(error));
+                this.cliOptions.verbose && console.log(chalk.red(error));
               };
               reject(messages.error.command.build);
             });
           }, (error) => {
             if (error) {
-              console.log(chalk.red(error));
+              this.cliOptions.verbose && console.log(chalk.red(error));
             }
             reject(messages.error.command.build);
           });
         } else {
-          console.log(chalk.red(messages.error.argument.missing));
+          this.cliOptions.verbose && console.log(chalk.red(messages.error.argument.missing));
           reject(messages.error.command.build);
         };
       });

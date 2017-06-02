@@ -16,14 +16,38 @@ exports = module.exports = (function(){
 
     var Sahara = function(){
       this.apiCall;
+      this.settings;
+      this.cliOptions = {};
       this.saharaDirectory;
       this.workingDirectory;
     };
 
     Sahara.prototype.init = function() {
+      this.setCommandSettings();
       this.saharaDirectory = __dirname;
       this.workingDirectory = process.cwd();
+      return this;
+    };
 
+    Sahara.prototype.setCliOptions = function(cliOptions) {
+      this.cliOptions = cliOptions;
+      return this;
+    };
+
+    Sahara.prototype.setCommandSettings = function() {
+      // Loads Sahara settings file if available
+      var settingsFilePath = path.normalize(process.cwd() + path.sep + 'sahara.json');
+      try {
+        fs.accessSync(settingsFilePath);
+        try {
+          this.settings = require(settingsFilePath);
+          this.cliOptions.verbose && console.log(chalk.yellow(messages.info.sahara.projectDirectory));
+        } catch(exception) {
+          this.cliOptions.verbose && console.log(chalk.red(messages.error.sahara.configurationFile.replace(/%s/g, exception.message)));
+        };
+      } catch(exception) {
+        this.cliOptions.verbose && console.log(chalk.yellow(messages.info.sahara.notAProjectDirectory));
+      };
       return this;
     };
 
@@ -37,13 +61,21 @@ exports = module.exports = (function(){
     Sahara.prototype.getAbsolutePathTo = function (file) {
       var basePath = this.workingDirectory + path.sep;
       var normalizedPath = path.normalize(basePath + file);
+      var absolutePath;
       if (normalizedPath) {
-        return path.resolve(normalizedPath);
+        absolutePath = path.resolve(normalizedPath);
       };
-    }
+      return new Promise((resolve, reject) => {
+        if (absolutePath) {
+          resolve(absolutePath);
+        } else {
+          reject(messages.error.directory.resolve.replace(/%s/g, normalizedPath));
+        };
+      });
+    };
 
     Sahara.prototype.createDirectory = function (absolutePath) {
-      console.log(chalk.gray(messages.info.directory.create.replace(/%s/g, absolutePath)));
+      this.cliOptions.verbose && console.log(chalk.yellow(messages.info.directory.create.replace(/%s/g, absolutePath)));
 
       return new Promise((resolve, reject) => {
         if (absolutePath) {
@@ -91,9 +123,9 @@ exports = module.exports = (function(){
                   if (result.question) {
                     if (result.question.toLowerCase()[0] == 'y') {
                       var spinner = ora({
-                        text: chalk.gray(messages.info.directory.deletion.replace(/%s/g, absolutePath)),
+                        text: chalk.yellow(messages.info.directory.deletion.replace(/%s/g, absolutePath)),
                         spinner: 'pong',
-                        color: 'grey'
+                        color: 'yellow'
                       });
                       spinner.start();
                       del([absolutePath]).then((paths) => {

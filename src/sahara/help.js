@@ -35,7 +35,7 @@ exports = module.exports = (function(){
             filePath = this.helpFilesFolder + path.sep + 'sahara';
             fs.readFile(filePath, (error, data) => {
               if (error) {
-                console.log(chalk.red(messages.error.help.missingSaharaHelpFile));
+                this.cliOptions.verbose && console.log(chalk.red(messages.error.help.missingSaharaHelpFile));
                 reject(error);
               } else {
                 resolve(data.toString());
@@ -48,7 +48,7 @@ exports = module.exports = (function(){
               filePath = this.helpFilesFolder + path.sep + 'sahara';
               fs.readFile(filePath, (error, data) => {
                 if (error) {
-                  console.log(chalk.red(messages.error.help.missingSaharaHelpFile));
+                  this.cliOptions.verbose && console.log(chalk.red(messages.error.help.missingSaharaHelpFile));
                   reject(error);
                 } else {
                   resolve(data.toString());

@@ -1,6 +1,6 @@
 {
   "info": {
-    "exec": "Starting sahara cli...",
+    "exec": "[CLI] Starting sahara cli...",
     "command": {
       "create": "[COMMAND] Create",
       "help": "[COMMAND] Help",
@@ -38,6 +38,11 @@
     },
     "platform": {
       "prepare": "[IN PROGRESS] Plateform [%s] is being prepared...."
+    },
+    "sahara": {
+      "verboseEnabled": "[INFO] Sahara running in verbose mode...",
+      "projectDirectory": "[INFO] Sahara.json file found. Working in Sahara project directory...",
+      "notAProjectDirectory": "[INFO] Sahara.json file not found. Not working in a Sahara project directory..."
     }
   },
   "prompt": {
@@ -55,6 +60,9 @@
       "prepare": "[ERROR] Could not prepare platform.",
       "compile": "[ERROR] Platform could not be compiled.",
       "build": "[ERROR] Could not build platform."
+    },
+    "sahara": {
+      "configurationFile": "[ERROR] Check your configuration file. Error(s) detected (%s)."
     },
     "argument": {
       "missing": "[ERROR] Missing command argument. Check help below."

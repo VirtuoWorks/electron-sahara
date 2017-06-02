@@ -25,23 +25,20 @@ exports = module.exports = (function(){
           var projectTemplate = args.shift() || 'vanilla';
 
           if (projectDirectoryName) {
-
-            var projectAbsolutePath = this.getAbsolutePathTo(projectDirectoryName);
-
-            if (projectAbsolutePath) {
+            var projectAbsolutePath = this.getAbsolutePathTo(projectDirectoryName).then((projectAbsolutePath) => {
               this.deleteDirectory(projectAbsolutePath).then((success) => {
                 this.createDirectory(projectAbsolutePath).then((success) => {
-                  console.log(chalk.green(success));
+                  this.cliOptions.verbose && console.log(chalk.green(success));
                   this.cloneProjectTemplate(projectTemplate, projectAbsolutePath).then((success) => {
-                    console.log(chalk.green(success));
+                    this.cliOptions.verbose && console.log(chalk.green(success));
                     this.installProjectDependencies(projectAbsolutePath).then((success) => {
                       if (success) {
-                        console.log(chalk.green(success));
+                        this.cliOptions.verbose && console.log(chalk.green(success));
                       };
                       resolve(messages.done.command.create);
                     }, (error) => {
                       if (error) {
-                        console.log(chalk.red(error));
+                        this.cliOptions.verbose && console.log(chalk.red(error));
                       }
                       this.deleteDirectory(projectAbsolutePath, true).then((success) => {
                         reject(messages.error.command.create);
@@ -51,7 +48,7 @@ exports = module.exports = (function(){
                     });
                   }, (error) => {
                     if (error) {
-                      console.log(chalk.red(error));
+                      this.cliOptions.verbose && console.log(chalk.red(error));
                     };
                     this.deleteDirectory(projectAbsolutePath, true).then((success) => {
                       reject(messages.error.command.create);
@@ -61,26 +58,26 @@ exports = module.exports = (function(){
                   });
                 }, (error) => {
                   if (error) {
-                    console.log(chalk.red(error));
+                    this.cliOptions.verbose && console.log(chalk.red(error));
                   };
                   reject(messages.error.command.create);
                 });
               }, (error) => {
                 if (error) {
-                  console.log(chalk.yellow(error));
+                  this.cliOptions.verbose && console.log(chalk.red(error));
                 };
                 reject(messages.error.command.create);
               });
-            } else {
-              console.log(chalk.red(messages.error.directory.resolve.replace(/%s/g, projectAbsolutePath)));
+            }, (error) => {
+              this.cliOptions.verbose && console.log(chalk.red(error));
               reject(messages.error.command.create);
-            }
+            });
           } else {
-            console.log(chalk.red(messages.error.argument.missing));
+            this.cliOptions.verbose && console.log(chalk.red(messages.error.argument.missing));
             reject(messages.error.command.create);
           }
         } else {
-          console.log(chalk.red(messages.error.argument.missing));
+          this.cliOptions.verbose && console.log(chalk.red(messages.error.argument.missing));
           reject(messages.error.command.create);
         }
       });
@@ -91,9 +88,9 @@ exports = module.exports = (function(){
         var command = `cd ${projectAbsolutePath} && npm install`;
 
         var spinner = ora({
-          text: chalk.gray(messages.info.dependencies.install),
+          text: chalk.yellow(messages.info.dependencies.install),
           spinner: 'pong',
-          color: 'grey'
+          color: 'yellow'
         });
 
         spinner.start();
@@ -116,13 +113,13 @@ exports = module.exports = (function(){
     };
 
     this.cloneProjectTemplate = function(projectTemplate, projectAbsolutePath) {
-      console.log(chalk.gray(messages.info.template.clone));
+      this.cliOptions.verbose && console.log(chalk.yellow(messages.info.template.clone));
  
       return new Promise((resolve, reject) => {
         if (templates[projectTemplate]) {
           simpleGit().clone(templates[projectTemplate], projectAbsolutePath).then((error, success) => {
             if (error) {
-              console.log(chalk.red(error));
+              this.cliOptions.verbose && console.log(chalk.red(error));
               reject(messages.error.template.clone);
             } else {
               resolve(messages.done.template.cloned);

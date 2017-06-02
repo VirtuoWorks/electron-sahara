@@ -18,65 +18,59 @@ exports = module.exports = (function(){
           var platform = args.shift() || process.platform;
 
           if (this[`${platform}Prepare`]) {
-            var platformsAbsolutePath = this.getAbsolutePathTo(`platforms`);
-            if (platformsAbsolutePath) {
+            this.getAbsolutePathTo(`platforms`).then((platformsAbsolutePath) => {
               this.createDirectory(platformsAbsolutePath).then((success) => {
                 if (success) {
-                  console.log(chalk.green(success));
+                  this.cliOptions.verbose && console.log(chalk.green(success));
                 };
                 this[`${platform}Prepare`]().then((success) => {
                   if (success) {
-                    console.log(chalk.green(success));
+                    this.cliOptions.verbose && console.log(chalk.green(success));
                   };
                   resolve(messages.done.command.prepare);
                 }, (error) => {
                   if (error) {
-                    console.log(chalk.red(error));
+                    this.cliOptions.verbose && console.log(chalk.red(error));
                   };
                   reject(messages.error.command.prepare);
                 });
               }, (error) => {
                 if (error) {
-                  console.log(chalk.red(error));
+                  this.cliOptions.verbose && console.log(chalk.red(error));
                 };
                 reject(messages.error.command.prepare);
               });
-            } else {
-              console.log(chalk.red(messages.error.directory.resolve.replace(/%s/g, platformsAbsolutePath)));
+            }, (error) => {
+              this.cliOptions.verbose && console.log(chalk.red(error));
               reject(messages.error.command.prepare);
-            }
+            });
           } else {
-            console.log(chalk.red(messages.error.platform.invalid.replace(/%s/g, platform)));
+            this.cliOptions.verbose && console.log(chalk.red(messages.error.platform.invalid.replace(/%s/g, platform)));
             reject(messages.error.command.prepare);
           }
         } else {
-          console.log(chalk.red(messages.error.argument.missing));
+          this.cliOptions.verbose && console.log(chalk.red(messages.error.argument.missing));
           reject(messages.error.command.prepare);
         }
       });
     };
 
     this.preparePlatform = function(platform) {
-
-      console.log(chalk.grey(messages.info.platform.prepare.replace(/%s/g, `${platform}`)));
+      this.cliOptions.verbose && console.log(chalk.yellow(messages.info.platform.prepare.replace(/%s/g, `${platform}`)));
 
       return new Promise((resolve, reject) => {
         if (platform && this[`${platform}Prepare`]) {
-
-          var platformAbsolutePath = this.getAbsolutePathTo(`platforms/${platform}`);
-
-          if (platformAbsolutePath) {
+          
+          this.getAbsolutePathTo(`platforms/${platform}`).then((platformAbsolutePath) => {
             this.deleteDirectory(platformAbsolutePath).then((success) => {
               this.createDirectory(platformAbsolutePath).then((success) => {
-                console.log(chalk.green(success));
-                var appAbsolutePath = this.getAbsolutePathTo(`app`);
-                var platformAppAbsolutePath = this.getAbsolutePathTo(`platforms/${platform}/platform_app`);
-                if (appAbsolutePath) {
-                  if (platformAppAbsolutePath) {
+                this.cliOptions.verbose && console.log(chalk.green(success));
+                this.getAbsolutePathTo(`platforms/${platform}/platform_app`).then((appAbsolutePath) => {
+                  this.getAbsolutePathTo(`platforms/${platform}/platform_app`).then((platformAppAbsolutePath) => {
                     var spinner = ora({
-                      text: chalk.gray(messages.info.files.copy),
+                      text: chalk.yellow(messages.info.files.copy),
                       spinner: 'pong',
-                      color: 'grey'
+                      color: 'yellow'
                     });
 
                     spinner.start();
@@ -85,7 +79,7 @@ exports = module.exports = (function(){
                       if (error) {
                         spinner.fail(chalk.red(messages.info.files.copy));
                         if (error) {
-                          console.log(chalk.red(error));
+                          this.cliOptions.verbose && console.log(chalk.red(error));
                         };
                         reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
                       } else {
@@ -93,30 +87,30 @@ exports = module.exports = (function(){
                         resolve(messages.done.platform.prepare.replace(/%s/g, `${platform}`));
                       };
                     });
-                  } else {
-                    console.log(chalk.red(messages.error.directory.resolve.replace(/%s/g, appAbsolutePath)));
+                  }, (error) => {
+                    this.cliOptions.verbose && console.log(chalk.red(error));
                     reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
-                  };
-                } else {
-                  console.log(chalk.red(messages.error.directory.resolve.replace(/%s/g, appAbsolutePath)));
+                  });
+                }, (error) => {
+                  this.cliOptions.verbose && console.log(chalk.red(error));
                   reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
-                }
+                });
               }, (error) => {
                 if (error) {
-                  console.log(chalk.red(error));
+                  this.cliOptions.verbose && console.log(chalk.red(error));
                 };
                 reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
               });
             }, (error) => {
               if (error) {
-                console.log(chalk.red(error));
+                this.cliOptions.verbose && console.log(chalk.red(error));
               };
               reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
             });
-          } else {
-            console.log(chalk.red(messages.error.directory.resolve.replace(/%s/g, platformAbsolutePath)));
+          }, (error) => {
+            this.cliOptions.verbose && console.log(chalk.red(error));
             reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
-          };
+          });
         } else {
           reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
         };

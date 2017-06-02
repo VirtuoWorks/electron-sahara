@@ -1,0 +1,6 @@
+{
+  "-v": "version",
+  "--version": "version",
+  "-d": "verbose",
+  "--verbose": "verbose"
+}

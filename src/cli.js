@@ -3,6 +3,7 @@
 const fs = require('fs');
 const chalk = require('chalk');
 
+const options = require('./sahara/sahara/options');
 const messages = require('./sahara/sahara/messages');
 
 exports = module.exports = (function(argv){
@@ -14,29 +15,28 @@ exports = module.exports = (function(argv){
       this.argv;
       this.command;
       this.apiCall;
+      this.options = {};
     };
 
     Cli.prototype.exec = function(argv) {
-      console.log(chalk.gray(messages.info.exec));
+      this.options.verbose && console.log(chalk.yellow(messages.info.exec));
       return new Promise((resolve, reject) => {
-        if (Array.isArray(argv) && argv.length > 2) {
-
-          this.argv = argv || process.argv;
-
+        this.argv = this.extractCliOptionsFrom(argv);
+        if (Array.isArray(this.argv) && this.argv.length > 2) {
           if (this[this.argv[2]]) {
             this.command = this.argv[2];
             this.args = this.argv.slice(3,this.argv.length) || [];
             if (this.args.length) {
                 if (fs.existsSync(`${__dirname}/sahara/${this.command}.js`)) {
-                  console.log(chalk.gray(messages.info.command[this.command]));
-                  require(`./sahara/${this.command}.js`).exec(this.args, this.apiCall).then((success) => {
+                  this.options.verbose && console.log(chalk.yellow(messages.info.command[this.command]));
+                  require(`./sahara/${this.command}.js`).setCliOptions(this.options).exec(this.args, this.apiCall).then((success) => {
                     resolve(success);
                   }, (error) => {
                     reject(error);
                   });
                 } else {
                   console.log(chalk.red(messages.error.command.notFound));
-                  require('./sahara/help').exec(this.args).then((success) => {
+                  require('./sahara/help').setCliOptions(this.options).exec(this.args).then((success) => {
                     resolve(success);
                   }, (error) => {
                     reject(error);
@@ -44,7 +44,7 @@ exports = module.exports = (function(argv){
                 }
             } else {
               console.log(chalk.red(messages.error.argument.missing));
-              require('./sahara/help').exec([this.command]).then((success) => {
+              require('./sahara/help').setCliOptions(this.options).exec([this.command]).then((success) => {
                 resolve(success);
               }, (error) => {
                 reject(error);
@@ -57,7 +57,7 @@ exports = module.exports = (function(argv){
               console.log(chalk.red(messages.error.command.notFound));
               this.args = [];
             }
-            require('./sahara/help').exec(this.args).then((success) => {
+            require('./sahara/help').setCliOptions(this.options).exec(this.args).then((success) => {
               resolve(success);
             }, (error) => {
               reject(error);
@@ -65,13 +65,30 @@ exports = module.exports = (function(argv){
           };
         } else {
           this.args = [];
-          require('./sahara/help').exec(this.args).then((success) => {
+          require('./sahara/help').setCliOptions(this.options).exec(this.args).then((success) => {
             resolve(success);
           }, (error) => {
             reject(error);
           });
         };
       });
+    };
+
+    Cli.prototype.extractCliOptionsFrom = function(argv){
+      if (Array.isArray(argv)) {
+        var filtered = argv.filter((arg) => {
+          if(options[arg]) {
+            this.options[options[arg]] = true;
+            return false;
+          } else {
+            return true;
+          }
+        });
+        this.options.verbose && console.log(chalk.yellow(messages.info.sahara.verboseEnabled));
+        return filtered;
+      } else {
+        return argv;
+      }
     };
 
     // sahara create <command>
@@ -214,11 +231,11 @@ exports = module.exports = (function(argv){
       sahara.exec(argv).then((success) => {
         if (success) {
           console.log(success);
-        }
+        };
       }, (error) => {
         if (error) {
           console.log(error);
-        }
+        };
       });
     } else {
       sahara.apiCall = true;

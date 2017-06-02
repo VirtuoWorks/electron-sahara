@@ -21,53 +21,51 @@ exports = module.exports = (function(){
           if (this[`${platform}Compile`]) {
             this.requireElectronPackager().then((success) => {
               if (success) {
-                console.log(chalk.green(success));
+                this.cliOptions.verbose && console.log(chalk.green(success));
               }
               this[`${platform}Compile`]().then((success) => {
                 if (success) {
-                  console.log(chalk.green(success));
+                  this.cliOptions.verbose && console.log(chalk.green(success));
                 };
                 resolve(messages.done.command.compile);
               }, (error) => {
                 if (error) {
-                  console.log(chalk.red(error));
+                  this.cliOptions.verbose && console.log(chalk.red(error));
                 };
                 reject(messages.error.command.compile);
               });
             }, (error) => {
               if (error) {
-                console.log(chalk.red(error));
+                this.cliOptions.verbose && console.log(chalk.red(error));
               };
               reject(messages.error.command.compile);
             });
           } else {
-            console.log(chalk.red(messages.error.action.invalid));
+            this.cliOptions.verbose && console.log(chalk.red(messages.error.action.invalid));
             reject(messages.error.command.compile);
           }
         } else {
-          console.log(chalk.red(messages.error.argument.missing));
+          this.cliOptions.verbose && console.log(chalk.red(messages.error.argument.missing));
           reject(messages.error.command.compile);
         }
       });
     };
 
     this.requireElectronPackager = function() {
-
-      console.log(chalk.grey(messages.info.packager.loading));
+      this.cliOptions.verbose && console.log(chalk.yellow(messages.info.packager.loading));
 
       return new Promise((resolve, reject) => {
         try {
-          var electronPackagerPath = this.getAbsolutePathTo(`node_modules/electron-packager`);
-          if (electronPackagerPath) {
+          this.getAbsolutePathTo(`node_modules/electron-packager`).then((electronPackagerPath) => {
             try {
               this.electronPackager = require(electronPackagerPath);
               resolve(messages.done.packager.loaded);
             } catch (error) {
               reject(messages.error.packager.require);
             };
-          } else {
+          }, (error) => {
             reject(messages.error.packager.resolve);
-          };
+          });
         } catch (error) {
           reject(messages.error.packager.resolve);
         };
@@ -77,52 +75,45 @@ exports = module.exports = (function(){
     this.compilePlatform = function(platform, options) {
       var options = options || {};
       return new Promise((resolve, reject) => {
-        var sourceDirectory = this.getAbsolutePathTo(`platforms/${platform}/platform_app`);
+        this.getAbsolutePathTo(`platforms/${platform}/platform_app`).then((sourceDirectory) => {
+          this.getAbsolutePathTo(`platforms/${platform}/build`).then((outputDirectory) => {
+            // Target platform
+            options.platform = `${platform}`;
+            // Source directory.
+            options.dir = sourceDirectory;
+            // Target directory
+            options.out = outputDirectory;
 
-        if (!sourceDirectory) {
-          console.log(chalk.red(messages.error.directory.resolve.replace(/%s/g, sourceDirectory)));
-          reject(messages.error.packager.build.replace(/%s/g, `${platform}`));
-          return;
-        };
+            var spinner = ora({
+              text: chalk.yellow(messages.info.packager.building.replace(/%s/g, `${platform}`)),
+              spinner: 'pong',
+              color: 'yellow'
+            });
 
-        var outputDirectory = this.getAbsolutePathTo(`platforms/${platform}/build`);
+            spinner.start();
 
-        if (!outputDirectory) {
-          console.log(chalk.red(messages.error.directory.resolve.replace(/%s/g, sourceDirectory)));
-          reject(messages.error.packager.build.replace(/%s/g, `${platform}`));
-          return;
-        };
-
-        // Target platform
-        options.platform = `${platform}`;
-        // Source directory.
-        options.dir = sourceDirectory;
-        // Target directory
-        options.out = outputDirectory;
-
-        var spinner = ora({
-          text: chalk.gray(messages.info.packager.building.replace(/%s/g, `${platform}`)),
-          spinner: 'pong',
-          color: 'grey'
-        });
-
-        spinner.start();
-
-        this.electronPackager(options, (error, success) => {
-          if (error) {
-            spinner.fail(chalk.red(messages.info.packager.building.replace(/%s/g, `${platform}`)));
-            if (error.message) {
-              console.log(chalk.red(error.message));
-            } else {
-               console.log(chalk.red(error));
-            }
+            this.electronPackager(options, (error, success) => {
+              if (error) {
+                spinner.fail(chalk.red(messages.info.packager.building.replace(/%s/g, `${platform}`)));
+                if (error.message) {
+                  this.cliOptions.verbose && console.log(chalk.red(error.message));
+                } else {
+                  this.cliOptions.verbose && console.log(chalk.red(error));
+                }
+                reject(messages.error.packager.build.replace(/%s/g, `${platform}`));
+              } else {
+                spinner.succeed(chalk.green(messages.info.packager.building.replace(/%s/g, `${platform}`)));
+                resolve(messages.done.packager.built.replace(/%s/g, `${platform}`));
+              };
+            });
+          }, (error) => {
+            this.cliOptions.verbose && console.log(chalk.red(error));
             reject(messages.error.packager.build.replace(/%s/g, `${platform}`));
-          } else {
-            spinner.succeed(chalk.green(messages.info.packager.building.replace(/%s/g, `${platform}`)));
-            resolve(messages.done.packager.built.replace(/%s/g, `${platform}`));
-          };
+          });
+        }, (error) => {
+          this.cliOptions.verbose && console.log(chalk.red(error));
+          reject(messages.error.packager.build.replace(/%s/g, `${platform}`));
         });
-
       });
     };
 
