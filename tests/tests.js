@@ -145,7 +145,17 @@ describe('Sahara API', function() {
     it('Should not be able to create a project without a directory name', function(done) {
       this.timeout(0);
       sahara.cli().create([]).then(function(success) {
-        done('Project created in empty folder.');
+        require('fs').readFile('./src/sahara/help/create', (error, data) => {
+          if (error) {
+            done(error);
+          } else {
+            if (data.toString() === success) {
+              done();
+            } else {
+              done('Using "create" method without a directory name displays wrong help message.');
+            }
+          };
+        });
       }, function(error) {
         if (error === messages.error.command.create) {
           done();
