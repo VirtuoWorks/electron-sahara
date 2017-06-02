@@ -5,7 +5,7 @@ const chalk = require('chalk');
 const ncp = require('ncp').ncp;
 
 const command = require('./sahara');
-const messages = require('../messages/messages');
+const messages = require('./sahara/messages');
 
 exports = module.exports = (function(){
 

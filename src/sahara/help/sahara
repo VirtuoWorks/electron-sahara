@@ -1,0 +1,38 @@
+Synopsis
+
+    sahara command [options]
+
+Global Commands
+    create ............................. Create a project
+    help ............................... Get help for a command
+
+Project Commands
+    requirements ....................... Checks and print out all the requirements
+                                            for platforms specified
+
+    platform ........................... Manage project platforms
+
+    prepare ............................ Copy files into platform(s) for building
+    compile ............................ Build platform(s)
+    clean .............................. Cleanup project from build artifacts
+
+    run ................................ Run project binary
+                                            (including prepare && compile)
+    start .............................. Run local project with electron
+                                            (including prepare)
+
+Learn more about command options using 'sahara help <command>'
+
+Aliases
+    build -> sahara prepare && sahara compile
+
+Options
+    -v, --version ...................... prints out this utility's version
+    -d, --verbose ...................... debug mode produces verbose log output for all activity,
+
+Examples
+    sahara create myApp vanilla
+    sahara platform add win32
+    sahara requirements win32
+    sahara build win32 --verbose
+    sahara run win32

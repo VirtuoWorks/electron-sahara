@@ -5,7 +5,7 @@ const chalk = require('chalk');
 const prepare = require('./prepare');
 const compile = require('./compile');
 const command = require('./sahara');
-const messages = require('../messages/messages');
+const messages = require('./sahara/messages');
 
 exports = module.exports = (function(){
 

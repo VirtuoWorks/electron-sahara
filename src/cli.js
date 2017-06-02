@@ -3,7 +3,7 @@
 const fs = require('fs');
 const chalk = require('chalk');
 
-const messages = require('./messages/messages');
+const messages = require('./sahara/sahara/messages');
 
 exports = module.exports = (function(argv){
 
@@ -17,9 +17,9 @@ exports = module.exports = (function(argv){
     };
 
     Cli.prototype.exec = function(argv) {
+      console.log(chalk.gray(messages.info.exec));
       return new Promise((resolve, reject) => {
         if (Array.isArray(argv) && argv.length > 2) {
-          console.log(chalk.gray(messages.info.exec));
 
           this.argv = argv || process.argv;
 
@@ -35,7 +35,8 @@ exports = module.exports = (function(argv){
                     reject(error);
                   });
                 } else {
-                  require('./sahara/help').exec(argv, this.apiCall).then((success) => {
+                  console.log(chalk.red(messages.error.command.notFound));
+                  require('./sahara/help').exec(this.args).then((success) => {
                     resolve(success);
                   }, (error) => {
                     reject(error);
@@ -43,22 +44,28 @@ exports = module.exports = (function(argv){
                 }
             } else {
               console.log(chalk.red(messages.error.argument.missing));
-              require('./sahara/help').exec(this.args, this.apiCall).then((success) => {
+              require('./sahara/help').exec([this.command]).then((success) => {
                 resolve(success);
               }, (error) => {
                 reject(error);
               });
             }
           } else {
-            console.log(chalk.red(messages.error.command.notFound));
-            require('./sahara/help').exec(argv, this.apiCall).then((success) => {
+            if (this.argv[2]) {
+              this.args = this.argv.slice(2,this.argv.length) || [];
+            } else {
+              console.log(chalk.red(messages.error.command.notFound));
+              this.args = [];
+            }
+            require('./sahara/help').exec(this.args).then((success) => {
               resolve(success);
             }, (error) => {
               reject(error);
             });
           };
         } else {
-          require('./sahara/help').exec(argv, this.apiCall).then((success) => {
+          this.args = [];
+          require('./sahara/help').exec(this.args).then((success) => {
             resolve(success);
           }, (error) => {
             reject(error);
@@ -206,11 +213,11 @@ exports = module.exports = (function(argv){
     if (Array.isArray(argv) && argv.length) {
       sahara.exec(argv).then((success) => {
         if (success) {
-          console.log(chalk.green(success));
+          console.log(success);
         }
       }, (error) => {
         if (error) {
-          console.log(chalk.red(error));
+          console.log(error);
         }
       });
     } else {

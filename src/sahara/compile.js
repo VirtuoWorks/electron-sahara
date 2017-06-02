@@ -4,7 +4,7 @@ const ora = require('ora');
 const chalk = require('chalk');
 
 const command = require('./sahara');
-const messages = require('../messages/messages');
+const messages = require('./sahara/messages');
 
 exports = module.exports = (function(){
 

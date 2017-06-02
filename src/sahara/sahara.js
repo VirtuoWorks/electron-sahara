@@ -8,7 +8,7 @@ const del = require('del');
 const chalk = require('chalk');
 const prompt = require('prompt');
 
-const messages = require('../messages/messages');
+const messages = require('./sahara/messages');
 
 exports = module.exports = (function(){
   
@@ -26,7 +26,7 @@ exports = module.exports = (function(){
 
       return this;
     };
-    
+
     Sahara.prototype.exec = function(args, apiCall) {
       this.apiCall = apiCall || false;
       return new Promise((resolve, reject) => {
@@ -35,8 +35,8 @@ exports = module.exports = (function(){
     };
 
     Sahara.prototype.getAbsolutePathTo = function (file) {
-      var basePath = `${this.workingDirectory}${path.sep}`;
-      var normalizedPath = path.normalize(`${basePath}${file}`);
+      var basePath = this.workingDirectory + path.sep;
+      var normalizedPath = path.normalize(basePath + file);
       if (normalizedPath) {
         return path.resolve(normalizedPath);
       };

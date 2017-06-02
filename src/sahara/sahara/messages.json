@@ -83,6 +83,9 @@
     "platform": {
       "prepare": "[ERROR] Could not prepare [%s] platform.",
       "invalid": "[ERROR] Platform [%s] is invalid."
+    },
+    "help": {
+      "missingSaharaHelpFile": "[ERROR] Sahara main help file missing or inaccessible."
     }
   },
   "done": {

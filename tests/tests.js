@@ -71,7 +71,7 @@ describe('Sahara', function() {
 describe('Sahara messages', function() {
   it('Should be required', function() {
     assert.doesNotThrow(function() {
-      var messages = require('../src/messages/messages');
+      var messages = require('../src/sahara/sahara/messages');
     });
   });
 });
@@ -80,10 +80,11 @@ describe('Sahara API methods', function() {
   var sahara, messages;
   before(function() {
     sahara = require('../index.js');
-    messages = require('../src/messages/messages');
+    messages = require('../src/sahara/sahara/messages');
   });
   describe('"create" method', function() {
-    /*it('Should be able to create a new "Vanilla" project in "TestApp" folder', function(done) {
+    /*
+    it('Should be able to create a new "Vanilla" project in "TestApp" folder', function(done) {
       this.timeout(0);
       sahara.cli().create(['TestApp']).then((success) {
         if (success === messages.done.command.create) {
@@ -94,7 +95,8 @@ describe('Sahara API methods', function() {
       }, (error) {
         done('Unable to create new "Vanilla" project');
       });
-    });*/
+    });
+    */
     it('Should not be able to create a project with an invalid directory name', function(done) {
       this.timeout(0);
       var invalidDirName = (process.platform === 'mac') ? ':' : '/';
@@ -108,15 +110,16 @@ describe('Sahara API methods', function() {
         }
       });
     });
-/*
+    /*
     it('Should not be able to create a project with missing argument', function(done) {
       this.timeout(0);
       sahara.cli().create([]).then((success) {
       }, (error) {
       });
-    });*/
+    });
+    */
   });
-/*
+  /*
   describe('"help" method', function() {
     it('Should display programm help', function(done) {
       

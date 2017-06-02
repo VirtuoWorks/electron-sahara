@@ -7,8 +7,8 @@ const chalk = require('chalk');
 const simpleGit = require('simple-git');
 
 const command = require('./sahara');
-const messages = require('../messages/messages');
-const templates = require('../templates/templates');
+const messages = require('./sahara/messages');
+const templates = require('./create/templates');
 
 exports = module.exports = (function(){
 
