@@ -103,8 +103,14 @@ exports = module.exports = (function() {
             return reject(error);
           } else {
             if (stderr) {
-              spinner.fail(chalk.red(messages.info.dependencies.install));
-              return reject(stderr);
+              // temporary fix for node 8
+              if (stderr === 'npm notice created a lockfile as package-lock.json. You should commit this file.') {
+                spinner.succeed(chalk.green(messages.info.dependencies.install));
+                return resolve(messages.done.dependencies.install);
+              } else {
+                 spinner.fail(chalk.red(messages.info.dependencies.install));
+                return reject(stderr);
+              }
             } else {
               spinner.succeed(chalk.green(messages.info.dependencies.install));
               return resolve(messages.done.dependencies.install);

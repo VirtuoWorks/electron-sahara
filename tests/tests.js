@@ -122,9 +122,9 @@ describe('Sahara API', function() {
         done();
       }, function(error) {
         if (error === messages.error.command.create) {
-          done('Project was not created, but Sahara reported an error.');
+          done(new Error('Project was not created, but Sahara reported an error.'));
         } else {
-          done('Project was not created. Sahara crashed.');
+          done(new Error('Project was not created. Sahara crashed.'));
         }
       });
     });
@@ -136,9 +136,9 @@ describe('Sahara API', function() {
         done();
       }, function(error) {
         if (error === messages.error.command.create) {
-          done('Project was not created, but Sahara reported an error.');
+          done(new Error('Project was not created, but Sahara reported an error.'));
         } else {
-          done('Project was not created. Sahara crashed.');
+          done(new Error('Project was not created. Sahara crashed.'));
         }
       });
     });
@@ -152,7 +152,7 @@ describe('Sahara API', function() {
             if (data.toString() === success) {
               done();
             } else {
-              done('Using "create" method without a directory name displays wrong help message.');
+              done(new Error('Using "create" method without a directory name displays wrong help message.'));
             }
           };
         });
@@ -160,7 +160,7 @@ describe('Sahara API', function() {
         if (error === messages.error.command.create) {
           done();
         } else {
-          done('Project was not created, but wrong message was returned.');
+          done(new Error('Project was not created, but wrong message was returned.'));
         }
       });
     });
@@ -168,12 +168,12 @@ describe('Sahara API', function() {
       this.timeout(0);
       let invalidDirName = (process.platform === 'mac') ? ':' : '/';
       sahara.cli().create([invalidDirName]).then(function(success) {
-        done('Project created in invalid folder.');
+        done(new Error('Project created in invalid folder.'));
       }, function(error) {
         if (error === messages.error.command.create) {
           done();
         } else {
-          done('Project was not created, but wrong message was returned.');
+          done(new Error('Project was not created, but wrong message was returned.'));
         }
       });
     });
@@ -182,12 +182,12 @@ describe('Sahara API', function() {
       let dir = 'MyApp';
       let invalidTemplate = 'unknown';
       sahara.cli().create([dir, invalidTemplate]).then(function(success) {
-        done('Project created with unknown template.');
+        done(new Error('Project created with unknown template.'));
       }, function(error) {
         if (error === messages.error.command.create) {
           done();
         } else {
-          done('Project was not created, but wrong message was returned.');
+          done(new Error('Project was not created, but wrong message was returned.'));
         }
       });
     });
