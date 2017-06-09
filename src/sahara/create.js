@@ -23,13 +23,18 @@ exports = module.exports = (function() {
             let projectTemplate = args.shift() || 'vanilla';
 
             if (projectDirectoryName) {
-              this.getAbsolutePathTo(projectDirectoryName).then((projectAbsolutePath) => {
-                this.deleteDirectory(projectAbsolutePath).then((success) => {
-                  this.createDirectory(projectAbsolutePath).then((success) => {
+              this.getAbsolutePathTo(projectDirectoryName)
+              .then((projectAbsolutePath) => {
+                this.deleteDirectory(projectAbsolutePath)
+                .then((success) => {
+                  this.createDirectory(projectAbsolutePath)
+                  .then((success) => {
                     this.cliOptions.verbose && console.log(chalk.green(success));
-                    this.cloneProjectTemplate(projectTemplate, projectAbsolutePath).then((success) => {
+                    this.cloneProjectTemplate(projectTemplate, projectAbsolutePath)
+                    .then((success) => {
                       this.cliOptions.verbose && console.log(chalk.green(success));
-                      this.installProjectDependencies(projectAbsolutePath).then((success) => {
+                      this.installProjectDependencies(projectAbsolutePath)
+                      .then((success) => {
                         if (success) {
                           this.cliOptions.verbose && console.log(chalk.green(success));
                         };
@@ -38,7 +43,8 @@ exports = module.exports = (function() {
                         if (error) {
                           console.log(chalk.red(error));
                         }
-                        this.deleteDirectory(projectAbsolutePath, true).then((success) => {
+                        this.deleteDirectory(projectAbsolutePath, true)
+                        .then((success) => {
                           return reject(messages.error.command.create);
                         }, (error) => {
                           return reject(messages.error.command.create);
@@ -48,7 +54,8 @@ exports = module.exports = (function() {
                       if (error) {
                         console.log(chalk.red(error));
                       };
-                      this.deleteDirectory(projectAbsolutePath, true).then((success) => {
+                      this.deleteDirectory(projectAbsolutePath, true)
+                      .then((success) => {
                         return reject(messages.error.command.create);
                       }, (error) => {
                         return reject(messages.error.command.create);
@@ -103,14 +110,8 @@ exports = module.exports = (function() {
             return reject(error);
           } else {
             if (stderr) {
-              // temporary fix for node 8
-              if (stderr === 'npm notice created a lockfile as package-lock.json. You should commit this file.') {
-                spinner.succeed(chalk.green(messages.info.dependencies.install));
-                return resolve(messages.done.dependencies.install);
-              } else {
-                 spinner.fail(chalk.red(messages.info.dependencies.install));
-                return reject(stderr);
-              }
+              spinner.fail(chalk.red(messages.info.dependencies.install));
+              return reject(stderr);
             } else {
               spinner.succeed(chalk.green(messages.info.dependencies.install));
               return resolve(messages.done.dependencies.install);
@@ -125,7 +126,8 @@ exports = module.exports = (function() {
 
       return new Promise((resolve, reject) => {
         if (templates[projectTemplate]) {
-          simpleGit().clone(templates[projectTemplate], projectAbsolutePath).then((error, success) => {
+          simpleGit().clone(templates[projectTemplate], projectAbsolutePath)
+          .then((error, success) => {
             if (error) {
               console.log(chalk.red(error));
               return reject(messages.error.template.clone);

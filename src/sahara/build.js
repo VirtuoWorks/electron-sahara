@@ -15,11 +15,13 @@ exports = module.exports = (function() {
           if (!!this.settings) {
             let platform = args.shift() || process.platform;
 
-            prepare.exec([platform]).then((success) => {
+            prepare.exec([platform])
+            .then((success) => {
               if (success) {
                 this.cliOptions.verbose && console.log(chalk.green(success));
               };
-              compile.exec([platform]).then((success) => {
+              compile.exec([platform])
+              .then((success) => {
                 if (success) {
                   this.cliOptions.verbose && console.log(chalk.green(success));
                 };

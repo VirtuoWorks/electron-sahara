@@ -16,12 +16,15 @@ exports = module.exports = (function() {
             let platform = args.shift() || process.platform;
 
             if (this[`${platform}Prepare`]) {
-              this.getAbsolutePathTo(`platforms`).then((platformsAbsolutePath) => {
-                this.createDirectory(platformsAbsolutePath).then((success) => {
+              this.getAbsolutePathTo(`platforms`)
+              .then((platformsAbsolutePath) => {
+                this.createDirectory(platformsAbsolutePath)
+                .then((success) => {
                   if (success) {
                     this.cliOptions.verbose && console.log(chalk.green(success));
                   };
-                  this[`${platform}Prepare`]().then((success) => {
+                  this[`${platform}Prepare`]()
+                  .then((success) => {
                     if (success) {
                       this.cliOptions.verbose && console.log(chalk.green(success));
                     };
@@ -62,12 +65,17 @@ exports = module.exports = (function() {
 
       return new Promise((resolve, reject) => {
         if (platform && this[`${platform}Prepare`]) {
-          this.getAbsolutePathTo(`platforms/${platform}`).then((platformAbsolutePath) => {
-            this.deleteDirectory(platformAbsolutePath).then((success) => {
-              this.createDirectory(platformAbsolutePath).then((success) => {
+          this.getAbsolutePathTo(`platforms/${platform}`)
+          .then((platformAbsolutePath) => {
+            this.deleteDirectory(platformAbsolutePath)
+            .then((success) => {
+              this.createDirectory(platformAbsolutePath)
+              .then((success) => {
                 this.cliOptions.verbose && console.log(chalk.green(success));
-                this.getAbsolutePathTo(`platforms/${platform}/platform_app`).then((appAbsolutePath) => {
-                  this.getAbsolutePathTo(`platforms/${platform}/platform_app`).then((platformAppAbsolutePath) => {
+                this.getAbsolutePathTo(`platforms/${platform}/platform_app`)
+                .then((appAbsolutePath) => {
+                  this.getAbsolutePathTo(`platforms/${platform}/platform_app`)
+                  .then((platformAppAbsolutePath) => {
                     let spinner = ora({
                       text: chalk.yellow(messages.info.files.copy),
                       spinner: 'pong',
@@ -120,7 +128,8 @@ exports = module.exports = (function() {
 
     this.win32Prepare = function(platform) {
       return new Promise((resolve, reject) => {
-        this.preparePlatform('win32').then((success) => {
+        this.preparePlatform('win32')
+        .then((success) => {
           return resolve(success);
         }, (error) => {
           return reject(error);
@@ -130,7 +139,8 @@ exports = module.exports = (function() {
 
     this.darwinPrepare = function() {
       return new Promise((resolve, reject) => {
-        this.preparePlatform('darwin').then((success) => {
+        this.preparePlatform('darwin')
+        .then((success) => {
           return resolve(success);
         }, (error) => {
           return reject(error);
@@ -140,7 +150,8 @@ exports = module.exports = (function() {
 
     this.linuxPrepare = function() {
       return new Promise((resolve, reject) => {
-        this.preparePlatform('linux').then((success) => {
+        this.preparePlatform('linux')
+        .then((success) => {
           return resolve(success);
         }, (error) => {
           return reject(error);

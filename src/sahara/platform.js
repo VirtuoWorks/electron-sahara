@@ -16,7 +16,8 @@ exports = module.exports = (function() {
           let platform = args.shift() || process.platform;
 
           if (this[`${action}Platform`]) {
-            this[`${action}Platform`](platform).then((success) => {
+            this[`${action}Platform`](platform)
+            .then((success) => {
               if (success) {
                 this.cliOptions.verbose && console.log(chalk.green(success));
               };

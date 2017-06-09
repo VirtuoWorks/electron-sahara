@@ -10,7 +10,7 @@ module.exports = {
     "rules": {
         "semi": 0,
         "require-jsdoc": "off",
-        "comma-dangle": ["error", "never"]
+        "comma-dangle": ["error", "never"],
+        "max-len": ["error", { "ignoreStrings": true }]
     }
-
 };

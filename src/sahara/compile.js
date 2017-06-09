@@ -17,11 +17,13 @@ exports = module.exports = (function() {
             let platform = args.shift() || process.platform;
 
             if (this[`${platform}Compile`]) {
-              this.requireElectronPackager().then((success) => {
+              this.requireElectronPackager()
+              .then((success) => {
                 if (success) {
                   this.cliOptions.verbose && console.log(chalk.green(success));
                 }
-                this[`${platform}Compile`]().then((success) => {
+                this[`${platform}Compile`]()
+                .then((success) => {
                   if (success) {
                     this.cliOptions.verbose && console.log(chalk.green(success));
                   };
@@ -58,7 +60,8 @@ exports = module.exports = (function() {
 
       return new Promise((resolve, reject) => {
         try {
-          this.getAbsolutePathTo(`node_modules/electron-packager`).then((electronPackagerPath) => {
+          this.getAbsolutePathTo(`node_modules/electron-packager`)
+          .then((electronPackagerPath) => {
             try {
               this.electronPackager = require(electronPackagerPath);
               return resolve(messages.done.packager.loaded);
@@ -77,8 +80,10 @@ exports = module.exports = (function() {
     this.compilePlatform = function(platform, options) {
       options = options || {};
       return new Promise((resolve, reject) => {
-        this.getAbsolutePathTo(`platforms/${platform}/platform_app`).then((sourceDirectory) => {
-          this.getAbsolutePathTo(`platforms/${platform}/build`).then((outputDirectory) => {
+        this.getAbsolutePathTo(`platforms/${platform}/platform_app`)
+        .then((sourceDirectory) => {
+          this.getAbsolutePathTo(`platforms/${platform}/build`)
+          .then((outputDirectory) => {
             // Target platform
             options.platform = `${platform}`;
             // Source directory.
@@ -129,7 +134,8 @@ exports = module.exports = (function() {
           overwrite: true
         };
 
-        this.compilePlatform('win32', options).then((success) => {
+        this.compilePlatform('win32', options)
+        .then((success) => {
           return resolve(success);
         }, (error) => {
           return reject(error);
@@ -147,7 +153,8 @@ exports = module.exports = (function() {
           overwrite: true
         };
 
-        this.compilePlatform('darwin', options).then((success) => {
+        this.compilePlatform('darwin', options)
+        .then((success) => {
           return resolve(success);
         }, (error) => {
           return reject(error);
@@ -165,7 +172,8 @@ exports = module.exports = (function() {
           overwrite: true
         };
 
-        this.compilePlatform('linux', options).then((success) => {
+        this.compilePlatform('linux', options)
+        .then((success) => {
           return resolve(success);
         }, (error) => {
           return reject(error);
