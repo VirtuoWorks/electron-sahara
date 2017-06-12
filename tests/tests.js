@@ -19,6 +19,7 @@ describe('Sahara', function() {
     });
   });
   it('Should be executed as a CLI', function(done) {
+    this.timeout(0);
     childProcess.exec('node ./bin/sahara', function(error, stdout, stderr) {
       if (error) {
         done(error);
