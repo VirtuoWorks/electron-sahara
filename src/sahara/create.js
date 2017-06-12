@@ -110,8 +110,14 @@ exports = module.exports = (function() {
             return reject(error);
           } else {
             if (stderr) {
-              spinner.fail(chalk.red(messages.info.dependencies.install));
-              return reject(stderr);
+              // To prevent failure while using npm >= 5.0.0.
+              if (stderr.indexOf("npm notice created a lockfile as package-lock.json. You should commit this file.") !== -1) {
+                spinner.succeed(chalk.green(messages.info.dependencies.install));
+                return resolve(messages.done.dependencies.install);
+              } else {
+                spinner.fail(chalk.red(messages.info.dependencies.install));
+                return reject(stderr);
+              }
             } else {
               spinner.succeed(chalk.green(messages.info.dependencies.install));
               return resolve(messages.done.dependencies.install);
