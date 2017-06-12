@@ -53,4 +53,4 @@ exports = module.exports = (function() {
   Build.prototype = command;
 
   return new Build();
-})();
+}());

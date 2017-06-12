@@ -111,7 +111,7 @@ exports = module.exports = (function() {
           } else {
             if (stderr) {
               // To prevent failure while using npm >= 5.0.0.
-              if (stderr.indexOf("npm notice created a lockfile as package-lock.json. You should commit this file.") !== -1) {
+              if (stderr.indexOf('npm notice created a lockfile as package-lock.json. You should commit this file.') !== -1) {
                 spinner.succeed(chalk.green(messages.info.dependencies.install));
                 return resolve(messages.done.dependencies.install);
               } else {
@@ -151,4 +151,4 @@ exports = module.exports = (function() {
   Create.prototype = command;
 
   return new Create();
-})();
+}());

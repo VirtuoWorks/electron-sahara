@@ -97,7 +97,7 @@ describe('Sahara', function() {
     });
     it('Should provide help for an unknown command.', function(done) {
       this.timeout(0);
-      childProcess.exec(`node ./bin/sahara help unknown`, function(error, stdout, stderr) {
+      childProcess.exec('node ./bin/sahara help unknown', function(error, stdout, stderr) {
         if (error) {
           done(error);
         } else {
@@ -165,7 +165,7 @@ describe('Sahara API', function() {
             } else {
               done(new Error('Using "create" method without a directory name displays wrong help message.'));
             }
-          };
+          }
         });
       }, function(error) {
         if (error === messages.error.command.create) {

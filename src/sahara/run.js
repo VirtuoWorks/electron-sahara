@@ -11,4 +11,4 @@ exports = module.exports = (function() {
   Run.prototype = command;
 
   return new Run();
-})();
+}());

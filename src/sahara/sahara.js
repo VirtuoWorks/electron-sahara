@@ -88,7 +88,7 @@ exports = module.exports = (function() {
               });
             } else {
               return resolve(messages.done.directory.created.replace(/%s/g, absolutePath));
-            };
+            }
           });
         } else {
           return reject(messages.error.directory.create.replace(/%s/g, absolutePath));
@@ -161,7 +161,7 @@ exports = module.exports = (function() {
 
   Command.prototype = (function() {
     return sahara().init();
-  })();
+  }());
 
   return new Command();
-})();
+}());

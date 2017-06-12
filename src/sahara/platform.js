@@ -20,7 +20,7 @@ exports = module.exports = (function() {
             .then((success) => {
               if (success) {
                 this.cliOptions.verbose && console.log(chalk.green(success));
-              };
+              }
               return resolve(messages.done.command.platform);
             }, (error) => {
               if (error) {
@@ -57,4 +57,4 @@ exports = module.exports = (function() {
   Platform.prototype = command;
 
   return new Platform();
-})();
+}());

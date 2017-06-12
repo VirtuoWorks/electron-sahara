@@ -3,6 +3,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const chalk = require('chalk');
+
 const command = require('./sahara');
 const messages = require('./sahara/messages');
 
@@ -57,4 +59,4 @@ exports = module.exports = (function() {
   Help.prototype = command;
 
   return new Help();
-})();
+}());

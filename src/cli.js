@@ -263,4 +263,4 @@ exports = module.exports = (function(argv) {
     }
     return sahara;
   };
-})();
+}());

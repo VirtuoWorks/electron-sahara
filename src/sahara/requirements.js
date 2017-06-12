@@ -11,4 +11,4 @@ exports = module.exports = (function() {
   Requirements.prototype = command;
 
   return new Requirements();
-})();
+}());

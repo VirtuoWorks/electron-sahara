@@ -60,7 +60,7 @@ exports = module.exports = (function() {
 
       return new Promise((resolve, reject) => {
         try {
-          this.getAbsolutePathTo(`node_modules/electron-packager`)
+          this.getAbsolutePathTo('node_modules/electron-packager')
           .then((electronPackagerPath) => {
             try {
               this.electronPackager = require(electronPackagerPath);
@@ -73,7 +73,7 @@ exports = module.exports = (function() {
           });
         } catch (error) {
           return reject(messages.error.packager.resolve);
-        };
+        }
       });
     };
 
@@ -185,4 +185,4 @@ exports = module.exports = (function() {
   Compile.prototype = command;
 
   return new Compile();
-})();
+}());

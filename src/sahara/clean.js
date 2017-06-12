@@ -11,4 +11,4 @@ exports = module.exports = (function() {
   Clean.prototype = command;
 
   return new Clean();
-})();
+}());

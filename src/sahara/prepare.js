@@ -122,7 +122,7 @@ exports = module.exports = (function() {
           });
         } else {
           return reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
-        };
+        }
       });
     }
 
@@ -163,4 +163,4 @@ exports = module.exports = (function() {
   Prepare.prototype = command;
 
   return new Prepare();
-})();
+}());
