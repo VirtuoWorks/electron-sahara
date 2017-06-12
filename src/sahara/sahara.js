@@ -42,10 +42,10 @@ exports = module.exports = (function() {
           this.cliOptions.verbose && console.log(chalk.yellow(messages.info.sahara.projectDirectory));
         } catch(exception) {
           console.log(chalk.red(messages.error.sahara.configurationFile.replace(/%s/g, exception.message)));
-        };
+        }
       } catch(exception) {
         this.cliOptions.verbose && console.log(chalk.yellow(messages.info.sahara.notAProjectDirectory));
-      };
+      }
       return this;
     };
 
@@ -62,13 +62,13 @@ exports = module.exports = (function() {
       let absolutePath;
       if (normalizedPath) {
         absolutePath = path.resolve(normalizedPath);
-      };
+      }
       return new Promise((resolve, reject) => {
-        if (absolutePath && absolutePath != this.workingDirectory) {
+        if (absolutePath && absolutePath !== this.workingDirectory) {
           return resolve(absolutePath);
         } else {
           return reject(messages.error.directory.resolve.replace(/%s/g, normalizedPath));
-        };
+        }
       });
     };
 
@@ -84,7 +84,7 @@ exports = module.exports = (function() {
                   return reject(error.message);
                 } else {
                   return resolve(messages.done.directory.created.replace(/%s/g, absolutePath));
-                };
+                }
               });
             } else {
               return resolve(messages.done.directory.created.replace(/%s/g, absolutePath));
@@ -121,7 +121,7 @@ exports = module.exports = (function() {
                   return reject(messages.error.command.aborted);
                 } else {
                   if (result.question) {
-                    if (result.question.toLowerCase()[0] == 'y') {
+                    if (result.question.toLowerCase()[0] === 'y') {
                       let spinner = ora({
                         text: chalk.yellow(messages.info.directory.deletion.replace(/%s/g, absolutePath)),
                         spinner: 'pong',
@@ -142,7 +142,7 @@ exports = module.exports = (function() {
                   } else {
                     return reject(messages.error.command.aborted);
                   }
-                };
+                }
               });
             };
           } else {

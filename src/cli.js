@@ -69,7 +69,7 @@ exports = module.exports = (function(argv) {
             }, (error) => {
               return reject(error);
             });
-          };
+          }
         } else {
           this.args = [];
           require('./sahara/help')
@@ -80,7 +80,7 @@ exports = module.exports = (function(argv) {
           }, (error) => {
             return reject(error);
           });
-        };
+        }
       });
     };
 
@@ -252,11 +252,11 @@ exports = module.exports = (function(argv) {
       .then((success) => {
         if (success) {
           console.log(success);
-        };
+        }
       }, (error) => {
         if (error) {
           console.log(chalk.red(error));
-        };
+        }
       });
     } else {
       sahara.apiCall = true;

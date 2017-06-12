@@ -12,7 +12,7 @@ exports = module.exports = (function() {
     this.exec = function(args) {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args) && args.length > 0) {
-          if (!!this.settings) {
+          if (this.settings) {
             let platform = args.shift() || process.platform;
 
             if (this[`${platform}Prepare`]) {
@@ -22,23 +22,23 @@ exports = module.exports = (function() {
                 .then((success) => {
                   if (success) {
                     this.cliOptions.verbose && console.log(chalk.green(success));
-                  };
+                  }
                   this[`${platform}Prepare`]()
                   .then((success) => {
                     if (success) {
                       this.cliOptions.verbose && console.log(chalk.green(success));
-                    };
+                    }
                     return resolve(messages.done.command.prepare);
                   }, (error) => {
                     if (error) {
                       console.log(chalk.red(error));
-                    };
+                    }
                     return reject(messages.error.command.prepare);
                   });
                 }, (error) => {
                   if (error) {
                     console.log(chalk.red(error));
-                  };
+                  }
                   return reject(messages.error.command.prepare);
                 });
               }, (error) => {
@@ -89,12 +89,12 @@ exports = module.exports = (function() {
                         spinner.fail(chalk.red(messages.info.files.copy));
                         if (error) {
                           console.log(chalk.red(error));
-                        };
+                        }
                         return reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
                       } else {
                         spinner.succeed(chalk.green(messages.info.files.copy));
                         return resolve(messages.done.platform.prepare.replace(/%s/g, `${platform}`));
-                      };
+                      }
                     });
                   }, (error) => {
                     console.log(chalk.red(error));
@@ -107,13 +107,13 @@ exports = module.exports = (function() {
               }, (error) => {
                 if (error) {
                   console.log(chalk.red(error));
-                };
+                }
                 return reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
               });
             }, (error) => {
               if (error) {
                 console.log(chalk.red(error));
-              };
+              }
               return reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
             });
           }, (error) => {

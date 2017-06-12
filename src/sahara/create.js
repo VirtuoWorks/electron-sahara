@@ -37,7 +37,7 @@ exports = module.exports = (function() {
                       .then((success) => {
                         if (success) {
                           this.cliOptions.verbose && console.log(chalk.green(success));
-                        };
+                        }
                         return resolve(messages.done.command.create);
                       }, (error) => {
                         if (error) {
@@ -53,7 +53,7 @@ exports = module.exports = (function() {
                     }, (error) => {
                       if (error) {
                         console.log(chalk.red(error));
-                      };
+                      }
                       this.deleteDirectory(projectAbsolutePath, true)
                       .then((success) => {
                         return reject(messages.error.command.create);
@@ -64,13 +64,13 @@ exports = module.exports = (function() {
                   }, (error) => {
                     if (error) {
                       console.log(chalk.red(error));
-                    };
+                    }
                     return reject(messages.error.command.create);
                   });
                 }, (error) => {
                   if (error) {
                     console.log(chalk.red(error));
-                  };
+                  }
                   return reject(messages.error.command.create);
                 });
               }, (error) => {

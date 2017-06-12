@@ -12,24 +12,24 @@ exports = module.exports = (function() {
     this.exec = function(args) {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args) && args.length > 0) {
-          if (!!this.settings) {
+          if (this.settings) {
             let platform = args.shift() || process.platform;
 
             prepare.exec([platform])
             .then((success) => {
               if (success) {
                 this.cliOptions.verbose && console.log(chalk.green(success));
-              };
+              }
               compile.exec([platform])
               .then((success) => {
                 if (success) {
                   this.cliOptions.verbose && console.log(chalk.green(success));
-                };
+                }
                 return resolve(messages.done.command.build);
               }, (error) => {
                 if (error) {
                   console.log(chalk.red(error));
-                };
+                }
                 return reject(messages.error.command.build);
               });
             }, (error) => {
@@ -45,7 +45,7 @@ exports = module.exports = (function() {
         } else {
           console.log(chalk.red(messages.error.argument.missing));
           return reject(messages.error.command.build);
-        };
+        }
       });
     };
   };

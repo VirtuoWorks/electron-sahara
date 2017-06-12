@@ -31,7 +31,7 @@ exports = module.exports = (function() {
                   return reject(error);
                 } else {
                   return resolve(data.toString());
-                };
+                }
               });
             } else {
               if (data.toString()) {
@@ -44,12 +44,12 @@ exports = module.exports = (function() {
                     return reject(error);
                   } else {
                     return resolve(data.toString());
-                  };
+                  }
                 });
               }
-            };
+            }
           });
-        };
+        }
       });
     };
   };

@@ -13,7 +13,7 @@ exports = module.exports = (function() {
     this.exec = function(args) {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args) && args.length > 0) {
-          if (!!this.settings) {
+          if (this.settings) {
             let platform = args.shift() || process.platform;
 
             if (this[`${platform}Compile`]) {
@@ -26,18 +26,18 @@ exports = module.exports = (function() {
                 .then((success) => {
                   if (success) {
                     this.cliOptions.verbose && console.log(chalk.green(success));
-                  };
+                  }
                   return resolve(messages.done.command.compile);
                 }, (error) => {
                   if (error) {
                     console.log(chalk.red(error));
-                  };
+                  }
                   return reject(messages.error.command.compile);
                 });
               }, (error) => {
                 if (error) {
                   console.log(chalk.red(error));
-                };
+                }
                 return reject(messages.error.command.compile);
               });
             } else {
@@ -67,7 +67,7 @@ exports = module.exports = (function() {
               return resolve(messages.done.packager.loaded);
             } catch (error) {
               return reject(messages.error.packager.require);
-            };
+            }
           }, (error) => {
             return reject(messages.error.packager.resolve);
           });
@@ -111,7 +111,7 @@ exports = module.exports = (function() {
               } else {
                 spinner.succeed(chalk.green(messages.info.packager.building.replace(/%s/g, `${platform}`)));
                 return resolve(messages.done.packager.built.replace(/%s/g, `${platform}`));
-              };
+              }
             });
           }, (error) => {
             console.log(chalk.red(error));
