@@ -1,11 +1,32 @@
+/*!
+ * Electron Sahara
+ * @author sami.radi@virtuoworks.com (Sami Radi)
+ * @company VirtuoWorks
+ * @license MIT
+ */
+
 'use strict';
 
+/**
+ * Module dependencies.
+ * @private
+ */
+ 
+// Core modules.
 const fs = require('fs');
+
+// Third party modules.
 const chalk = require('chalk');
 
+// Electron Sahara modules.
+const logger = require('./sahara/sahara/logger');
 const options = require('./sahara/sahara/options');
 const messages = require('./sahara/sahara/messages');
 
+/**
+ * Expose `cli` function.
+ * @public
+ */
 exports = module.exports = (function(argv) {
   let cli = function() {
     let Cli = function() {
@@ -14,10 +35,11 @@ exports = module.exports = (function(argv) {
       this.command;
       this.apiCall;
       this.options = {};
+      this.logger = logger(this.options);
     };
 
     Cli.prototype.exec = function(argv) {
-      this.options.verbose && console.log(chalk.yellow(messages.info.exec));
+      this.logger.info(messages.info.exec);
       return new Promise((resolve, reject) => {
         this.argv = this.extractCliOptionsFrom(argv);
         if (Array.isArray(this.argv) && this.argv.length > 2) {
@@ -26,7 +48,7 @@ exports = module.exports = (function(argv) {
             this.args = this.argv.slice(3, this.argv.length) || [];
             if (this.args.length) {
                 if (fs.existsSync(`${__dirname}/sahara/${this.command}.js`)) {
-                  this.options.verbose && console.log(chalk.yellow(messages.info.command[this.command]));
+                  this.logger.debug(messages.info.command[this.command]);
                   require(`./sahara/${this.command}.js`)
                   .setCliOptions(this.options)
                   .exec(this.args, this.apiCall)
@@ -36,7 +58,7 @@ exports = module.exports = (function(argv) {
                     return reject(error);
                   });
                 } else {
-                  console.log(chalk.red(messages.error.command.notFound));
+                  this.logger.error(messages.error.command.notFound);
                   require('./sahara/help')
                   .setCliOptions(this.options)
                   .exec(this.args)
@@ -47,7 +69,7 @@ exports = module.exports = (function(argv) {
                   });
                 }
             } else {
-              console.log(chalk.red(messages.error.argument.missing));
+              this.logger.error(messages.error.argument.missing);
               require('./sahara/help')
               .setCliOptions(this.options)
               .exec([this.command])
@@ -61,7 +83,7 @@ exports = module.exports = (function(argv) {
             if (this.argv[2]) {
               this.args = this.argv.slice(2, this.argv.length) || [];
             } else {
-              console.log(chalk.red(messages.error.command.notFound));
+              this.logger.error(messages.error.command.notFound);
               this.args = [];
             }
             require('./sahara/help').setCliOptions(this.options).exec(this.args).then((success) => {
@@ -94,7 +116,7 @@ exports = module.exports = (function(argv) {
             return true;
           }
         });
-        this.options.verbose && console.log(chalk.yellow(messages.info.sahara.verboseEnabled));
+        this.logger.debug(messages.info.sahara.verboseEnabled);
         return filtered;
       } else {
         return argv;
@@ -255,7 +277,7 @@ exports = module.exports = (function(argv) {
         }
       }, (error) => {
         if (error) {
-          console.log(chalk.red(error));
+          console.log(error);
         }
       });
     } else {

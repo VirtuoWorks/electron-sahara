@@ -1,16 +1,35 @@
+/*!
+ * Electron Sahara
+ * @author sami.radi@virtuoworks.com (Sami Radi)
+ * @company VirtuoWorks
+ * @license MIT
+ */
+
 'use strict';
 
+/**
+ * Module dependencies.
+ * @private
+ */
+
+// Core modules.
 const childProcess = require('child_process');
 
+// Third party modules.
 const ora = require('ora');
 const chalk = require('chalk');
 const simpleGit = require('simple-git');
 
+// Electron Sahara modules.
 const command = require('./sahara');
 const messages = require('./sahara/messages');
 const templates = require('./create/templates');
 
-exports = module.exports = (function() {
+/**
+ * Expose `Create` object.
+ * @public
+ */
+const create = module.exports = (function() {
   let Create = function() {
     this.apiCall;
 
@@ -29,19 +48,19 @@ exports = module.exports = (function() {
                 .then((success) => {
                   this.createDirectory(projectAbsolutePath)
                   .then((success) => {
-                    this.cliOptions.verbose && console.log(chalk.green(success));
+                    this.logger.info(success);
                     this.cloneProjectTemplate(projectTemplate, projectAbsolutePath)
                     .then((success) => {
-                      this.cliOptions.verbose && console.log(chalk.green(success));
+                      this.logger.info(success);
                       this.installProjectDependencies(projectAbsolutePath)
                       .then((success) => {
                         if (success) {
-                          this.cliOptions.verbose && console.log(chalk.green(success));
+                          this.logger.info(success);
                         }
                         return resolve(messages.done.command.create);
                       }, (error) => {
                         if (error) {
-                          console.log(chalk.red(error));
+                          this.logger.error(error);
                         }
                         this.deleteDirectory(projectAbsolutePath, true)
                         .then((success) => {
@@ -52,7 +71,7 @@ exports = module.exports = (function() {
                       });
                     }, (error) => {
                       if (error) {
-                        console.log(chalk.red(error));
+                        this.logger.error(error);
                       }
                       this.deleteDirectory(projectAbsolutePath, true)
                       .then((success) => {
@@ -63,30 +82,30 @@ exports = module.exports = (function() {
                     });
                   }, (error) => {
                     if (error) {
-                      console.log(chalk.red(error));
+                      this.logger.error(error);
                     }
                     return reject(messages.error.command.create);
                   });
                 }, (error) => {
                   if (error) {
-                    console.log(chalk.red(error));
+                    this.logger.error(error);
                   }
                   return reject(messages.error.command.create);
                 });
               }, (error) => {
-                console.log(chalk.red(error));
+                this.logger.error(error);
                 return reject(messages.error.command.create);
               });
             } else {
-              console.log(chalk.red(messages.error.argument.missing));
+              this.logger.error(messages.error.argument.missing);
               return reject(messages.error.command.create);
             }
           } else {
-            console.log(chalk.red(messages.error.sahara.projectDirectory));
+            this.logger.error(messages.error.sahara.projectDirectory);
             return reject(messages.error.command.create);
           }
         } else {
-          console.log(chalk.red(messages.error.argument.missing));
+          this.logger.error(messages.error.argument.missing);
           return reject(messages.error.command.create);
         }
       });
@@ -128,14 +147,14 @@ exports = module.exports = (function() {
     };
 
     this.cloneProjectTemplate = function(projectTemplate, projectAbsolutePath) {
-      this.cliOptions.verbose && console.log(chalk.yellow(messages.info.template.clone));
+      this.logger.debug(messages.info.template.clone);
 
       return new Promise((resolve, reject) => {
         if (templates[projectTemplate]) {
           simpleGit().clone(templates[projectTemplate], projectAbsolutePath)
           .then((error, success) => {
             if (error) {
-              console.log(chalk.red(error));
+              this.logger.error(error);
               return reject(messages.error.template.clone);
             } else {
               return resolve(messages.done.template.cloned);

@@ -1,13 +1,31 @@
+/*!
+ * Electron Sahara
+ * @author sami.radi@virtuoworks.com (Sami Radi)
+ * @company VirtuoWorks
+ * @license MIT
+ */
+
 'use strict';
 
+/**
+ * Module dependencies.
+ * @private
+ */
+
+// Third party modules.
 const ora = require('ora');
 const chalk = require('chalk');
 const ncp = require('ncp').ncp;
 
+// Electron Sahara modules.
 const command = require('./sahara');
 const messages = require('./sahara/messages');
 
-exports = module.exports = (function() {
+/**
+ * Expose `Prepare` object.
+ * @public
+ */
+const prepare = module.exports = (function() {
   let Prepare = function() {
     this.exec = function(args) {
       return new Promise((resolve, reject) => {
@@ -16,52 +34,52 @@ exports = module.exports = (function() {
             let platform = args.shift() || process.platform;
 
             if (this[`${platform}Prepare`]) {
-              this.getAbsolutePathTo(`platforms`)
+              this.getAbsolutePathTo('platforms')
               .then((platformsAbsolutePath) => {
                 this.createDirectory(platformsAbsolutePath)
                 .then((success) => {
                   if (success) {
-                    this.cliOptions.verbose && console.log(chalk.green(success));
+                    this.logger.info(success);
                   }
                   this[`${platform}Prepare`]()
                   .then((success) => {
                     if (success) {
-                      this.cliOptions.verbose && console.log(chalk.green(success));
+                      this.logger.info(success);
                     }
                     return resolve(messages.done.command.prepare);
                   }, (error) => {
                     if (error) {
-                      console.log(chalk.red(error));
+                      this.logger.error(error);
                     }
                     return reject(messages.error.command.prepare);
                   });
                 }, (error) => {
                   if (error) {
-                    console.log(chalk.red(error));
+                    this.logger.error(error);
                   }
                   return reject(messages.error.command.prepare);
                 });
               }, (error) => {
-                console.log(chalk.red(error));
+                this.logger.error(error);
                 return reject(messages.error.command.prepare);
               });
             } else {
-              console.log(chalk.red(messages.error.platform.invalid.replace(/%s/g, platform)));
+              this.logger.error(messages.error.platform.invalid, platform);
               return reject(messages.error.command.prepare);
             }
           } else {
-            console.log(chalk.red(messages.error.sahara.notAProjectDirectory));
+            this.logger.error(messages.error.sahara.notAProjectDirectory);
             return reject(messages.error.command.prepare);
           }
         } else {
-          console.log(chalk.red(messages.error.argument.missing));
+          this.logger.error(messages.error.argument.missing);
           return reject(messages.error.command.prepare);
         }
       });
     };
 
     this.preparePlatform = function(platform) {
-      this.cliOptions.verbose && console.log(chalk.yellow(messages.info.platform.prepare.replace(/%s/g, `${platform}`)));
+      this.logger.debug(messages.info.platform.prepare, platform);
 
       return new Promise((resolve, reject) => {
         if (platform && this[`${platform}Prepare`]) {
@@ -71,7 +89,7 @@ exports = module.exports = (function() {
             .then((success) => {
               this.createDirectory(platformAbsolutePath)
               .then((success) => {
-                this.cliOptions.verbose && console.log(chalk.green(success));
+                this.logger.info(success);
                 this.getAbsolutePathTo(`platforms/${platform}/platform_app`)
                 .then((appAbsolutePath) => {
                   this.getAbsolutePathTo(`platforms/${platform}/platform_app`)
@@ -88,7 +106,7 @@ exports = module.exports = (function() {
                       if (error) {
                         spinner.fail(chalk.red(messages.info.files.copy));
                         if (error) {
-                          console.log(chalk.red(error));
+                          this.logger.error(error);
                         }
                         return reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
                       } else {
@@ -97,34 +115,34 @@ exports = module.exports = (function() {
                       }
                     });
                   }, (error) => {
-                    console.log(chalk.red(error));
+                    this.logger.error(error);
                     return reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
                   });
                 }, (error) => {
-                  console.log(chalk.red(error));
+                  this.logger.error(error);
                   return reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
                 });
               }, (error) => {
                 if (error) {
-                  console.log(chalk.red(error));
+                  this.logger.error(error);
                 }
                 return reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
               });
             }, (error) => {
               if (error) {
-                console.log(chalk.red(error));
+                this.logger.error(error);
               }
               return reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
             });
           }, (error) => {
-            console.log(chalk.red(error));
+            this.logger.error(error);
             return reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
           });
         } else {
           return reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
         }
       });
-    }
+    };
 
     this.win32Prepare = function(platform) {
       return new Promise((resolve, reject) => {

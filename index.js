@@ -1,3 +1,15 @@
+/*!
+ * Electron Sahara
+ * @author sami.radi@virtuoworks.com (Sami Radi)
+ * @company VirtuoWorks
+ * @license MIT
+ */
+
 'use strict';
-// To use sahara js API directly.
+
+
+/**
+ * Expose `cli` function.
+ * @public
+ */
 exports = module.exports.cli = require('./src/cli');

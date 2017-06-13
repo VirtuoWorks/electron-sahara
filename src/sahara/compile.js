@@ -1,12 +1,30 @@
+/*!
+ * Electron Sahara
+ * @author sami.radi@virtuoworks.com (Sami Radi)
+ * @company VirtuoWorks
+ * @license MIT
+ */
+
 'use strict';
 
+/**
+ * Module dependencies.
+ * @private
+ */
+
+// Third party modules.
 const ora = require('ora');
 const chalk = require('chalk');
 
+// Electron Sahara modules.
 const command = require('./sahara');
 const messages = require('./sahara/messages');
 
-exports = module.exports = (function() {
+/**
+ * Expose `Clean` object.
+ * @public
+ */
+const compile = module.exports = (function() {
   let Compile = function() {
     this.electronPackager;
 
@@ -20,43 +38,43 @@ exports = module.exports = (function() {
               this.requireElectronPackager()
               .then((success) => {
                 if (success) {
-                  this.cliOptions.verbose && console.log(chalk.green(success));
+                  this.logger.info(success);
                 }
                 this[`${platform}Compile`]()
                 .then((success) => {
                   if (success) {
-                    this.cliOptions.verbose && console.log(chalk.green(success));
+                    this.logger.info(success);
                   }
                   return resolve(messages.done.command.compile);
                 }, (error) => {
                   if (error) {
-                    console.log(chalk.red(error));
+                    this.logger.error(error);
                   }
                   return reject(messages.error.command.compile);
                 });
               }, (error) => {
                 if (error) {
-                  console.log(chalk.red(error));
+                  this.logger.error(error);
                 }
                 return reject(messages.error.command.compile);
               });
             } else {
-              console.log(chalk.red(messages.error.action.invalid));
+              this.logger.error(messages.error.action.invalid);
               return reject(messages.error.command.compile);
             }
           } else {
-            console.log(chalk.red(messages.error.sahara.notAProjectDirectory));
+            this.logger.error(messages.error.sahara.notAProjectDirectory);
             return reject(messages.error.command.compile);
           }
         } else {
-          console.log(chalk.red(messages.error.argument.missing));
+          this.logger.error(messages.error.argument.missing);
           return reject(messages.error.command.compile);
         }
       });
     };
 
     this.requireElectronPackager = function() {
-      this.cliOptions.verbose && console.log(chalk.yellow(messages.info.packager.loading));
+      this.logger.debug(messages.info.packager.loading);
 
       return new Promise((resolve, reject) => {
         try {
@@ -103,9 +121,9 @@ exports = module.exports = (function() {
               if (error) {
                 spinner.fail(chalk.red(messages.info.packager.building.replace(/%s/g, `${platform}`)));
                 if (error.message) {
-                  console.log(chalk.red(error.message));
+                  this.logger.error(error.message);
                 } else {
-                  console.log(chalk.red(error));
+                  this.logger.error(error);
                 }
                 return reject(messages.error.packager.build.replace(/%s/g, `${platform}`));
               } else {
@@ -114,11 +132,11 @@ exports = module.exports = (function() {
               }
             });
           }, (error) => {
-            console.log(chalk.red(error));
+            this.logger.error(error);
             return reject(messages.error.packager.build.replace(/%s/g, `${platform}`));
           });
         }, (error) => {
-          console.log(chalk.red(error));
+          this.logger.error(error);
           return reject(messages.error.packager.build.replace(/%s/g, `${platform}`));
         });
       });

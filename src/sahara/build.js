@@ -1,13 +1,28 @@
+/*!
+ * Electron Sahara
+ * @author sami.radi@virtuoworks.com (Sami Radi)
+ * @company VirtuoWorks
+ * @license MIT
+ */
+
 'use strict';
 
-const chalk = require('chalk');
+/**
+ * Module dependencies.
+ * @private
+ */
 
+// Electron Sahara modules.
 const prepare = require('./prepare');
 const compile = require('./compile');
 const command = require('./sahara');
 const messages = require('./sahara/messages');
 
-exports = module.exports = (function() {
+/**
+ * Expose `Build` object.
+ * @public
+ */
+const build = module.exports = (function() {
   let Build = function() {
     this.exec = function(args) {
       return new Promise((resolve, reject) => {
@@ -18,32 +33,32 @@ exports = module.exports = (function() {
             prepare.exec([platform])
             .then((success) => {
               if (success) {
-                this.cliOptions.verbose && console.log(chalk.green(success));
+                this.logger.info(success);
               }
               compile.exec([platform])
               .then((success) => {
                 if (success) {
-                  this.cliOptions.verbose && console.log(chalk.green(success));
+                  this.logger.info(success);
                 }
                 return resolve(messages.done.command.build);
               }, (error) => {
                 if (error) {
-                  console.log(chalk.red(error));
+                  this.logger.error(error);
                 }
                 return reject(messages.error.command.build);
               });
             }, (error) => {
               if (error) {
-                console.log(chalk.red(error));
+                this.logger.error(error);
               }
               return reject(messages.error.command.build);
             });
           } else {
-            console.log(chalk.red(messages.error.sahara.notAProjectDirectory));
+            this.logger.error(messages.error.sahara.notAProjectDirectory);
             return reject(messages.error.command.build);
           }
         } else {
-          console.log(chalk.red(messages.error.argument.missing));
+          this.logger.error(messages.error.argument.missing);
           return reject(messages.error.command.build);
         }
       });

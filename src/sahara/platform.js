@@ -1,11 +1,26 @@
+/*!
+ * Electron Sahara
+ * @author sami.radi@virtuoworks.com (Sami Radi)
+ * @company VirtuoWorks
+ * @license MIT
+ */
+
 'use strict';
 
-const chalk = require('chalk');
+/**
+ * Module dependencies.
+ * @private
+ */
 
+// Electron Sahara modules.
 const command = require('./sahara');
 const messages = require('./sahara/messages');
 
-exports = module.exports = (function() {
+/**
+ * Expose `Platform` object.
+ * @public
+ */
+const platform = module.exports = (function() {
   let Platform = function() {
     this.electronPackager;
 
@@ -19,21 +34,21 @@ exports = module.exports = (function() {
             this[`${action}Platform`](platform)
             .then((success) => {
               if (success) {
-                this.cliOptions.verbose && console.log(chalk.green(success));
+                this.logger.info(success);
               }
               return resolve(messages.done.command.platform);
             }, (error) => {
               if (error) {
-                console.log(chalk.red(error));
-              };
+                this.logger.error(error);
+              }
               return reject(messages.error.command.platform);
             });
           } else {
-            console.log(chalk.red(messages.error.action.invalid));
+            this.logger.error(messages.error.action.invalid);
             return reject(messages.error.command.platform);
           }
         } else {
-          console.log(chalk.red(messages.error.argument.missing));
+          this.logger.error(messages.error.argument.missing);
           return reject(messages.error.command.platform);
         }
       });

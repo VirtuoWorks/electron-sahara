@@ -1,14 +1,30 @@
+/*!
+ * Electron Sahara
+ * @author sami.radi@virtuoworks.com (Sami Radi)
+ * @company VirtuoWorks
+ * @license MIT
+ */
+
 'use strict';
 
+/**
+ * Module dependencies.
+ * @private
+ */
+
+// Core modules.
 const fs = require('fs');
 const path = require('path');
 
-const chalk = require('chalk');
-
+// Electron Sahara modules.
 const command = require('./sahara');
 const messages = require('./sahara/messages');
 
-exports = module.exports = (function() {
+/**
+ * Expose `Help` object.
+ * @public
+ */
+const help = module.exports = (function() {
   let Help = function() {
     this.helpFilesFolder = path.normalize(this.saharaDirectory + path.sep + 'help');
 
@@ -29,7 +45,7 @@ exports = module.exports = (function() {
               filePath = this.helpFilesFolder + path.sep + 'sahara';
               fs.readFile(filePath, (error, data) => {
                 if (error) {
-                  console.log(chalk.red(messages.error.help.missingSaharaHelpFile));
+                  this.logger.error(messages.error.help.missingSaharaHelpFile);
                   return reject(error);
                 } else {
                   return resolve(data.toString());
@@ -42,7 +58,7 @@ exports = module.exports = (function() {
                 filePath = this.helpFilesFolder + path.sep + 'sahara';
                 fs.readFile(filePath, (error, data) => {
                   if (error) {
-                    console.log(chalk.red(messages.error.help.missingSaharaHelpFile));
+                    this.logger.error(messages.error.help.missingSaharaHelpFile);
                     return reject(error);
                   } else {
                     return resolve(data.toString());

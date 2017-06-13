@@ -1,16 +1,36 @@
+/*!
+ * Electron Sahara
+ * @author sami.radi@virtuoworks.com (Sami Radi)
+ * @company VirtuoWorks
+ * @license MIT
+ */
+
 'use strict';
 
+/**
+ * Module dependencies.
+ * @private
+ */
+
+// Core modules.
 const fs = require('fs');
 const path = require('path');
 
+// Third party modules.
 const ora = require('ora');
 const del = require('del');
 const chalk = require('chalk');
 const prompt = require('prompt');
 
+// Electron Sahara modules.
+const logger = require('./sahara/logger');
 const messages = require('./sahara/messages');
 
-exports = module.exports = (function() {
+/**
+ * Expose `Command` object.
+ * @public
+ */
+const command = module.exports = (function() {
   let sahara = function() {
     let Sahara = function() {
       this.apiCall;
@@ -18,6 +38,7 @@ exports = module.exports = (function() {
       this.cliOptions = {};
       this.saharaDirectory;
       this.workingDirectory;
+      this.logger = logger(this.cliOptions);
     };
 
     Sahara.prototype.init = function() {
@@ -28,7 +49,12 @@ exports = module.exports = (function() {
     };
 
     Sahara.prototype.setCliOptions = function(cliOptions) {
-      this.cliOptions = cliOptions;
+      for (let property in cliOptions) {
+        if (cliOptions.hasOwnProperty(property)) {
+          this.cliOptions[property] = cliOptions[property];
+        }
+      }
+
       return this;
     };
 
@@ -39,12 +65,12 @@ exports = module.exports = (function() {
         fs.accessSync(settingsFilePath);
         try {
           this.settings = require(settingsFilePath);
-          this.cliOptions.verbose && console.log(chalk.yellow(messages.info.sahara.projectDirectory));
+          this.logger.info(messages.info.sahara.projectDirectory);
         } catch(exception) {
-          console.log(chalk.red(messages.error.sahara.configurationFile.replace(/%s/g, exception.message)));
+          this.logger.error(messages.error.sahara.configurationFile, exception.message);
         }
       } catch(exception) {
-        this.cliOptions.verbose && console.log(chalk.yellow(messages.info.sahara.notAProjectDirectory));
+        this.logger.info(messages.info.sahara.notAProjectDirectory);
       }
       return this;
     };
@@ -73,7 +99,7 @@ exports = module.exports = (function() {
     };
 
     Sahara.prototype.createDirectory = function(absolutePath) {
-      this.cliOptions.verbose && console.log(chalk.yellow(messages.info.directory.create.replace(/%s/g, absolutePath)));
+      this.logger.info(messages.info.directory.create, absolutePath);
 
       return new Promise((resolve, reject) => {
         if (absolutePath) {
@@ -144,7 +170,7 @@ exports = module.exports = (function() {
                   }
                 }
               });
-            };
+            }
           } else {
             return resolve();
           };

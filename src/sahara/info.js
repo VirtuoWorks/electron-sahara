@@ -1,9 +1,26 @@
+/*!
+ * Electron Sahara
+ * @author sami.radi@virtuoworks.com (Sami Radi)
+ * @company VirtuoWorks
+ * @license MIT
+ */
+
 'use strict';
 
+/**
+ * Module dependencies.
+ * @private
+ */
+
+// Electron Sahara modules.
 const command = require('./sahara');
 const messages = require('./sahara/messages');
 
-exports = module.exports = (function() {
+/**
+ * Expose `Info` object.
+ * @public
+ */
+const info = module.exports = (function() {
   let Info = function() {
 
   };
@@ -11,4 +28,4 @@ exports = module.exports = (function() {
   Info.prototype = command;
 
   return new Info();
-})();
+}());
