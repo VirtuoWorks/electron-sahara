@@ -112,7 +112,7 @@ const run = module.exports = (function() {
         this.packageInfo = this.getPackageInformation(platform);
         if (this.packageInfo && this.packageInfo.name) {
           let binaryName = this.packageInfo.name;
-          this.buildPath = this.platformsPath + platform + path.sep + this.buildDirectory;
+          this.buildPath = path.normalize(this.platformsPath + platform + path.sep + this.buildDirectory);
           fs.readdir(this.buildPath, (error, files) => {
             if (error) {
               this.logger.error(messages.error.directory.fetch.replace(/%s/g, this.buildPath));
@@ -121,19 +121,29 @@ const run = module.exports = (function() {
               let buildDirectory;
               let found = files.some((file, index, files) => {
                 if (file.indexOf(`${binaryName}-${platform}`) === 0) {
+                  let toCheck = path.normalize(this.buildPath + file);
                   try {
-                    let stat = fs.statSync(this.buildPath + file);
+                    let stat = fs.statSync(toCheck);
                     if (stat.isDirectory()) {
-                      buildDirectory = this.buildPath + file;
+                      buildDirectory = toCheck;
                       return true;
                     }
                   } catch(exception) {
-                    this.logger.notice(messages.error.directory.fetch.replace(/%s/g, this.buildPath + file));
+                    this.logger.notice(messages.error.directory.fetch.replace(/%s/g, toCheck));
                   }
                 }
               });
               if (found && buildDirectory) {
-                let binary = buildDirectory + path.sep + binaryName;
+                let binary = path.normalize(buildDirectory + path.sep + binaryName);
+                switch(platform) {
+                  case 'linux':
+                    binary = `${binary}`;
+                  case 'win32':
+                    binary = `${binary}.exe`;
+                  case 'darwin':
+                    binary = `${binary}.app`;
+                    break;
+                }
                 childProcess.execFile(binary, (error, stdout, stderr) => {
                   if (error) {
                     this.logger.error(error);
@@ -151,7 +161,6 @@ const run = module.exports = (function() {
                 this.logger.error(messages.error.run.noBuildDirectory);
                 return reject(messages.error.platform.run.replace(/%s/g, platform));
               }
-              
             }
           });
         } else {

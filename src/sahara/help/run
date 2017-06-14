@@ -1,4 +1,32 @@
+
+         *******                 *                                          
+       *       ***             **                                           
+      *         **             **                                           
+      **        *              **                                           
+       ***                     **                   ***  ****               
+      ** ***           ****    **  ***      ****     **** **** *    ****    
+       *** ***        * ***  * ** * ***    * ***  *   **   ****    * ***  * 
+         *** ***     *   ****  ***   ***  *   ****    **          *   ****  
+           *** ***  **    **   **     ** **    **     **         **    **   
+             ** *** **    **   **     ** **    **     **         **    **   
+              ** ** **    **   **     ** **    **     **         **    **   
+               * *  **    **   **     ** **    **     **         **    **   
+     ***        *   **    **   **     ** **    **     ***        **    **   
+    *  *********     ***** **  **     **  ***** **     ***        ***** **  
+   *     *****        ***   **  **    **   ***   **                ***   ** 
+   *                                  *                                     
+    **                               *                                      
+                                    *                                       
+                                   *
 Synopsis
 
-Sorry, we don't have written a proper
-help for this command yet...
+    sahara run <PLATFORM>
+
+Run project binary (including prepare && compile)
+
+    PLATFORM ......................... Choose between win32, darwin or linux
+
+Examples
+    sahara run win32
+    sahara run linux
+    sahara run darwin

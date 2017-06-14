@@ -1,4 +1,33 @@
+
+         *******                 *                                          
+       *       ***             **                                           
+      *         **             **                                           
+      **        *              **                                           
+       ***                     **                   ***  ****               
+      ** ***           ****    **  ***      ****     **** **** *    ****    
+       *** ***        * ***  * ** * ***    * ***  *   **   ****    * ***  * 
+         *** ***     *   ****  ***   ***  *   ****    **          *   ****  
+           *** ***  **    **   **     ** **    **     **         **    **   
+             ** *** **    **   **     ** **    **     **         **    **   
+              ** ** **    **   **     ** **    **     **         **    **   
+               * *  **    **   **     ** **    **     **         **    **   
+     ***        *   **    **   **     ** **    **     ***        **    **   
+    *  *********     ***** **  **     **  ***** **     ***        ***** **  
+   *     *****        ***   **  **    **   ***   **                ***   ** 
+   *                                  *                                     
+    **                               *                                      
+                                    *                                       
+                                   *
 Synopsis
 
-Sorry, we don't have written a proper
-help for this command yet...
+    sahara prepare <PLATFORM>
+
+Copy files into platform for building
+
+    PLATFORM ......................... Choose between win32, darwin or linux
+
+Examples
+    sahara prepare win32
+    sahara prepare linux
+    sahara prepare darwin
+
