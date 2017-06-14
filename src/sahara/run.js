@@ -140,13 +140,13 @@ const run = module.exports = (function() {
                     binary = `${binary}`;
                     break;
                   case 'win32':
-                    binary = `${binary}.exe`;
+                    binary = `START ${binary}.exe`;
                     break;
                   case 'darwin':
-                    binary = `${binary}.app`;
+                    binary = `open ${binary}.app`;
                     break;
                 }
-                childProcess.execFile(binary, (error, stdout, stderr) => {
+                childProcess.exec(binary, (error, stdout, stderr) => {
                   if (error) {
                     this.logger.error(error);
                     return reject(messages.error.platform.run.replace(/%s/g, platform));

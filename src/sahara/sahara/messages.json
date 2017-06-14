@@ -51,7 +51,7 @@
   },
   "prompt": {
     "directory": {
-      "deletion": "[CONFIRM] (y|yes|n|no) Are you sure you want to delete [%s] (y|yes|n|no) ? "
+      "deletion": "[CONFIRM] (y|yes|n|no) Are you sure you want to overwrite [%s] (y|yes|n|no) ? "
     }
   },
   "error": {
