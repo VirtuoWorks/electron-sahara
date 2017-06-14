@@ -13,9 +13,9 @@
  */
 
 // Electron Sahara modules.
+const command = require('./sahara');
 const prepare = require('./prepare');
 const compile = require('./compile');
-const command = require('./sahara');
 const messages = require('./sahara/messages');
 
 /**
@@ -27,7 +27,7 @@ const build = module.exports = (function() {
     this.exec = function(args) {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args) && args.length > 0) {
-          if (this.settings) {
+          if (this.options) {
             let platform = args.shift() || process.platform;
 
             prepare.exec([platform])

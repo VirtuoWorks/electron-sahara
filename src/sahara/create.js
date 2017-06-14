@@ -37,7 +37,7 @@ const create = module.exports = (function() {
       this.apiCall = apiCall || false;
       return new Promise((resolve, reject) => {
         if (Array.isArray(args) && args.length > 0) {
-          if (!this.settings) {
+          if (!this.options) {
             let projectDirectoryName = args.shift();
             let projectTemplate = args.shift() || 'vanilla';
 

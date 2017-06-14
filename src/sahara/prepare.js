@@ -30,7 +30,7 @@ const prepare = module.exports = (function() {
     this.exec = function(args) {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args) && args.length > 0) {
-          if (this.settings) {
+          if (this.options) {
             let platform = args.shift() || process.platform;
 
             if (this[`${platform}Prepare`]) {
@@ -90,7 +90,7 @@ const prepare = module.exports = (function() {
               this.createDirectory(platformAbsolutePath)
               .then((success) => {
                 this.logger.info(success);
-                this.getAbsolutePathTo(`platforms/${platform}/platform_app`)
+                this.getAbsolutePathTo(`app`)
                 .then((appAbsolutePath) => {
                   this.getAbsolutePathTo(`platforms/${platform}/platform_app`)
                   .then((platformAppAbsolutePath) => {
@@ -102,44 +102,44 @@ const prepare = module.exports = (function() {
 
                     spinner.start();
 
-                    ncp(appAbsolutePath, platformAppAbsolutePath, function(error) {
+                    ncp(appAbsolutePath, platformAppAbsolutePath, (error) => {
                       if (error) {
                         spinner.fail(chalk.red(messages.info.files.copy));
                         if (error) {
                           this.logger.error(error);
                         }
-                        return reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
+                        return reject(messages.error.platform.prepare.replace(/%s/g, platform));
                       } else {
                         spinner.succeed(chalk.green(messages.info.files.copy));
-                        return resolve(messages.done.platform.prepare.replace(/%s/g, `${platform}`));
+                        return resolve(messages.done.platform.prepare.replace(/%s/g, platform));
                       }
                     });
                   }, (error) => {
                     this.logger.error(error);
-                    return reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
+                    return reject(messages.error.platform.prepare.replace(/%s/g, platform));
                   });
                 }, (error) => {
                   this.logger.error(error);
-                  return reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
+                  return reject(messages.error.platform.prepare.replace(/%s/g, platform));
                 });
               }, (error) => {
                 if (error) {
                   this.logger.error(error);
                 }
-                return reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
+                return reject(messages.error.platform.prepare.replace(/%s/g, platform));
               });
             }, (error) => {
               if (error) {
                 this.logger.error(error);
               }
-              return reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
+              return reject(messages.error.platform.prepare.replace(/%s/g, platform));
             });
           }, (error) => {
             this.logger.error(error);
-            return reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
+            return reject(messages.error.platform.prepare.replace(/%s/g, platform));
           });
         } else {
-          return reject(messages.error.platform.prepare.replace(/%s/g, `${platform}`));
+          return reject(messages.error.platform.prepare.replace(/%s/g, platform));
         }
       });
     };

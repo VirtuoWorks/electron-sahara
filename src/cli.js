@@ -32,8 +32,10 @@ exports = module.exports = (function(argv) {
     let Cli = function() {
       this.args;
       this.argv;
+
       this.command;
       this.apiCall;
+
       this.options = {};
       this.logger = logger(this.options);
     };
@@ -273,11 +275,11 @@ exports = module.exports = (function(argv) {
       sahara.exec(argv)
       .then((success) => {
         if (success) {
-          console.log(success);
+          sahara.logger.info(success);
         }
       }, (error) => {
         if (error) {
-          console.log(error);
+          sahara.logger.error(error);
         }
       });
     } else {

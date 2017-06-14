@@ -16,10 +16,6 @@
 const chalk = require('chalk');
 const winston = require('winston');
 
-/**
- * Module settings.
- */
-
 const logger = module.exports = (function() {
 
   let config = {

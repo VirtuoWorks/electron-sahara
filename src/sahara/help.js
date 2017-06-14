@@ -26,7 +26,7 @@ const messages = require('./sahara/messages');
  */
 const help = module.exports = (function() {
   let Help = function() {
-    this.helpFilesFolder = path.normalize(this.saharaDirectory + path.sep + 'help');
+    this.helpFilesFolder = path.normalize(this.dir + path.sep + 'help');
 
     this.exec = function(args) {
       return new Promise((resolve, reject) => {

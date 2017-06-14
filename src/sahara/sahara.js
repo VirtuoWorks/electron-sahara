@@ -33,18 +33,35 @@ const messages = require('./sahara/messages');
 const command = module.exports = (function() {
   let sahara = function() {
     let Sahara = function() {
+      this.dir;
+      this.cwd;
+
+      this.appPath;
+      this.srcPath;
+      this.resourcesPath;
+      this.platformsPath;
+      this.configurationFilePath;
+
       this.apiCall;
-      this.settings;
+
+      this.options;
       this.cliOptions = {};
-      this.saharaDirectory;
-      this.workingDirectory;
+
       this.logger = logger(this.cliOptions);
     };
 
     Sahara.prototype.init = function() {
-      this.setCommandSettings();
-      this.saharaDirectory = __dirname;
-      this.workingDirectory = process.cwd();
+      this.dir = __dirname + path.sep;
+      this.cwd = process.cwd() + path.sep;
+
+      this.appPath = this.cwd + path.sep + 'app' + path.sep;
+      this.srcPath = this.cwd + path.sep + 'src' + path.sep;
+      this.resourcesPath = this.cwd + path.sep + 'resources' + path.sep;
+      this.platformsPath = this.cwd + path.sep + 'platforms' + path.sep;
+      this.configurationFilePath = path.normalize(this.cwd + path.sep + 'sahara.json');
+
+      this.options = this.getSaharaOptions();
+
       return this;
     };
 
@@ -58,21 +75,30 @@ const command = module.exports = (function() {
       return this;
     };
 
-    Sahara.prototype.setCommandSettings = function() {
-      // Loads Sahara settings file if available
-      let settingsFilePath = path.normalize(process.cwd() + path.sep + 'sahara.json');
-      try {
-        fs.accessSync(settingsFilePath);
+    Sahara.prototype.getSaharaOptions = function() {
+      let options = this.options;
+
+      if (options) {
+        // Options were already loaded.
+        this.logger.info(messages.info.sahara.projectDirectory);
+      } else {
+        // Loads Sahara options file if available.
+        let optionsFilePath = this.configurationFilePath;
         try {
-          this.settings = require(settingsFilePath);
-          this.logger.info(messages.info.sahara.projectDirectory);
+          fs.accessSync(optionsFilePath);
+          try {
+            options = require(optionsFilePath);
+            this.logger.info(messages.info.sahara.projectDirectory);
+          } catch(exception) {
+            this.logger.error(messages.error.sahara.configurationFile, exception.message);
+          }
         } catch(exception) {
-          this.logger.error(messages.error.sahara.configurationFile, exception.message);
+          this.logger.info(messages.info.sahara.notAProjectDirectory);
         }
-      } catch(exception) {
-        this.logger.info(messages.info.sahara.notAProjectDirectory);
       }
-      return this;
+
+      // returns current sahara options
+      return options;
     };
 
     Sahara.prototype.exec = function(args, apiCall) {
@@ -83,14 +109,13 @@ const command = module.exports = (function() {
     };
 
     Sahara.prototype.getAbsolutePathTo = function(file) {
-      let basePath = this.workingDirectory + path.sep;
-      let normalizedPath = path.normalize(basePath + file);
+      let normalizedPath = path.normalize(this.cwd + file);
       let absolutePath;
       if (normalizedPath) {
         absolutePath = path.resolve(normalizedPath);
       }
       return new Promise((resolve, reject) => {
-        if (absolutePath && absolutePath !== this.workingDirectory) {
+        if (absolutePath && absolutePath !== this.cwd) {
           return resolve(absolutePath);
         } else {
           return reject(messages.error.directory.resolve.replace(/%s/g, normalizedPath));

@@ -37,7 +37,11 @@
       "building": "[IN PROGRESS] Electron Packager is building a release for platform [%s]..."
     },
     "platform": {
-      "prepare": "[IN PROGRESS] Plateform [%s] is being prepared...."
+      "prepare": "[IN PROGRESS] Plateform [%s] is being prepared...",
+      "run": "[IN PROGRESS] Binary for plateform [%s] is about to be run..."
+    },
+    "run": {
+      "packageFound": "[INFO] Application package.json file found."
     },
     "sahara": {
       "verboseEnabled": "[INFO] Sahara running in verbose mode...",
@@ -59,7 +63,8 @@
       "platform": "[ERROR] Platform action could not be done.",
       "prepare": "[ERROR] Could not prepare platform.",
       "compile": "[ERROR] Platform could not be compiled.",
-      "build": "[ERROR] Could not build platform."
+      "build": "[ERROR] Could not build platform.",
+      "run": "[ERROR] Could not run application binary."
     },
     "sahara": {
       "configurationFile": "[ERROR] Check your configuration file. Error(s) detected (%s).",
@@ -76,6 +81,7 @@
     "directory": {
       "resolve": "[ERROR] Could not resolve [%s] directory name.",
       "create": "[ERROR] Could not create [%s] directory.",
+      "fetch": "[ERROR] Could not fetch [%s] directory.",
       "deletion": "[ERROR] Could not delete [%s] directory."
     },
     "template": {
@@ -91,8 +97,14 @@
       "build": "[ERROR] Could not build release for platform [%s] with electron-packager."
     },
     "platform": {
+      "run": "[ERROR] Could not run [%s] application binary.",
       "prepare": "[ERROR] Could not prepare [%s] platform.",
       "invalid": "[ERROR] Platform [%s] is invalid."
+    },
+    "run": {
+      "noBuildDirectory" : "[ERROR] Could not find a build directory.",
+      "packageFile": "[ERROR] Check your application package file. Error(s) detected (%s).",
+      "packageFileNotFound": "[ERROR] Your application package file could not be found in [%s]."
     },
     "help": {
       "missingSaharaHelpFile": "[ERROR] Sahara main help file missing or inaccessible."
@@ -104,7 +116,8 @@
       "prepare": "[DONE] Platform has been successfully prepared !",
       "compile": "[DONE] Platform has been successfully compiled !",
       "platform": "[DONE] Platform action has been successful !",
-      "build": "[DONE] Platform has been built successfully !"
+      "build": "[DONE] Platform has been built successfully !",
+      "run": "[DONE] Application binary has been run successfully !"
     },
     "directory": {
       "created": "[DONE] Directory [%s] created !"
@@ -116,6 +129,7 @@
       "cloned": "[DONE] Project template cloned from git repo !"
     },
     "platform": {
+      "run": "[DONE] Application binary for platform [%s] has been successfully run !",
       "prepare": "[DONE] Plateform [%s] has been successfully prepared !"
     },
     "packager": {

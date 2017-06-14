@@ -31,7 +31,7 @@ const compile = module.exports = (function() {
     this.exec = function(args) {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args) && args.length > 0) {
-          if (this.settings) {
+          if (this.options) {
             let platform = args.shift() || process.platform;
 
             if (this[`${platform}Compile`]) {
