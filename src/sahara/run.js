@@ -138,8 +138,10 @@ const run = module.exports = (function() {
                 switch(platform) {
                   case 'linux':
                     binary = `${binary}`;
+                    break;
                   case 'win32':
                     binary = `${binary}.exe`;
+                    break;
                   case 'darwin':
                     binary = `${binary}.app`;
                     break;
