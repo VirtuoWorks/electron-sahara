@@ -3,6 +3,7 @@
 [![Build Status][travis-image]][travis-url]
 [![Test Coverage][coveralls-image]][coveralls-url]
 [![Codacy Badge][codacy-image]][codacy-url]
+[![Dependency Status][dependencyci-image]][dependencyci-url]
 
 # Electron Sahara
 
@@ -119,3 +120,5 @@ From the command line, run ``sahara run <platform name>``.
 [coveralls-url]: https://coveralls.io/github/VirtuoWorks/electron-sahara?branch=master
 [codacy-image]: https://api.codacy.com/project/badge/Grade/a72b34b2d9194fe68a827c0a38f97aa9
 [codacy-url]: https://www.codacy.com/app/VirtuoWorks/electron-sahara?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=VirtuoWorks/electron-sahara&amp;utm_campaign=Badge_Grade
+[dependencyci-image]: https://dependencyci.com/github/VirtuoWorks/electron-sahara/badge
+[dependencyci-url]: https://dependencyci.com/github/VirtuoWorks/electron-sahara

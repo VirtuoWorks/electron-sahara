@@ -128,7 +128,7 @@ describe('Sahara API', function() {
     });
     it('Should be able to create a project with a valid directory name.', function(done) {
       this.timeout(0);
-      let dir = 'MyApp';
+      let dir = '../MyApp';
       sahara.cli().create([dir]).then(function(success) {
         done();
       }, function(error) {
@@ -141,7 +141,7 @@ describe('Sahara API', function() {
     });
     it('Should be able to create a project with a valid directory name and a valid template name.', function(done) {
       this.timeout(0);
-      let dir = 'MyApp';
+      let dir = '../MyApp';
       let template = 'vanilla';
       sahara.cli().create([dir, template]).then(function(success) {
         done();
@@ -190,7 +190,7 @@ describe('Sahara API', function() {
     });
     it('Should not be able to create a project with a valid directory name and an invalid template name.', function(done) {
       this.timeout(0);
-      let dir = 'MyApp';
+      let dir = '../MyApp';
       let invalidTemplate = 'unknown';
       sahara.cli().create([dir, invalidTemplate]).then(function(success) {
         done(new Error('Project created with unknown template.'));

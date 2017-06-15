@@ -17,6 +17,9 @@ const fs = require('fs');
 const path = require('path');
 const childProcess = require('child_process');
 
+// Third party modules.
+const sanitize = require('sanitize-filename');
+
 // Electron Sahara modules.
 const command = require('./sahara');
 const build = require('./build');
@@ -115,7 +118,9 @@ const run = module.exports = (function() {
       return new Promise((resolve, reject) => {
         this.packageInfo = this.getPackageInformation(platform);
         if (this.packageInfo && this.packageInfo.name) {
-          let binaryName = this.packageInfo.name;
+          let binaryName = sanitize(this.packageInfo.name, {
+            replacement: '-'
+          });
           this.buildPath = path.normalize(this.platformsPath + platform + path.sep + this.buildDirectory);
           fs.readdir(this.buildPath, (error, files) => {
             if (error) {
