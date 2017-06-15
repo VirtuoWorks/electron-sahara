@@ -30,10 +30,10 @@ const requirements = module.exports = (function() {
 
     this.exec = function(args) {
       return new Promise((resolve, reject) => {
-        this.getNodeVersion()
-        .then((nodeVersion) => {
-          this.getGitVersion()
-          .then((gitVersion) => {
+        this.getGitVersion()
+        .then((gitVersion) => {
+          this.getNodeVersion()
+          .then((nodeVersion) => {
             this.versions.git = gitVersion;
             this.versions.node = nodeVersion;
             this.platform.current = process.platform;

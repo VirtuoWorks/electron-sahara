@@ -25,7 +25,6 @@ const command = require('./sahara');
 const build = require('./build');
 const messages = require('./sahara/messages');
 
-
 /**
  * Expose `Run` object.
  * @public
