@@ -41,40 +41,28 @@ exports = module.exports = (function(argv) {
     };
 
     Cli.prototype.exec = function(argv) {
-      this.logger.info(messages.info.exec);
+      this.argv = this.extractCliOptionsFrom(argv);
       return new Promise((resolve, reject) => {
-        this.argv = this.extractCliOptionsFrom(argv);
+        this.logger.debug(messages.info.exec);
         if (Array.isArray(this.argv) && this.argv.length > 2) {
           if (this[this.argv[2]]) {
             this.command = this.argv[2];
             this.args = this.argv.slice(3, this.argv.length) || [];
-            if (this.args.length) {
-                if (fs.existsSync(`${__dirname}/sahara/${this.command}.js`)) {
-                  this.logger.debug(messages.info.command[this.command]);
-                  require(`./sahara/${this.command}.js`)
-                  .setCliOptions(this.options)
-                  .exec(this.args, this.apiCall)
-                  .then((success) => {
-                    return resolve(success);
-                  }, (error) => {
-                    return reject(error);
-                  });
-                } else {
-                  this.logger.error(messages.error.command.notFound);
-                  require('./sahara/help')
-                  .setCliOptions(this.options)
-                  .exec(this.args)
-                  .then((success) => {
-                    return resolve(success);
-                  }, (error) => {
-                    return reject(error);
-                  });
-                }
+            if (fs.existsSync(`${__dirname}/sahara/${this.command}.js`)) {
+              this.logger.debug(messages.info.command[this.command]);
+              require(`./sahara/${this.command}.js`)
+              .setCliOptions(this.options)
+              .exec(this.args, this.apiCall)
+              .then((success) => {
+                return resolve(success);
+              }, (error) => {
+                return reject(error);
+              });
             } else {
-              this.logger.error(messages.error.argument.missing);
+              this.logger.error(messages.error.command.notFound);
               require('./sahara/help')
               .setCliOptions(this.options)
-              .exec([this.command])
+              .exec(this.args)
               .then((success) => {
                 return resolve(success);
               }, (error) => {

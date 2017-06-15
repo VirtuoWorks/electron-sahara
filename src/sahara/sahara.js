@@ -20,7 +20,7 @@ const path = require('path');
 const ora = require('ora');
 const del = require('del');
 const chalk = require('chalk');
-const prompt = require('prompt');
+const inquirer = require('inquirer');
 
 // Electron Sahara modules.
 const logger = require('./sahara/logger');
@@ -124,7 +124,7 @@ const command = module.exports = (function() {
     };
 
     Sahara.prototype.createDirectory = function(absolutePath) {
-      this.logger.info(messages.info.directory.create, absolutePath);
+      this.logger.debug(messages.info.directory.create, absolutePath);
 
       return new Promise((resolve, reject) => {
         if (absolutePath) {
@@ -160,45 +160,35 @@ const command = module.exports = (function() {
                 return reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
               });
             } else {
-              prompt.start();
-              prompt.get({
-                description: messages.prompt.directory.deletion.replace(/%s/g, paths.join(', ')),
-                type: 'string',
-                pattern: /^(y|yes|n|no)$/i,
-                message: 'Wrong input',
-                required: true
-              }, (error, result) => {
-                if (error) {
-                  return reject(messages.error.command.aborted);
+              inquirer.prompt([{
+                default: false,
+                type: 'confirm',
+                name: 'overwrite',
+                message: chalk.yellow(messages.prompt.directory.deletion.replace(/%s/g, paths.join(', ')))
+              }]).then((answers) => {
+                if (answers.overwrite) {
+                  let spinner = ora({
+                    text: chalk.yellow(messages.info.directory.deletion.replace(/%s/g, absolutePath)),
+                    spinner: 'pong',
+                    color: 'yellow'
+                  });
+                  spinner.start();
+                  del([absolutePath])
+                  .then((paths) => {
+                    spinner.succeed(chalk.green(messages.info.directory.deletion.replace(/%s/g, absolutePath)));
+                    return resolve(messages.error.directory.deletion.replace(/%s/g, absolutePath));
+                  }).catch(function(error) {
+                    spinner.fail(chalk.red(messages.info.directory.deletion.replace(/%s/g, absolutePath)));
+                    return reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
+                  });
                 } else {
-                  if (result.question) {
-                    if (result.question.toLowerCase()[0] === 'y') {
-                      let spinner = ora({
-                        text: chalk.yellow(messages.info.directory.deletion.replace(/%s/g, absolutePath)),
-                        spinner: 'pong',
-                        color: 'yellow'
-                      });
-                      spinner.start();
-                      del([absolutePath])
-                      .then((paths) => {
-                        spinner.succeed(chalk.green(messages.info.directory.deletion.replace(/%s/g, absolutePath)));
-                        return resolve(messages.error.directory.deletion.replace(/%s/g, absolutePath));
-                      }).catch(function(error) {
-                        spinner.fail(chalk.red(messages.info.directory.deletion.replace(/%s/g, absolutePath)));
-                        return reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
-                      });
-                    } else {
-                      return reject(messages.error.command.aborted);
-                    }
-                  } else {
-                    return reject(messages.error.command.aborted);
-                  }
+                  return reject(messages.error.command.aborted);
                 }
               });
             }
           } else {
             return resolve();
-          };
+          }
         }).catch(function(error) {
           return reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
         });

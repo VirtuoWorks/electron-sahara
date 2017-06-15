@@ -105,7 +105,7 @@ From the command line, run ``sahara run <platform name>``.
  - [Node.js](https://nodejs.org/en/download/) (>=4.7)
  - [Git](https://git-scm.com/downloads)
 
- ## License
+## License
 
 [MIT](LICENSE)
 
@@ -114,7 +114,7 @@ From the command line, run ``sahara run <platform name>``.
 [downloads-image]: https://img.shields.io/npm/dm/@virtuoworks/electron-sahara.svg
 [downloads-url]: https://www.npmjs.com/package/@virtuoworks/electron-sahara
 [travis-image]: https://api.travis-ci.org/VirtuoWorks/electron-sahara.svg?branch=master
-[travis-url]: https://travis-ci.org/VirtuoWorks/electron-sahara.svg
+[travis-url]: https://travis-ci.org/VirtuoWorks/electron-sahara
 [coveralls-image]: https://coveralls.io/repos/github/VirtuoWorks/electron-sahara/badge.svg?branch=master&seed=3426236
 [coveralls-url]: https://coveralls.io/github/VirtuoWorks/electron-sahara?branch=master
 [codacy-image]: https://api.codacy.com/project/badge/Grade/a72b34b2d9194fe68a827c0a38f97aa9

@@ -30,9 +30,13 @@ const compile = module.exports = (function() {
 
     this.exec = function(args) {
       return new Promise((resolve, reject) => {
-        if (Array.isArray(args) && args.length > 0) {
+        if (Array.isArray(args)) {
           if (this.options) {
             let platform = args.shift() || process.platform;
+
+            if (!args.length) {
+              this.logger.debug(messages.info.platform.current, platform);
+            }
 
             if (this[`${platform}Compile`]) {
               this.requireElectronPackager()

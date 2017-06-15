@@ -36,9 +36,13 @@ const run = module.exports = (function() {
 
     this.exec = function(args) {
       return new Promise((resolve, reject) => {
-        if (Array.isArray(args) && args.length > 0) {
+        if (Array.isArray(args)) {
           if (this.options) {
             let platform = args.shift() || process.platform;
+
+            if (!args.length) {
+              this.logger.debug(messages.info.platform.current, platform);
+            }
 
             if (this[`${platform}Run`]) {
               build.exec([platform])
@@ -92,12 +96,12 @@ const run = module.exports = (function() {
           fs.accessSync(packageInfoFilePath);
           try {
             packageInfo = require(packageInfoFilePath);
-            this.logger.info(messages.info.run.packageFound);
+            this.logger.debug(messages.info.run.packageFound);
           } catch(exception) {
             this.logger.error(messages.error.run.packageFile, exception.message);
           }
         } catch(exception) {
-          this.logger.error(messages.error.run.packageFileNotFound.replace(/%s/g, `${packageInfoFilePath}`));
+          this.logger.error(messages.error.run.packageFileNotFound, packageInfoFilePath);
         }
       }
 
@@ -115,7 +119,7 @@ const run = module.exports = (function() {
           this.buildPath = path.normalize(this.platformsPath + platform + path.sep + this.buildDirectory);
           fs.readdir(this.buildPath, (error, files) => {
             if (error) {
-              this.logger.error(messages.error.directory.fetch.replace(/%s/g, this.buildPath));
+              this.logger.error(messages.error.directory.fetch, this.buildPath);
               return reject(messages.error.platform.run.replace(/%s/g, platform));
             } else {
               let buildDirectory;
@@ -129,7 +133,7 @@ const run = module.exports = (function() {
                       return true;
                     }
                   } catch(exception) {
-                    this.logger.notice(messages.error.directory.fetch.replace(/%s/g, toCheck));
+                    this.logger.notice(messages.error.directory.fetch, toCheck);
                   }
                 }
               });

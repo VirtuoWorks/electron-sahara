@@ -20,7 +20,7 @@
       "available": "[IN PROGRESS] Command module has been found..."
     },
     "directory": {
-      "create": "[IN PROGRESS] Creating directory [%s]...",
+      "create": "[INFO] Creating directory [%s]...",
       "deletion": "[IN PROGRESS] Deleting project directory [%s]..."
     },
     "files": {
@@ -38,6 +38,7 @@
     },
     "platform": {
       "prepare": "[IN PROGRESS] Plateform [%s] is being prepared...",
+      "current": "[INFO] No platform set. Using current [%s] platform.",
       "run": "[IN PROGRESS] Binary for plateform [%s] is about to be run..."
     },
     "run": {
@@ -51,7 +52,7 @@
   },
   "prompt": {
     "directory": {
-      "deletion": "[CONFIRM] (y|yes|n|no) Are you sure you want to overwrite [%s] (y|yes|n|no) ? "
+      "deletion": "[CONFIRM] Are you sure you want to overwrite [%s] ? "
     }
   },
   "error": {

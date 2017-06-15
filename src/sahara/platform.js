@@ -26,9 +26,13 @@ const platform = module.exports = (function() {
 
     this.exec = function(args) {
       return new Promise((resolve, reject) => {
-        if (Array.isArray(args) && args.length > 0) {
+        if (Array.isArray(args)) {
           let action = args.shift();
           let platform = args.shift() || process.platform;
+
+          if (!args.length) {
+            this.logger.debug(messages.info.platform.current, platform);
+          }
 
           if (this[`${action}Platform`]) {
             this[`${action}Platform`](platform)
