@@ -88,21 +88,21 @@
       "notImplemented": "[ERROR] This action is not yet implemented."
     },
     "directory": {
-      "resolve": "[ERROR] Could not resolve [%s] directory name.",
-      "create": "[ERROR] Could not create [%s] directory.",
       "fetch": "[ERROR] Could not fetch [%s] directory.",
-      "deletion": "[ERROR] Could not delete [%s] directory."
+      "create": "[ERROR] Could not create [%s] directory.",
+      "deletion": "[ERROR] Could not delete [%s] directory.",
+      "resolve": "[ERROR] Could not resolve [%s] directory name."
     },
     "template": {
-      "clone": "[ERROR] Could not clone template from git repo.",
-      "notFound": "[ERROR] Could not find this template."
+      "notFound": "[ERROR] Could not find this template.",
+      "clone": "[ERROR] Could not clone template from Git repo."
     },
     "dependencies": {
       "install": "[ERROR] Could not install project dependencies."
     },
     "packager": {
-      "resolve": "[ERROR] Could not resolve electron-packager path.",
       "require": "[ERROR] Could not load electron-packager module.",
+      "resolve": "[ERROR] Could not resolve electron-packager path.",
       "build": "[ERROR] Could not build release for platform [%s] with electron-packager."
     },
     "platform": {

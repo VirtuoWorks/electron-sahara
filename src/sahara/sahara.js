@@ -149,14 +149,17 @@ const command = module.exports = (function() {
 
     Sahara.prototype.deleteDirectory = function(absolutePath, force) {
       return new Promise((resolve, reject) => {
-       del([absolutePath], {dryRun: true})
-       .then((paths) => {
+        del([absolutePath], {
+          dryRun: true
+        })
+        .then((paths) => {
           if (paths.length) {
             if (force || this.apiCall) {
               del([absolutePath])
               .then((paths) => {
                 return resolve(messages.info.directory.deletion.replace(/%s/g, absolutePath));
-              }).catch(function(error) {
+              }).catch((error) => {
+                this.logger.error(error);
                 return reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
               });
             } else {
@@ -177,8 +180,9 @@ const command = module.exports = (function() {
                   .then((paths) => {
                     spinner.succeed(chalk.green(messages.info.directory.deletion.replace(/%s/g, absolutePath)));
                     return resolve(messages.error.directory.deletion.replace(/%s/g, absolutePath));
-                  }).catch(function(error) {
+                  }).catch((error) => {
                     spinner.fail(chalk.red(messages.info.directory.deletion.replace(/%s/g, absolutePath)));
+                    this.logger.error(error);
                     return reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
                   });
                 } else {
@@ -189,7 +193,8 @@ const command = module.exports = (function() {
           } else {
             return resolve();
           }
-        }).catch(function(error) {
+        }).catch((error) => {
+          this.logger.error(error);
           return reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
         });
       });

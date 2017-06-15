@@ -95,7 +95,7 @@ describe('Sahara', function() {
         }
       });
     });
-    it('Should provide help for an unknown command.', function(done) {
+    it('Should provide help even for an unknown command.', function(done) {
       this.timeout(0);
       childProcess.exec('node ./bin/sahara help unknown', function(error, stdout, stderr) {
         if (error) {
@@ -128,28 +128,28 @@ describe('Sahara API', function() {
     });
     it('Should be able to create a project with a valid directory name.', function(done) {
       this.timeout(0);
-      let dir = '../MyApp';
-      sahara.cli().create([dir]).then(function(success) {
+      let dir = 'MyApp';
+      sahara.cli().create([dir, '-d']).then(function(success) {
         done();
       }, function(error) {
         if (error === messages.error.command.create) {
-          done(new Error('Project was not created, but Sahara reported an error.'));
+          done(new Error('Project was not created, Sahara reported an error.'));
         } else {
-          done(new Error('Project was not created. Sahara crashed.'));
+          done(new Error('Project was not created. Sahara did not report an error.'));
         }
       });
     });
     it('Should be able to create a project with a valid directory name and a valid template name.', function(done) {
       this.timeout(0);
-      let dir = '../MyApp';
+      let dir = 'MyApp';
       let template = 'vanilla';
-      sahara.cli().create([dir, template]).then(function(success) {
+      sahara.cli().create([dir, template, '-d']).then(function(success) {
         done();
       }, function(error) {
         if (error === messages.error.command.create) {
-          done(new Error('Project was not created, but Sahara reported an error.'));
+          done(new Error('Project was not created, Sahara reported an error.'));
         } else {
-          done(new Error('Project was not created. Sahara crashed.'));
+          done(new Error('Project was not created. Sahara did not report an error.'));
         }
       });
     });
