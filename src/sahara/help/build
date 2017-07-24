@@ -27,6 +27,7 @@ Alias for prepare && compile commands
     PLATFORM ......................... Choose between win32, darwin or linux
 
 Examples
+
     sahara run win32
     sahara run linux
     sahara run darwin

@@ -27,6 +27,7 @@ Copy files into platform for building
     PLATFORM ......................... Choose between win32, darwin or linux
 
 Examples
+
     sahara prepare win32
     sahara prepare linux
     sahara prepare darwin

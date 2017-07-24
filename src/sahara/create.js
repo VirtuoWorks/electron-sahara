@@ -93,7 +93,9 @@ const create = module.exports = (function() {
                   return reject(messages.error.command.create);
                 });
               }, (error) => {
-                this.logger.error(error);
+                if (error) {
+                  this.logger.error(error);
+                }
                 return reject(messages.error.command.create);
               });
             } else {

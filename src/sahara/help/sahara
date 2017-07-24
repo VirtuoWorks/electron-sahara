@@ -51,6 +51,7 @@ Options
     -d, --verbose ...................... debug mode produces verbose log output for all activity,
 
 Examples
+
     sahara create myApp vanilla
     sahara platform add win32
     sahara requirements win32

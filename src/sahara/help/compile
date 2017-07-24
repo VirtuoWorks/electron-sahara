@@ -27,6 +27,7 @@ Build a release for a platform
     PLATFORM ......................... Choose between win32, darwin or linux
 
 Examples
+
     sahara compile win32
     sahara compile linux
     sahara compile darwin

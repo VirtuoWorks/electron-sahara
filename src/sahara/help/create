@@ -31,4 +31,5 @@ Options
     TEMPLATE ... Choose between vanilla, angular2, react or vuejs
 
 Example
+
     sahara create MyApp react

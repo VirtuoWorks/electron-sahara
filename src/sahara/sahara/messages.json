@@ -69,7 +69,8 @@
       "compile": "[ERROR] Platform could not be compiled.",
       "build": "[ERROR] Could not build platform.",
       "run": "[ERROR] Could not run application binary.",
-      "requirements": "[ERROR] Could not check requirements."
+      "requirements": "[ERROR] Could not check requirements.",
+      "clean": "[ERROR] Could not clean build directory."
     },
     "sahara": {
       "configurationFile": "[ERROR] Check your configuration file. Error(s) detected (%s).",
@@ -127,10 +128,12 @@
       "platform": "[DONE] Platform action has been successful !",
       "build": "[DONE] Platform has been built successfully !",
       "run": "[DONE] Application binary has been run successfully !",
-      "requirements": "[DONE] Requirements were successfully checked !"
+      "requirements": "[DONE] Requirements were successfully checked !",
+      "clean": "[DONE] Project build artifacts successfully removed !"
     },
     "directory": {
-      "created": "[DONE] Directory [%s] created !"
+      "created": "[DONE] Directory [%s] created !",
+      "deleted": "[DONE] Directory [%s] deleted !"
     },
     "dependencies": {
       "install": "[DONE] Project dependencies installed !"

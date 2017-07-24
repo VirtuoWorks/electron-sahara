@@ -27,6 +27,7 @@ Synopsis
     sahara
 
 Examples
+
     sahara help run
     sahara help sahara
     sahara help prepare

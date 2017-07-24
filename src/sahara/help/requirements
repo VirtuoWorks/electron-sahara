@@ -20,5 +20,10 @@
                                    *
 Synopsis
 
-Sorry, we don't have written a proper
-help for this command yet...
+    sahara requirements
+
+Check Electron Sahara requirements
+
+Example
+
+    sahara requirements

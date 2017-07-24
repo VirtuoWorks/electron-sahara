@@ -108,7 +108,7 @@ const command = module.exports = (function() {
       });
     };
 
-    Sahara.prototype.getAbsolutePathTo = function(file) {
+    Sahara.prototype.getAbsolutePathTo = function(file, silent) {
       let normalizedPath = path.normalize(this.cwd + file);
       let absolutePath;
       if (normalizedPath) {
@@ -116,7 +116,16 @@ const command = module.exports = (function() {
       }
       return new Promise((resolve, reject) => {
         if (absolutePath && absolutePath !== this.cwd) {
-          return resolve(absolutePath);
+          fs.access(absolutePath, (error) => {
+            if (error) {
+              if (!silent) {
+                this.logger.error(error);
+              }
+              return reject(messages.error.directory.resolve.replace(/%s/g, normalizedPath));
+            } else {
+              return resolve(absolutePath);
+            }
+          });
         } else {
           return reject(messages.error.directory.resolve.replace(/%s/g, normalizedPath));
         }
@@ -157,7 +166,7 @@ const command = module.exports = (function() {
             if (force || this.apiCall) {
               del([absolutePath])
               .then((paths) => {
-                return resolve(messages.info.directory.deletion.replace(/%s/g, absolutePath));
+                return resolve(messages.done.directory.deleted.replace(/%s/g, absolutePath));
               }).catch((error) => {
                 this.logger.error(error);
                 return reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
@@ -179,7 +188,7 @@ const command = module.exports = (function() {
                   del([absolutePath])
                   .then((paths) => {
                     spinner.succeed(chalk.green(messages.info.directory.deletion.replace(/%s/g, absolutePath)));
-                    return resolve(messages.error.directory.deletion.replace(/%s/g, absolutePath));
+                    return resolve(messages.done.directory.deleted.replace(/%s/g, absolutePath));
                   }).catch((error) => {
                     spinner.fail(chalk.red(messages.info.directory.deletion.replace(/%s/g, absolutePath)));
                     this.logger.error(error);
