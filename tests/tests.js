@@ -4,17 +4,17 @@ let assert = require('assert');
 let childProcess = require('child_process');
 
 describe('Sahara', function() {
-  describe('Sahara messages.json map', function() {
-    it('Should be required', function() {
-      assert.doesNotThrow(function() {
-        require('../src/sahara/sahara/messages');
-      });
-    });
-  });
   describe('Sahara options.json map', function() {
     it('Should be required', function() {
       assert.doesNotThrow(function() {
         require('../src/sahara/sahara/options');
+      });
+    });
+  });
+  describe('Sahara messages.json map', function() {
+    it('Should be required', function() {
+      assert.doesNotThrow(function() {
+        require('../src/sahara/sahara/messages');
       });
     });
   });
@@ -36,7 +36,7 @@ describe('Sahara', function() {
   it('Should provide an object when required for direct API use.', function() {
     assert.strictEqual(typeof require('../index.js'), 'object');
   });
-  let cliCommands = ['create', 'start', 'help', 'info', 'requirements', 'platform', 'prepare', 'compile', 'build', 'clean', 'run'];
+  let cliCommands = ['create', 'start', 'help', 'info', 'requirements', 'prepare', 'compile', 'build', 'clean', 'run'];
   let apiMethods = ['exec'].concat(cliCommands);
   describe('API', function() {
     let sahara;
@@ -203,6 +203,7 @@ describe('Sahara API', function() {
       });
     });
   });
+
   describe('"start" method', function() {
     it('Should provide a Promise.', function(done) {
       this.timeout(0);
@@ -214,7 +215,9 @@ describe('Sahara API', function() {
         });
       });
     });
+
   });
+
   describe('"help" method', function() {
     it('Should provide a Promise.', function(done) {
       this.timeout(0);
@@ -226,7 +229,9 @@ describe('Sahara API', function() {
         });
       });
     });
+
   });
+
   describe('"info" method', function() {
     it('Should provide a Promise.', function(done) {
       this.timeout(0);
@@ -238,7 +243,9 @@ describe('Sahara API', function() {
         });
       });
     });
+
   });
+
   describe('"requirements" method', function() {
     it('Should provide a Promise.', function(done) {
       this.timeout(0);
@@ -250,19 +257,24 @@ describe('Sahara API', function() {
         });
       });
     });
+
   });
-  describe('"platform" method', function() {
+
+  describe('"prepare" method', function() {
     it('Should provide a Promise.', function(done) {
       this.timeout(0);
       assert.doesNotThrow(function() {
-        sahara.cli().platform([]).then(function(success) {
+        sahara.cli().compile([]).then(function(success) {
           done();
         }, function(error) {
           done();
         });
       });
     });
+
   });
+
+
   describe('"compile" method', function() {
     it('Should provide a Promise.', function(done) {
       this.timeout(0);
@@ -274,7 +286,9 @@ describe('Sahara API', function() {
         });
       });
     });
+
   });
+
   describe('"build" method', function() {
     it('Should provide a Promise.', function(done) {
       this.timeout(0);
@@ -286,7 +300,9 @@ describe('Sahara API', function() {
         });
       });
     });
+
   });
+
   describe('"clean" method', function() {
     it('Should provide a Promise.', function(done) {
       this.timeout(0);
@@ -299,6 +315,7 @@ describe('Sahara API', function() {
       });
     });
   });
+
   describe('"run" method', function() {
     it('Should provide a Promise.', function(done) {
       this.timeout(0);
@@ -310,5 +327,6 @@ describe('Sahara API', function() {
         });
       });
     });
+
   });
 });

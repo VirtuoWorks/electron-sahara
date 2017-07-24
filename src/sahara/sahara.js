@@ -108,7 +108,7 @@ const command = module.exports = (function() {
       });
     };
 
-    Sahara.prototype.getAbsolutePathTo = function(file, silent) {
+    Sahara.prototype.getAbsolutePathTo = function(file, checkAccess) {
       let normalizedPath = path.normalize(this.cwd + file);
       let absolutePath;
       if (normalizedPath) {
@@ -116,16 +116,18 @@ const command = module.exports = (function() {
       }
       return new Promise((resolve, reject) => {
         if (absolutePath && absolutePath !== this.cwd) {
-          fs.access(absolutePath, (error) => {
-            if (error) {
-              if (!silent) {
+          if (checkAccess) {
+            fs.access(absolutePath, (error) => {
+              if (error) {
                 this.logger.error(error);
+                return reject(messages.error.directory.resolve.replace(/%s/g, normalizedPath));
+              } else {
+                return resolve(absolutePath);
               }
-              return reject(messages.error.directory.resolve.replace(/%s/g, normalizedPath));
-            } else {
-              return resolve(absolutePath);
-            }
-          });
+            });
+          } else {
+            return resolve(absolutePath);
+          }
         } else {
           return reject(messages.error.directory.resolve.replace(/%s/g, normalizedPath));
         }

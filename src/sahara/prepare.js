@@ -94,7 +94,7 @@ const prepare = module.exports = (function() {
               this.createDirectory(platformAbsolutePath)
               .then((success) => {
                 this.logger.info(success);
-                this.getAbsolutePathTo('app')
+                this.getAbsolutePathTo('app', true)
                 .then((appAbsolutePath) => {
                   this.getAbsolutePathTo(`platforms/${platform}/platform_app`)
                   .then((platformAppAbsolutePath) => {

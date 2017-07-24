@@ -1,6 +1,9 @@
 .idea
 .DS_Store
 
+MyApp
+MyApp/*
+
 npm-debug.log
 .coveralls.yml
 

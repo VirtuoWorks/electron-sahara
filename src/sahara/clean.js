@@ -46,7 +46,7 @@ const clean = module.exports = (function() {
             }
 
             toDelete.forEach((path, index) => {
-              this.getAbsolutePathTo(path, true)
+              this.getAbsolutePathTo(path)
               .then((absolutePath) => {
                 this.logger.info(absolutePath);
                 this.deleteDirectory(absolutePath).then((success) => {

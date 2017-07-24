@@ -82,7 +82,7 @@ const compile = module.exports = (function() {
 
       return new Promise((resolve, reject) => {
         try {
-          this.getAbsolutePathTo('node_modules/electron-packager')
+          this.getAbsolutePathTo('node_modules/electron-packager', true)
           .then((electronPackagerPath) => {
             try {
               this.electronPackager = require(electronPackagerPath);
@@ -102,7 +102,7 @@ const compile = module.exports = (function() {
     this.compilePlatform = function(platform, options) {
       options = options || {};
       return new Promise((resolve, reject) => {
-        this.getAbsolutePathTo(`platforms/${platform}/platform_app`)
+        this.getAbsolutePathTo(`platforms/${platform}/platform_app`, true)
         .then((sourceDirectory) => {
           this.getAbsolutePathTo(`platforms/${platform}/build`)
           .then((outputDirectory) => {
