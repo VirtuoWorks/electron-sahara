@@ -5,7 +5,7 @@
   "description": "Electron Sahara : Command line utility for electron",
   "main": "index.js",
   "engines": {
-    "node": ">=4.7.0"
+    "node": ">=6.9.0"
   },
   "bin": {
     "sahara": "./bin/sahara"
