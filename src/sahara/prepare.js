@@ -19,7 +19,7 @@ const ncp = require('ncp').ncp;
 
 // Electron Sahara modules.
 const command = require('./sahara');
-const messages = require('./sahara/messages');
+const message = require('./sahara/message');
 
 /**
  * Expose `Prepare` object.
@@ -31,119 +31,155 @@ const prepare = module.exports = (function() {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args)) {
           if (this.options) {
-            let platform = args.shift() || process.platform;
+            let [platform] = args || [process.platform];
 
             if (!args.length) {
-              this.logger.debug(messages.info.platform.current, platform);
+              this.logger.debug(message.get({
+                topic: 'info',
+                command: 'platform',
+                message: 'current'
+              }), platform);
             }
 
             if (this[`${platform}Prepare`]) {
-              this.getAbsolutePathTo('platforms')
+              return this.getAbsolutePathTo('platforms')
               .then((platformsAbsolutePath) => {
-                this.createDirectory(platformsAbsolutePath)
-                .then((success) => {
-                  if (success) {
-                    this.logger.info(success);
-                  }
-                  this[`${platform}Prepare`]()
-                  .then((success) => {
-                    if (success) {
-                      this.logger.info(success);
-                    }
-                    return resolve(messages.done.command.prepare);
-                  }, (error) => {
-                    if (error) {
-                      this.logger.error(error);
-                    }
-                    return reject(messages.error.command.prepare);
-                  });
-                }, (error) => {
-                  if (error) {
-                    this.logger.error(error);
-                  }
-                  return reject(messages.error.command.prepare);
-                });
-              }, (error) => {
+                return this.createDirectory(platformsAbsolutePath);
+              })
+              .then((success) => {
+                this.logger.info(success);
+                return this[`${platform}Prepare`]();
+              })
+              .then((success) => {
+                this.logger.info(success);
+                return resolve(message.get({
+                  topic: 'done',
+                  command: 'prepare',
+                  message: 'success'
+                }));
+              })
+              .catch((error) => {
                 this.logger.error(error);
-                return reject(messages.error.command.prepare);
+                return reject(message.get({
+                  topic: 'error',
+                  command: 'prepare',
+                  message: 'failure'
+                }));
               });
+
             } else {
-              this.logger.error(messages.error.platform.invalid, platform);
-              return reject(messages.error.command.prepare);
+              this.logger.error(message.get({
+                topic: 'error',
+                command: 'platform',
+                message: 'invalid'
+              }), platform);
             }
           } else {
-            this.logger.error(messages.error.sahara.notAProjectDirectory);
-            return reject(messages.error.command.prepare);
+            this.logger.error(message.get({
+              topic: 'error',
+              command: 'sahara',
+              message: 'notAProjectDirectory'
+            }));
           }
         } else {
-          this.logger.error(messages.error.argument.missing);
-          return reject(messages.error.command.prepare);
+          this.logger.error(message.get({
+            topic: 'error',
+            command: 'argument',
+            message: 'missing'
+          }));
         }
+        return reject(message.get({
+          topic: 'error',
+          command: 'prepare',
+          message: 'failure'
+        }));
       });
     };
 
     this.preparePlatform = function(platform) {
-      this.logger.debug(messages.info.platform.prepare, platform);
+      this.logger.debug(message.get({
+        topic: 'info',
+        command: 'platform',
+        message: 'prepare'
+      }), platform);
 
       return new Promise((resolve, reject) => {
         if (platform && this[`${platform}Prepare`]) {
-          this.getAbsolutePathTo(`platforms/${platform}`)
+          return this.getAbsolutePathTo(`platforms/${platform}`)
           .then((platformAbsolutePath) => {
-            this.deleteDirectory(platformAbsolutePath)
-            .then((success) => {
-              this.createDirectory(platformAbsolutePath)
-              .then((success) => {
-                this.logger.info(success);
-                this.getAbsolutePathTo('app', true)
-                .then((appAbsolutePath) => {
-                  this.getAbsolutePathTo(`platforms/${platform}/platform_app`)
-                  .then((platformAppAbsolutePath) => {
-                    let spinner = ora({
-                      text: chalk.yellow(messages.info.files.copy),
-                      spinner: 'pong',
-                      color: 'yellow'
-                    });
-
-                    spinner.start();
-
-                    ncp(appAbsolutePath, platformAppAbsolutePath, (error) => {
-                      if (error) {
-                        spinner.fail(chalk.red(messages.info.files.copy));
-                        if (error) {
-                          this.logger.error(error);
-                        }
-                        return reject(messages.error.platform.prepare.replace(/%s/g, platform));
-                      } else {
-                        spinner.succeed(chalk.green(messages.info.files.copy));
-                        return resolve(messages.done.platform.prepare.replace(/%s/g, platform));
-                      }
-                    });
-                  }, (error) => {
-                    this.logger.error(error);
-                    return reject(messages.error.platform.prepare.replace(/%s/g, platform));
-                  });
-                }, (error) => {
-                  this.logger.error(error);
-                  return reject(messages.error.platform.prepare.replace(/%s/g, platform));
-                });
-              }, (error) => {
-                if (error) {
-                  this.logger.error(error);
-                }
-                return reject(messages.error.platform.prepare.replace(/%s/g, platform));
-              });
-            }, (error) => {
-              if (error) {
-                this.logger.error(error);
-              }
-              return reject(messages.error.platform.prepare.replace(/%s/g, platform));
+            return Promise.all([
+              platformAbsolutePath,
+              this.deleteDirectory(platformAbsolutePath)
+            ]);
+          })
+          .then(([platformAbsolutePath]) => {
+            return this.createDirectory(platformAbsolutePath);
+          })
+          .then((success) => {
+            this.logger.info(success);
+            return Promise.all([
+              this.getAbsolutePathTo('app', true),
+              this.getAbsolutePathTo(`platforms/${platform}/platform_app`)
+            ]);
+          })
+          .then(([appAbsolutePath, platformAppAbsolutePath]) => {
+            let spinner = ora({
+              text: chalk.yellow(message.get({
+                topic: 'info',
+                command: 'files',
+                message: 'copy'
+              })),
+              spinner: 'pong',
+              color: 'yellow'
             });
-          }, (error) => {
+
+            spinner.start();
+
+            ncp(appAbsolutePath, platformAppAbsolutePath, (error) => {
+              if (error) {
+                spinner.fail(chalk.red(message.get({
+                  topic: 'info',
+                  command: 'files',
+                  message: 'copy'
+                })));
+                this.logger.error(error);
+                return reject(message.get({
+                  topic: 'error',
+                  command: 'platform',
+                  message: 'prepare',
+                  replacement: platform
+                }));
+              } else {
+                spinner.succeed(chalk.green(message.get({
+                  topic: 'info',
+                  command: 'files',
+                  message: 'copy'
+                })));
+                return resolve(message.get({
+                  topic: 'done',
+                  command: 'platform',
+                  message: 'prepare',
+                  replacement: platform
+                }));
+              }
+            });
+          })
+          .catch((error) => {
             this.logger.error(error);
-            return reject(messages.error.platform.prepare.replace(/%s/g, platform));
+            return reject(message.get({
+              topic: 'error',
+              command: 'platform',
+              message: 'prepare',
+              replacement: platform
+            }));
           });
         } else {
-          return reject(messages.error.platform.prepare.replace(/%s/g, platform));
+          return reject(message.get({
+            topic: 'error',
+            command: 'platform',
+            message: 'prepare',
+            replacement: platform
+          }));
         }
       });
     };

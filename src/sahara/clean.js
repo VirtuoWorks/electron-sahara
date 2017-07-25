@@ -17,7 +17,7 @@ const path = require('path');
 
 // Electron Sahara modules.
 const command = require('./sahara');
-const messages = require('./sahara/messages');
+const message = require('./sahara/message');
 
 /**
  * Expose `Clean` object.
@@ -31,10 +31,14 @@ const clean = module.exports = (function() {
         if (Array.isArray(args)) {
           if (this.options) {
             let toDelete = [];
-            let platform = args.shift() || process.platform;
+            let [platform] = args || [process.platform];
 
             if (!args.length) {
-              this.logger.debug(messages.info.platform.current, platform);
+              this.logger.debug(message.get({
+                topic: 'info',
+                command: 'platform',
+                message: 'current'
+              }), platform);
             }
 
             if (platform === 'all') {
@@ -45,35 +49,50 @@ const clean = module.exports = (function() {
               toDelete.push('platforms' + path.sep + platform + path.sep + 'build');
             }
 
+            let iterable = []
             toDelete.forEach((path, index) => {
-              this.getAbsolutePathTo(path)
-              .then((absolutePath) => {
-                this.logger.info(absolutePath);
-                this.deleteDirectory(absolutePath).then((success) => {
-                  if (success) {
-                    this.logger.info(success);
-                  }
-                }, (error) => {
-                  if (error) {
-                    this.logger.debug(error);
-                  }
+              iterable.push(new Promise((resolve, reject) => {
+                return this.getAbsolutePathTo(path)
+                .then((absolutePath) => {
+                  return this.deleteDirectory(absolutePath, true);
+                })
+                .then((success) => {
+                  success && this.logger.info(success);
+                  return resolve();
+                })
+                .catch((error) => {
+                  error && this.logger.debug(error);
+                  return resolve();
                 });
-              }, (error) => {
-                if (error) {
-                  this.logger.debug(error);
-                }
-                return reject(messages.error.command.clean);
-              });
+              }));
             });
-            return resolve(messages.done.command.clean);
+
+            return Promise.all(iterable).then(() => {
+              return resolve(message.get({
+                topic: 'done',
+                command: 'clean',
+                message: 'success'
+              }));
+            });
           } else {
-            this.logger.error(messages.error.sahara.notAProjectDirectory);
-            return reject(messages.error.command.clean);
+            this.logger.error(message.get({
+              topic: 'error',
+              command: 'sahara',
+              message: 'notAProjectDirectory'
+            }));
           }
         } else {
-          this.logger.error(messages.error.argument.missing);
-          return reject(messages.error.command.clean);
+          this.logger.error(message.get({
+            topic: 'error',
+            command: 'argument',
+            message: 'missing'
+          }));
         }
+        return reject(message.get({
+          topic: 'error',
+          command: 'clean',
+          message: 'failure'
+        }));
       });
     };
 

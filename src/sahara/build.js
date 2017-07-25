@@ -16,7 +16,7 @@
 const command = require('./sahara');
 const prepare = require('./prepare');
 const compile = require('./compile');
-const messages = require('./sahara/messages');
+const message = require('./sahara/message');
 
 /**
  * Expose `Build` object.
@@ -28,43 +28,56 @@ const build = module.exports = (function() {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args)) {
           if (this.options) {
-            let platform = args.shift() || process.platform;
+            let [platform] = args || [process.platform];
 
             if (!args.length) {
-              this.logger.debug(messages.info.platform.current, platform);
+              this.logger.debug(message.get({
+                topic: 'info',
+                command: 'platform',
+                message: 'current'
+              }), platform);
             }
 
-            prepare.exec([platform])
+            return prepare.exec([platform])
             .then((success) => {
-              if (success) {
-                this.logger.info(success);
-              }
-              compile.exec([platform])
-              .then((success) => {
-                if (success) {
-                  this.logger.info(success);
-                }
-                return resolve(messages.done.command.build);
-              }, (error) => {
-                if (error) {
-                  this.logger.error(error);
-                }
-                return reject(messages.error.command.build);
-              });
-            }, (error) => {
-              if (error) {
-                this.logger.error(error);
-              }
-              return reject(messages.error.command.build);
+              this.logger.info(success);
+              return compile.exec([platform]);
+            })
+            .then((success) => {
+              this.logger.info(success);
+              return resolve(message.get({
+                topic: 'done',
+                command: 'build',
+                message: 'success'
+              }));
+            })
+            .catch((error) => {
+              this.logger.error(error);
+              return reject(message.get({
+                topic: 'error',
+                command: 'build',
+                message: 'failure'
+              }));
             });
           } else {
-            this.logger.error(messages.error.sahara.notAProjectDirectory);
-            return reject(messages.error.command.build);
+            this.logger.error(message.get({
+              topic: 'error',
+              command: 'sahara',
+              message: 'notAProjectDirectory'
+            }));
           }
         } else {
-          this.logger.error(messages.error.argument.missing);
-          return reject(messages.error.command.build);
+          this.logger.error(message.get({
+            topic: 'error',
+            command: 'argument',
+            message: 'missing'
+          }));
         }
+        return reject(message.get({
+          topic: 'error',
+          command: 'build',
+          message: 'failure'
+        }));
       });
     };
   };

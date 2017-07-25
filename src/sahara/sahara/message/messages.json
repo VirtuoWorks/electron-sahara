@@ -59,18 +59,24 @@
     }
   },
   "error": {
-    "command": {
-      "create": "[ERROR] Project could not be created.",
-      "notFound": "[ERROR] Command not found. Check help below.",
-      "notImplemented": "[ERROR] This command is not yet implemented.",
-      "aborted": "[NOTICE] Operation aborted.",
-      "platform": "[ERROR] Platform action could not be done.",
-      "prepare": "[ERROR] Could not prepare platform.",
-      "compile": "[ERROR] Platform could not be compiled.",
-      "build": "[ERROR] Could not build platform.",
-      "run": "[ERROR] Could not run application binary.",
-      "requirements": "[ERROR] Could not check requirements.",
-      "clean": "[ERROR] Could not clean build directory."
+    "aborted": "[NOTICE] Operation aborted.",
+    "notFound": "[ERROR] Command not found. Check help below.",
+    "notImplemented": "[ERROR] This command is not yet implemented.",
+    "missingArgument": "[ERROR] Missing command argument. Check help below.",
+    "create": {
+      "failure": "[ERROR] Project could not be created."
+    },
+    "prepare": {
+      "failure": "[ERROR] Could not prepare platform."
+    },
+    "compile": {
+      "failure": "[ERROR] Platform could not be compiled."
+    },
+    "build": {
+      "failure": "[ERROR] Could not build platform."
+    },
+    "clean": {
+      "failure": "[ERROR] Could not clean build directory."
     },
     "sahara": {
       "configurationFile": "[ERROR] Check your configuration file. Error(s) detected (%s).",
@@ -78,6 +84,7 @@
       "notAProjectDirectory": "[ERROR] Sahara.json file not found. Not working in a Sahara project directory (e.g. cd pathToMySaharaProject)."
     },
     "requirements": {
+      "failure": "[ERROR] Could not check requirements.",
       "programNotFound": "[ERROR] Could not find or execute [%s].",
       "versionNotFound": "[ERROR] Could not find [%s] version number."
     },
@@ -112,6 +119,7 @@
       "invalid": "[ERROR] Platform [%s] is invalid."
     },
     "run": {
+      "failure": "[ERROR] Could not run application binary.",
       "noBuildDirectory" : "[ERROR] Could not find a build directory.",
       "packageFile": "[ERROR] Check your application package file. Error(s) detected (%s).",
       "packageFileNotFound": "[ERROR] Your application package file could not be found in [%s]."
@@ -121,15 +129,26 @@
     }
   },
   "done": {
-    "command": {
-      "create": "[DONE] New Sahara project created !",
-      "prepare": "[DONE] Platform has been successfully prepared !",
-      "compile": "[DONE] Platform has been successfully compiled !",
-      "platform": "[DONE] Platform action has been successful !",
-      "build": "[DONE] Platform has been built successfully !",
-      "run": "[DONE] Application binary has been run successfully !",
-      "requirements": "[DONE] Requirements were successfully checked !",
-      "clean": "[DONE] Project build artifacts successfully removed !"
+    "create": {
+      "success": "[DONE] New Sahara project created !"
+    },
+    "prepare": {
+      "success": "[DONE] Platform has been successfully prepared !"
+    },
+    "compile": {
+      "success": "[DONE] Platform has been successfully compiled !"
+    },
+    "build": {
+      "success": "[DONE] Platform has been built successfully !"
+    },
+    "run": {
+      "success": "[DONE] Application binary has been run successfully !"
+    },
+    "requirements": {
+      "success": "[DONE] Requirements were successfully checked !"
+    },
+    "clean": {
+      "success": "[DONE] Project build artifacts successfully removed !"
     },
     "directory": {
       "created": "[DONE] Directory [%s] created !",

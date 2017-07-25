@@ -18,7 +18,7 @@ const chalk = require('chalk');
 
 // Electron Sahara modules.
 const command = require('./sahara');
-const messages = require('./sahara/messages');
+const message = require('./sahara/message');
 
 /**
  * Expose `Clean` object.
@@ -32,53 +32,73 @@ const compile = module.exports = (function() {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args)) {
           if (this.options) {
-            let platform = args.shift() || process.platform;
+            let [platform] = args || [process.platform];
 
             if (!args.length) {
-              this.logger.debug(messages.info.platform.current, platform);
+              this.logger.debug(message.get({
+                topic: 'info',
+                command: 'platform',
+                message: 'current'
+              }), platform);
             }
 
             if (this[`${platform}Compile`]) {
-              this.requireElectronPackager()
+              return this.requireElectronPackager()
               .then((success) => {
-                if (success) {
-                  this.logger.info(success);
-                }
-                this[`${platform}Compile`]()
-                .then((success) => {
-                  if (success) {
-                    this.logger.info(success);
-                  }
-                  return resolve(messages.done.command.compile);
-                }, (error) => {
-                  if (error) {
-                    this.logger.error(error);
-                  }
-                  return reject(messages.error.command.compile);
-                });
-              }, (error) => {
-                if (error) {
-                  this.logger.error(error);
-                }
-                return reject(messages.error.command.compile);
+                this.logger.info(success);
+                return this[`${platform}Compile`]();
+              })
+              .then((success) => {
+                this.logger.info(success);
+                return resolve(message.get({
+                  topic: 'done',
+                  command: 'compile',
+                  message: 'success'
+                }));
+              })
+              .catch((error) => {
+                this.logger.error(error);
+                return reject(message.get({
+                  topic: 'error',
+                  command: 'compile',
+                  message: 'failure'
+                }));
               });
             } else {
-              this.logger.error(messages.error.action.invalid);
-              return reject(messages.error.command.compile);
+              this.logger.error(message.get({
+                topic: 'error',
+                command: 'action',
+                message: 'invalid'
+              }));
             }
           } else {
-            this.logger.error(messages.error.sahara.notAProjectDirectory);
-            return reject(messages.error.command.compile);
+            this.logger.error(message.get({
+              topic: 'error',
+              command: 'sahara',
+              message: 'notAProjectDirectory'
+            }));
           }
         } else {
-          this.logger.error(messages.error.argument.missing);
-          return reject(messages.error.command.compile);
+          this.logger.error(message.get({
+            topic: 'error',
+            command: 'argument',
+            message: 'missing'
+          }));
         }
+        return reject(message.get({
+          topic: 'error',
+          command: 'compile',
+          message: 'failure'
+        }));
       });
     };
 
     this.requireElectronPackager = function() {
-      this.logger.debug(messages.info.packager.loading);
+      this.logger.debug(message.get({
+        topic: 'info',
+        command: 'packager',
+        message: 'loading'
+      }));
 
       return new Promise((resolve, reject) => {
         try {
@@ -86,15 +106,31 @@ const compile = module.exports = (function() {
           .then((electronPackagerPath) => {
             try {
               this.electronPackager = require(electronPackagerPath);
-              return resolve(messages.done.packager.loaded);
+              return resolve(message.get({
+                topic: 'done',
+                command: 'packager',
+                message: 'loaded'
+              }));
             } catch (error) {
-              return reject(messages.error.packager.require);
+              return reject(message.get({
+                topic: 'error',
+                command: 'packager',
+                message: 'require'
+              }));
             }
           }, (error) => {
-            return reject(messages.error.packager.resolve);
+            return reject(message.get({
+              topic: 'error',
+              command: 'packager',
+              message: 'resolve'
+            }));
           });
         } catch (error) {
-          return reject(messages.error.packager.resolve);
+          return reject(message.get({
+            topic: 'error',
+            command: 'packager',
+            message: 'resolve'
+          }));
         }
       });
     };
@@ -102,46 +138,74 @@ const compile = module.exports = (function() {
     this.compilePlatform = function(platform, options) {
       options = options || {};
       return new Promise((resolve, reject) => {
-        this.getAbsolutePathTo(`platforms/${platform}/platform_app`, true)
-        .then((sourceDirectory) => {
+        return Promise.all([
+          this.getAbsolutePathTo(`platforms/${platform}/platform_app`, true),
           this.getAbsolutePathTo(`platforms/${platform}/build`)
-          .then((outputDirectory) => {
-            // Target platform
-            options.platform = `${platform}`;
-            // Source directory.
-            options.dir = sourceDirectory;
-            // Target directory
-            options.out = outputDirectory;
+        ])
+        .then(([sourceDirectory, outputDirectory]) => {
+          // Target platform
+          options.platform = `${platform}`;
+          // Source directory.
+          options.dir = sourceDirectory;
+          // Target directory
+          options.out = outputDirectory;
 
-            let spinner = ora({
-              text: chalk.yellow(messages.info.packager.building.replace(/%s/g, `${platform}`)),
-              spinner: 'pong',
-              color: 'yellow'
-            });
-
-            spinner.start();
-
-            this.electronPackager(options, (error, success) => {
-              if (error) {
-                spinner.fail(chalk.red(messages.info.packager.building.replace(/%s/g, `${platform}`)));
-                if (error.message) {
-                  this.logger.error(error.message);
-                } else {
-                  this.logger.error(error);
-                }
-                return reject(messages.error.packager.build.replace(/%s/g, `${platform}`));
-              } else {
-                spinner.succeed(chalk.green(messages.info.packager.building.replace(/%s/g, `${platform}`)));
-                return resolve(messages.done.packager.built.replace(/%s/g, `${platform}`));
-              }
-            });
-          }, (error) => {
-            this.logger.error(error);
-            return reject(messages.error.packager.build.replace(/%s/g, `${platform}`));
+          let spinner = ora({
+            text: chalk.yellow(message.get({
+              topic: 'info',
+              command: 'packager',
+              message: 'building',
+              replacement: platform
+            })),
+            spinner: 'pong',
+            color: 'yellow'
           });
-        }, (error) => {
+
+          spinner.start();
+
+          this.electronPackager(options, (error, success) => {
+            if (error) {
+              spinner.fail(chalk.red(message.get({
+                topic: 'info',
+                command: 'packager',
+                message: 'building',
+                replacement: platform
+              })));
+              if (error.message) {
+                this.logger.error(error.message);
+              } else {
+                this.logger.error(error);
+              }
+              return reject(message.get({
+                topic: 'error',
+                command: 'packager',
+                message: 'build',
+                replacement: platform
+              }));
+            } else {
+              spinner.succeed(chalk.green(message.get({
+                topic: 'info',
+                command: 'packager',
+                message: 'building',
+                replacement: platform
+              })));
+              return resolve(message.get({
+                topic: 'done',
+                command: 'packager',
+                message: 'built',
+                replacement: platform
+              }));
+            }
+          });
+        })
+        .catch((error) => {
           this.logger.error(error);
-          return reject(messages.error.packager.build.replace(/%s/g, `${platform}`));
+          return reject(message.get({
+            topic: 'error',
+            command: 'packager',
+            message: 'build',
+            replacement: platform
+          }));
         });
       });
     };

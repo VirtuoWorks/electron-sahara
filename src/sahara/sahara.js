@@ -24,7 +24,7 @@ const inquirer = require('inquirer');
 
 // Electron Sahara modules.
 const logger = require('./sahara/logger');
-const messages = require('./sahara/messages');
+const message = require('./sahara/message');
 
 /**
  * Expose `Command` object.
@@ -80,7 +80,11 @@ const command = module.exports = (function() {
 
       if (options) {
         // Options were already loaded.
-        this.logger.info(messages.info.sahara.projectDirectory);
+        this.logger.info(message.get({
+          topic: 'info',
+          command: 'sahara',
+          message: 'projectDirectory'
+        }));
       } else {
         // Loads Sahara options file if available.
         let optionsFilePath = this.configurationFilePath;
@@ -88,12 +92,24 @@ const command = module.exports = (function() {
           fs.accessSync(optionsFilePath);
           try {
             options = require(optionsFilePath);
-            this.logger.info(messages.info.sahara.projectDirectory);
+            this.logger.info(message.get({
+              topic: 'info',
+              command: 'sahara',
+              message: 'projectDirectory'
+            }));
           } catch(exception) {
-            this.logger.error(messages.error.sahara.configurationFile, exception.message);
+            this.logger.error(message.get({
+              topic: 'error',
+              command: 'sahara',
+              message: 'configurationFile'
+            }), exception.message);
           }
         } catch(exception) {
-          this.logger.info(messages.info.sahara.notAProjectDirectory);
+          this.logger.info(message.get({
+            topic: 'info',
+            command: 'sahara',
+            message: 'notAProjectDirectory'
+          }));
         }
       }
 
@@ -104,7 +120,10 @@ const command = module.exports = (function() {
     Sahara.prototype.exec = function(args, apiCall) {
       this.apiCall = apiCall || false;
       return new Promise((resolve, reject) => {
-        return reject(messages.error.command.notImplemented);
+        return reject(message.get({
+          topic: 'error',
+          message: 'notImplemented'
+        }));
       });
     };
 
@@ -120,7 +139,12 @@ const command = module.exports = (function() {
             fs.access(absolutePath, (error) => {
               if (error) {
                 this.logger.error(error);
-                return reject(messages.error.directory.resolve.replace(/%s/g, normalizedPath));
+                return reject(message.get({
+                  topic: 'error',
+                  command: 'directory',
+                  message: 'resolve',
+                  replacement: normalizedPath
+                }));
               } else {
                 return resolve(absolutePath);
               }
@@ -129,13 +153,22 @@ const command = module.exports = (function() {
             return resolve(absolutePath);
           }
         } else {
-          return reject(messages.error.directory.resolve.replace(/%s/g, normalizedPath));
+          return reject(message.get({
+            topic: 'error',
+            command: 'directory',
+            message: 'resolve',
+            replacement: normalizedPath
+          }));
         }
       });
     };
 
     Sahara.prototype.createDirectory = function(absolutePath) {
-      this.logger.debug(messages.info.directory.create, absolutePath);
+      this.logger.debug(message.get({
+        topic: 'info',
+        command: 'directory',
+        message: 'create'
+      }), absolutePath);
 
       return new Promise((resolve, reject) => {
         if (absolutePath) {
@@ -145,15 +178,30 @@ const command = module.exports = (function() {
                 if (error) {
                   return reject(error.message);
                 } else {
-                  return resolve(messages.done.directory.created.replace(/%s/g, absolutePath));
+                  return resolve(message.get({
+                    topic: 'done',
+                    command: 'directory',
+                    message: 'created',
+                    replacement: absolutePath
+                  }));
                 }
               });
             } else {
-              return resolve(messages.done.directory.created.replace(/%s/g, absolutePath));
+              return resolve(message.get({
+                topic: 'done',
+                command: 'directory',
+                message: 'created',
+                replacement: absolutePath
+              }));
             }
           });
         } else {
-          return reject(messages.error.directory.create.replace(/%s/g, absolutePath));
+          return reject(message.get({
+            topic: 'error',
+            command: 'directory',
+            message: 'create',
+            replacement: absolutePath
+          }));
         }
       });
     };
@@ -168,36 +216,79 @@ const command = module.exports = (function() {
             if (force || this.apiCall) {
               del([absolutePath])
               .then((paths) => {
-                return resolve(messages.done.directory.deleted.replace(/%s/g, absolutePath));
+                return resolve(message.get({
+                  topic: 'done',
+                  command: 'directory',
+                  message: 'deleted',
+                  replacement: absolutePath
+                }));
               }).catch((error) => {
                 this.logger.error(error);
-                return reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
+                return reject(message.get({
+                  topic: 'error',
+                  command: 'directory',
+                  message: 'deletion',
+                  replacement: absolutePath
+                }));
               });
             } else {
               inquirer.prompt([{
                 default: false,
                 type: 'confirm',
                 name: 'overwrite',
-                message: chalk.yellow(messages.prompt.directory.deletion.replace(/%s/g, paths.join(', ')))
+                message: chalk.yellow(message.get({
+                  topic: 'prompt',
+                  command: 'directory',
+                  message: 'deletion',
+                  replacement: paths.join(', ')
+                }))
               }]).then((answers) => {
                 if (answers.overwrite) {
                   let spinner = ora({
-                    text: chalk.yellow(messages.info.directory.deletion.replace(/%s/g, absolutePath)),
+                    text: chalk.yellow(message.get({
+                      topic: 'info',
+                      command: 'directory',
+                      message: 'deletion',
+                      replacement: absolutePath
+                    })),
                     spinner: 'pong',
                     color: 'yellow'
                   });
                   spinner.start();
                   del([absolutePath])
                   .then((paths) => {
-                    spinner.succeed(chalk.green(messages.info.directory.deletion.replace(/%s/g, absolutePath)));
-                    return resolve(messages.done.directory.deleted.replace(/%s/g, absolutePath));
+                    spinner.succeed(chalk.green(message.get({
+                      topic: 'info',
+                      command: 'directory',
+                      message: 'deletion',
+                      replacement: absolutePath
+                    })));
+                    return resolve(message.get({
+                      topic: 'done',
+                      command: 'directory',
+                      message: 'deleted',
+                      replacement: absolutePath
+                    }));
                   }).catch((error) => {
-                    spinner.fail(chalk.red(messages.info.directory.deletion.replace(/%s/g, absolutePath)));
+                    spinner.fail(chalk.red(message.get({
+                      topic: 'info',
+                      command: 'directory',
+                      message: 'deletion',
+                      replacement: absolutePath
+                    })));
                     this.logger.error(error);
-                    return reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
+                    return reject(message.get({
+                      topic: 'error',
+                      command: 'directory',
+                      message: 'deletion',
+                      replacement: asolutePath
+                    }));
                   });
                 } else {
-                  return reject(messages.error.command.aborted);
+                  return reject(message.get({
+                      topic: 'error',
+                      message: 'aborted'
+                  }));
                 }
               });
             }
@@ -206,7 +297,12 @@ const command = module.exports = (function() {
           }
         }).catch((error) => {
           this.logger.error(error);
-          return reject(messages.error.directory.deletion.replace(/%s/g, absolutePath));
+          return reject(message.get({
+            topic: 'error',
+            command: 'directory',
+            message: 'deletion',
+            replacement: absolutePath
+          }));
         });
       });
     };

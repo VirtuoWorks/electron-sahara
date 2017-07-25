@@ -14,7 +14,7 @@
 
 // Electron Sahara modules.
 const command = require('./sahara');
-const messages = require('./sahara/messages');
+const message = require('./sahara/message');
 
 /**
  * Expose `Info` object.

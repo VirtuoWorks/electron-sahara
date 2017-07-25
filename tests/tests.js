@@ -14,7 +14,7 @@ describe('Sahara', function() {
   describe('Sahara messages.json map', function() {
     it('Should be required', function() {
       assert.doesNotThrow(function() {
-        require('../src/sahara/sahara/messages');
+        require('../src/sahara/sahara/message/messages');
       });
     });
   });
@@ -111,10 +111,12 @@ describe('Sahara', function() {
 describe('Sahara API', function() {
   let sahara;
   let messages;
+
   before(function() {
     sahara = require('../index.js');
-    messages = require('../src/sahara/sahara/messages');
+    messages = require('../src/sahara/sahara/message/messages');
   });
+
   describe('"create" method', function() {
     it('Should provide a Promise.', function(done) {
       this.timeout(0);
@@ -132,7 +134,7 @@ describe('Sahara API', function() {
       sahara.cli().create([dir, '-d']).then(function(success) {
         done();
       }, function(error) {
-        if (error === messages.error.command.create) {
+        if (error === messages.error.create.failure) {
           done(new Error('Project was not created, Sahara reported an error.'));
         } else {
           done(new Error('Project was not created. Sahara did not report an error.'));
@@ -146,7 +148,7 @@ describe('Sahara API', function() {
       sahara.cli().create([dir, template, '-d']).then(function(success) {
         done();
       }, function(error) {
-        if (error === messages.error.command.create) {
+        if (error === messages.error.create.failure) {
           done(new Error('Project was not created, Sahara reported an error.'));
         } else {
           done(new Error('Project was not created. Sahara did not report an error.'));
@@ -168,7 +170,7 @@ describe('Sahara API', function() {
           }
         });
       }, function(error) {
-        if (error === messages.error.command.create) {
+        if (error === messages.error.create.failure) {
           done();
         } else {
           done(new Error('Project was not created, but wrong message was returned.'));
@@ -181,7 +183,7 @@ describe('Sahara API', function() {
       sahara.cli().create([invalidDirName]).then(function(success) {
         done(new Error('Project created in invalid folder.'));
       }, function(error) {
-        if (error === messages.error.command.create) {
+        if (error === messages.error.create.failure) {
           done();
         } else {
           done(new Error('Project was not created, but wrong message was returned.'));
@@ -190,16 +192,55 @@ describe('Sahara API', function() {
     });
     it('Should not be able to create a project with a valid directory name and an invalid template name.', function(done) {
       this.timeout(0);
-      let dir = '../MyApp';
+      let dir = 'MyApp';
       let invalidTemplate = 'unknown';
       sahara.cli().create([dir, invalidTemplate]).then(function(success) {
         done(new Error('Project created with unknown template.'));
       }, function(error) {
-        if (error === messages.error.command.create) {
+        if (error === messages.error.create.failure) {
           done();
         } else {
           done(new Error('Project was not created, but wrong message was returned.'));
         }
+      });
+    });
+  });
+
+  describe('"help" method', function() {
+    it('Should provide a Promise.', function(done) {
+      this.timeout(0);
+      assert.doesNotThrow(function() {
+        sahara.cli().help([]).then(function(success) {
+          done();
+        }, function(error) {
+          done();
+        });
+      });
+    });
+  });
+
+  describe('"requirements" method', function() {
+    it('Should provide a Promise.', function(done) {
+      this.timeout(0);
+      assert.doesNotThrow(function() {
+        sahara.cli().requirements([]).then(function(success) {
+          done();
+        }, function(error) {
+          done();
+        });
+      });
+    });
+  });
+
+  describe('"info" method', function() {
+    it('Should provide a Promise.', function(done) {
+      this.timeout(0);
+      assert.doesNotThrow(function() {
+        sahara.cli().info([]).then(function(success) {
+          done();
+        }, function(error) {
+          done();
+        });
       });
     });
   });
@@ -215,56 +256,26 @@ describe('Sahara API', function() {
         });
       });
     });
-
   });
 
-  describe('"help" method', function() {
+  describe('"run" method', function() {
     it('Should provide a Promise.', function(done) {
       this.timeout(0);
       assert.doesNotThrow(function() {
-        sahara.cli().help([]).then(function(success) {
+        sahara.cli().run([]).then(function(success) {
           done();
         }, function(error) {
           done();
         });
       });
     });
-
-  });
-
-  describe('"info" method', function() {
-    it('Should provide a Promise.', function(done) {
-      this.timeout(0);
-      assert.doesNotThrow(function() {
-        sahara.cli().info([]).then(function(success) {
-          done();
-        }, function(error) {
-          done();
-        });
-      });
-    });
-
-  });
-
-  describe('"requirements" method', function() {
-    it('Should provide a Promise.', function(done) {
-      this.timeout(0);
-      assert.doesNotThrow(function() {
-        sahara.cli().requirements([]).then(function(success) {
-          done();
-        }, function(error) {
-          done();
-        });
-      });
-    });
-
   });
 
   describe('"prepare" method', function() {
     it('Should provide a Promise.', function(done) {
       this.timeout(0);
       assert.doesNotThrow(function() {
-        sahara.cli().compile([]).then(function(success) {
+        sahara.cli().prepare([]).then(function(success) {
           done();
         }, function(error) {
           done();
@@ -314,19 +325,5 @@ describe('Sahara API', function() {
         });
       });
     });
-  });
-
-  describe('"run" method', function() {
-    it('Should provide a Promise.', function(done) {
-      this.timeout(0);
-      assert.doesNotThrow(function() {
-        sahara.cli().run([]).then(function(success) {
-          done();
-        }, function(error) {
-          done();
-        });
-      });
-    });
-
   });
 });

@@ -21,7 +21,7 @@ const chalk = require('chalk');
 // Electron Sahara modules.
 const logger = require('./sahara/sahara/logger');
 const options = require('./sahara/sahara/options');
-const messages = require('./sahara/sahara/messages');
+const message = require('./sahara/sahara/message');
 
 /**
  * Expose `cli` function.
@@ -43,13 +43,20 @@ exports = module.exports = (function(argv) {
     Cli.prototype.exec = function(argv) {
       this.argv = this.extractCliOptionsFrom(argv);
       return new Promise((resolve, reject) => {
-        this.logger.debug(messages.info.exec);
+        this.logger.debug(message.get({
+          topic: 'info',
+          command: 'exec'
+        }));
         if (Array.isArray(this.argv) && this.argv.length > 2) {
           if (this[this.argv[2]]) {
             this.command = this.argv[2];
             this.args = this.argv.slice(3, this.argv.length) || [];
             if (fs.existsSync(`${__dirname}/sahara/${this.command}.js`)) {
-              this.logger.debug(messages.info.command[this.command]);
+              this.logger.debug(message.get({
+                topic: 'info',
+                command: 'command',
+                message: this.command
+              }));
               require(`./sahara/${this.command}.js`)
               .setCliOptions(this.options)
               .exec(this.args, this.apiCall)
@@ -59,7 +66,10 @@ exports = module.exports = (function(argv) {
                 return reject(error);
               });
             } else {
-              this.logger.error(messages.error.command.notFound);
+              this.logger.error(message.get({
+                topic: 'error',
+                message: 'notFound'
+              }));
               require('./sahara/help')
               .setCliOptions(this.options)
               .exec(this.args)
@@ -73,7 +83,10 @@ exports = module.exports = (function(argv) {
             if (this.argv[2]) {
               this.args = this.argv.slice(2, this.argv.length) || [];
             } else {
-              this.logger.error(messages.error.command.notFound);
+              this.logger.error(message.get({
+                topic: 'error',
+                message: 'notFound'
+              }));
               this.args = [];
             }
             require('./sahara/help').setCliOptions(this.options).exec(this.args).then((success) => {
@@ -106,7 +119,11 @@ exports = module.exports = (function(argv) {
             return true;
           }
         });
-        this.logger.debug(messages.info.sahara.verboseEnabled);
+        this.logger.debug(message.get({
+          topic: 'info',
+          command: 'sahara',
+          message: 'verboseEnabled'
+        }));
         return filtered;
       } else {
         return argv;

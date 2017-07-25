@@ -18,7 +18,7 @@ const path = require('path');
 
 // Electron Sahara modules.
 const command = require('./sahara');
-const messages = require('./sahara/messages');
+const message = require('./sahara/message');
 
 /**
  * Expose `Help` object.
@@ -45,7 +45,11 @@ const help = module.exports = (function() {
               filePath = this.helpFilesFolder + path.sep + 'sahara';
               fs.readFile(filePath, (error, data) => {
                 if (error) {
-                  this.logger.error(messages.error.help.missingSaharaHelpFile);
+                  this.logger.error(message.get({
+                      topic: 'error',
+                      command: 'help',
+                      message: 'missingSaharaHelpFile'
+                  }));
                   return reject(error);
                 } else {
                   return resolve(data.toString());
@@ -58,7 +62,11 @@ const help = module.exports = (function() {
                 filePath = this.helpFilesFolder + path.sep + 'sahara';
                 fs.readFile(filePath, (error, data) => {
                   if (error) {
-                    this.logger.error(messages.error.help.missingSaharaHelpFile);
+                    this.logger.error(message.get({
+                      topic: 'error',
+                      command: 'help',
+                      message: 'missingSaharaHelpFile'
+                    }));
                     return reject(error);
                   } else {
                     return resolve(data.toString());

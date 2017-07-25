@@ -23,7 +23,7 @@ const sanitize = require('sanitize-filename');
 // Electron Sahara modules.
 const command = require('./sahara');
 const build = require('./build');
-const messages = require('./sahara/messages');
+const message = require('./sahara/message');
 
 /**
  * Expose `Run` object.
@@ -43,45 +43,61 @@ const run = module.exports = (function() {
             let platform = args.shift() || process.platform;
 
             if (!args.length) {
-              this.logger.debug(messages.info.platform.current, platform);
+              this.logger.debug(message.get({
+                topic: 'info',
+                command: 'platform',
+                message: 'current'
+              }), platform);
             }
 
             if (this[`${platform}Run`]) {
-              build.exec([platform])
+              return build.exec([platform])
               .then((success) => {
-                if (success) {
-                  this.logger.info(success);
-                }
-                this[`${platform}Run`]()
-                .then((success) => {
-                  if (success) {
-                    this.logger.info(success);
-                  }
-                  return resolve(messages.done.command.run);
-                }, (error) => {
-                  if (error) {
-                    this.logger.error(error);
-                  }
-                  return reject(messages.error.command.run);
-                });
-              }, (error) => {
-                if (error) {
-                  this.logger.error(error);
-                }
-                return reject(messages.error.command.run);
+                this.logger.info(success);
+                return this[`${platform}Run`]();
+              })
+              .then((success) => {
+                this.logger.info(success);
+                return resolve(message.get({
+                  topic: 'done',
+                  command: 'run',
+                  message: 'success'
+                }));
+              })
+              .catch((error) => {
+                this.logger.error(error);
+                return reject(message.get({
+                  topic: 'error',
+                  command: 'run',
+                  message: 'failure'
+                }));
               });
             } else {
-              this.logger.error(messages.error.platform.invalid, platform);
-              return reject(messages.error.command.run);
+              this.logger.error(message.get({
+                topic: 'error',
+                command: 'platform',
+                message: 'invalid'
+              }), platform);
             }
           } else {
-            this.logger.error(messages.error.sahara.notAProjectDirectory);
-            return reject(messages.error.command.run);
+            this.logger.error(message.get({
+              topic: 'error',
+              command: 'sahara',
+              message: 'notAProjectDirectory'
+            }));
           }
         } else {
-          this.logger.error(messages.error.argument.missing);
-          return reject(messages.error.command.run);
+          this.logger.error(message.get({
+            topic: 'error',
+            command: 'argument',
+            message: 'missing'
+          }));
         }
+        return reject(message.get({
+          topic: 'error',
+          command: 'run',
+          message: 'failure'
+        }));
       });
     };
 
@@ -90,7 +106,11 @@ const run = module.exports = (function() {
 
       if (packageInfo) {
         // Package information file was already loaded.
-        this.logger.info(messages.info.run.packageFound);
+        this.logger.info(message.get({
+          topic: 'info',
+          command: 'run',
+          message: 'packageFound'
+        }));
       } else {
         // Loads package information file if available.
         let packageInfoFilePath = path.normalize(this.platformsPath + path.sep + platform + path.sep + this.packageInfoFilePath);
@@ -98,12 +118,24 @@ const run = module.exports = (function() {
           fs.accessSync(packageInfoFilePath);
           try {
             packageInfo = require(packageInfoFilePath);
-            this.logger.debug(messages.info.run.packageFound);
+            this.logger.debug(message.get({
+              topic: 'info',
+              command: 'run',
+              message: 'packageFound'
+            }));
           } catch(exception) {
-            this.logger.error(messages.error.run.packageFile, exception.message);
+            this.logger.error(message.get({
+              topic: 'error',
+              command: 'run',
+              message: 'packageFile'
+            }), exception.message);
           }
         } catch(exception) {
-          this.logger.error(messages.error.run.packageFileNotFound, packageInfoFilePath);
+          this.logger.error(message.get({
+            topic: 'error',
+            command: 'run',
+            message: 'packageFileNotFound'
+          }), packageInfoFilePath);
         }
       }
 
@@ -112,7 +144,11 @@ const run = module.exports = (function() {
     };
     
     this.runPlatform = function(platform) {
-      this.logger.debug(messages.info.platform.run, platform);
+      this.logger.debug(message.get({
+        topic: 'info',
+        command: 'platform',
+        message: 'run'
+      }), platform);
 
       return new Promise((resolve, reject) => {
         this.packageInfo = this.getPackageInformation(platform);
@@ -123,8 +159,17 @@ const run = module.exports = (function() {
           this.buildPath = path.normalize(this.platformsPath + platform + path.sep + this.buildDirectory);
           fs.readdir(this.buildPath, (error, files) => {
             if (error) {
-              this.logger.error(messages.error.directory.fetch, this.buildPath);
-              return reject(messages.error.platform.run.replace(/%s/g, platform));
+              this.logger.error(message.get({
+                topic: 'error',
+                command: 'directory',
+                message: 'fetch'
+              }), this.buildPath);
+              return reject(message.get({
+                topic: 'error',
+                command: 'platform',
+                message: 'run',
+                replacement: platform
+              }));
             } else {
               let buildDirectory;
               let found = files.some((file, index, files) => {
@@ -137,7 +182,11 @@ const run = module.exports = (function() {
                       return true;
                     }
                   } catch(exception) {
-                    this.logger.notice(messages.error.directory.fetch, toCheck);
+                    this.logger.notice(message.get({
+                      topic: 'error',
+                      command: 'directory',
+                      message: 'fetch'
+                    }), toCheck);
                   }
                 }
               });
@@ -157,24 +206,53 @@ const run = module.exports = (function() {
                 childProcess.exec(binary, (error, stdout, stderr) => {
                   if (error) {
                     this.logger.error(error);
-                    return reject(messages.error.platform.run.replace(/%s/g, platform));
+                    return reject(message.get({
+                      topic: 'error',
+                      command: 'platform',
+                      message: 'run',
+                      replacement: platform
+                    }));
                   } else {
                     if (stderr) {
                       this.logger.error(stderr);
-                      return reject(messages.error.platform.run.replace(/%s/g, platform));
+                      return reject(message.get({
+                        topic: 'error',
+                        command: 'platform',
+                        message: 'run',
+                        replacement: platform
+                      }));
                     } else {
-                      return resolve(messages.done.platform.run.replace(/%s/g, platform));
+                      return resolve(message.get({
+                        topic: 'done',
+                        command: 'platform',
+                        message: 'run',
+                        replacement: platform
+                      }));
                     }
                   }
                 });
               } else {
-                this.logger.error(messages.error.run.noBuildDirectory);
-                return reject(messages.error.platform.run.replace(/%s/g, platform));
+                this.logger.error(message.get({
+                  topic: 'error',
+                  command: 'run',
+                  message: 'noBuildDirectory'
+                }));
+                return reject(message.get({
+                  topic: 'error',
+                  command: 'platform',
+                  message: 'run',
+                  replacement: platform
+                }));
               }
             }
           });
         } else {
-          return reject(messages.error.platform.run.replace(/%s/g, platform));
+          return reject(message.get({
+            topic: 'error',
+            command: 'platform',
+            message: 'run',
+            replacement: platform
+          }));
         }
       });
     };

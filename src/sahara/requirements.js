@@ -17,7 +17,7 @@ const childProcess = require('child_process');
 
 // Electron Sahara modules.
 const command = require('./sahara');
-const messages = require('./sahara/messages');
+const message = require('./sahara/message');
 
 /**
  * Expose `Requirements` object.
@@ -30,26 +30,25 @@ const requirements = module.exports = (function() {
 
     this.exec = function(args) {
       return new Promise((resolve, reject) => {
-        this.getGitVersion()
-        .then((gitVersion) => {
-          this.getNodeVersion()
-          .then((nodeVersion) => {
-            this.versions.git = gitVersion;
-            this.versions.node = nodeVersion;
-            this.platform.current = process.platform;
-            this.platform.architecture = process.arch;
-            return resolve(messages.done.command.requirements);
-          }, (error) => {
-            if (error) {
-              this.logger.error(error);
-            }
-            return reject(messages.error.command.requirements);
-          });
-        }, (error) => {
-          if (error) {
-            this.logger.error(error);
-          }
-          return reject(messages.error.command.requirements);
+        this.platform.current = process.platform;
+        this.platform.architecture = process.arch;
+        return Promise.all([this.getGitVersion(), this.getNodeVersion()])
+        .then(([git, node]) => {
+          this.versions.git = git;
+          this.versions.node = node;
+          return resolve(message.get({
+            topic: 'done',
+            command: 'requirements',
+            message: 'success'
+          }));
+        })
+        .catch((error) => {
+          this.logger.error(error);
+          return reject(message.get({
+            topic: 'done',
+            command: 'requirements',
+            message: 'failure'
+          }));
         });
       });
     };
@@ -81,16 +80,30 @@ const requirements = module.exports = (function() {
             let version = parseFloat(matches[0]);
             if (!isNaN(version)) {
               this.versions.git = version;
-              this.logger.info(messages.info.requirements.programVersion, 'git', version);
+              this.logger.info(message.get({
+                topic: 'info',
+                command: 'requirements',
+                message: 'programVersion'
+              }), 'git', version);
               return resolve(version);
             }
           }
-          return reject(messages.error.requirements.versionNotFound.replace(/%s/g, 'git'));
+          return reject(message.get({
+            topic: 'error',
+            command: 'requirements',
+            message: 'versionNotFound',
+            replacement: 'git'
+          }));
         }, (error) => {
           if (error) {
             this.logger.error(error);
           }
-          return reject(messages.error.requirements.programNotFound.replace(/%s/g, 'git'));
+          return reject(message.get({
+            topic: 'error',
+            command: 'requirements',
+            message: 'programNotFound',
+            replacement: 'git'
+          }));
         });
       });
     };
@@ -103,16 +116,30 @@ const requirements = module.exports = (function() {
             let version = parseFloat(matches[0]);
             if (!isNaN(version)) {
               this.versions.node = version;
-              this.logger.info(messages.info.requirements.programVersion, 'node', version)
+              this.logger.info(message.get({
+                topic: 'info',
+                command: 'requirements',
+                message: 'programVersion'
+              }), 'node', version);
               return resolve(version);
             }
           }
-          return reject(messages.error.requirements.versionNotFound.replace(/%s/g, 'node'));
+          return reject(message.get({
+            topic: 'error',
+            command: 'requirements',
+            message: 'versionNotFound',
+            replacement: 'node'
+          }));
         }, (error) => {
           if (error) {
             this.logger.error(error);
           }
-          return reject(messages.error.requirements.programNotFound.replace(/%s/g, 'node'));
+          return reject(message.get({
+            topic: 'error',
+            command: 'requirements',
+            message: 'programNotFound',
+            replacement: 'node'
+          }));
         });
       });
     };
