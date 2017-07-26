@@ -58,19 +58,19 @@ const create = module.exports = (function() {
                   .then((success) => {
                     this.logger.info(success);
                     return resolve(message.get({
-                      topic: 'done',
+                      type: 'done',
                       command: 'create',
                       message: 'success'
                     }));
                   })
                   .catch((error) => {
                     this.logger.error(error);
-                    return this.deleteDirectory(projectAbsolutePath, true)
+                    return this.deleteDirectory(projectAbsolutePath, true);
                   })
                   .then((success) => {
                     this.logger.info(success);
                     return reject(message.get({
-                      topic: 'error',
+                      type: 'error',
                       command: 'create',
                       message: 'failure'
                     }));
@@ -78,7 +78,7 @@ const create = module.exports = (function() {
                   .catch((error) => {
                     this.logger.error(error);
                     return reject(message.get({
-                      topic: 'error',
+                      type: 'error',
                       command: 'create',
                       message: 'failure'
                     }));
@@ -87,7 +87,7 @@ const create = module.exports = (function() {
                 .catch((error) => {
                   this.logger.error(error);
                   return reject(message.get({
-                    topic: 'error',
+                    type: 'error',
                     command: 'create',
                     message: 'failure'
                   }));
@@ -96,34 +96,34 @@ const create = module.exports = (function() {
               .catch((error) => {
                 this.logger.error(error);
                 return reject(message.get({
-                  topic: 'error',
+                  type: 'error',
                   command: 'create',
                   message: 'failure'
                 }));
               });
             } else {
               this.logger.error(message.get({
-                topic: 'error',
+                type: 'error',
                 command: 'argument',
                 message: 'missing'
               }));
             }
           } else {
             this.logger.error(message.get({
-              topic: 'error',
+              type: 'error',
               command: 'sahara',
               message: 'projectDirectory'
             }));
           }
         } else {
           this.logger.error(message.get({
-            topic: 'error',
+            type: 'error',
             command: 'argument',
             message: 'missing'
           }));
         }
         return reject(message.get({
-          topic: 'error',
+          type: 'error',
           command: 'create',
           message: 'failure'
         }));
@@ -136,7 +136,7 @@ const create = module.exports = (function() {
 
         let spinner = ora({
           text: chalk.yellow(message.get({
-            topic: 'info',
+            type: 'info',
             command: 'dependencies',
             message: 'install'
           })),
@@ -149,7 +149,7 @@ const create = module.exports = (function() {
         childProcess.exec(command, (error, stdout, stderr) => {
           if (error) {
             spinner.fail(chalk.red(message.get({
-              topic: 'info',
+              type: 'info',
               command: 'dependencies',
               message: 'install'
             })));
@@ -159,18 +159,18 @@ const create = module.exports = (function() {
               // To prevent failure while using npm >= 5.0.0.
               if (stderr.indexOf('npm notice created a lockfile as package-lock.json. You should commit this file.') !== -1) {
                 spinner.succeed(chalk.green(message.get({
-                  topic: 'info',
+                  type: 'info',
                   command: 'dependencies',
                   message: 'install'
                 })));
                 return resolve(message.get({
-                  topic: 'done',
+                  type: 'done',
                   command: 'dependencies',
                   message: 'install'
                 }));
               } else {
                 spinner.fail(chalk.red(message.get({
-                  topic: 'info',
+                  type: 'info',
                   command: 'dependencies',
                   message: 'install'
                 })));
@@ -178,12 +178,12 @@ const create = module.exports = (function() {
               }
             } else {
               spinner.succeed(chalk.green(message.get({
-                topic: 'info',
+                type: 'info',
                 command: 'dependencies',
                 message: 'install'
               })));
               return resolve(message.get({
-                topic: 'done',
+                type: 'done',
                 command: 'dependencies',
                 message: 'install'
               }));
@@ -195,7 +195,7 @@ const create = module.exports = (function() {
 
     this.cloneProjectTemplate = function(projectTemplate, projectAbsolutePath) {
       this.logger.debug(message.get({
-        topic: 'info',
+        type: 'info',
         command: 'template',
         message: 'clone'
       }));
@@ -207,13 +207,13 @@ const create = module.exports = (function() {
             if (error) {
               this.logger.error(error);
               return reject(message.get({
-                topic: 'error',
+                type: 'error',
                 command: 'template',
                 message: 'clone'
               }));
             } else {
               return resolve(message.get({
-                topic: 'done',
+                type: 'done',
                 command: 'template',
                 message: 'cloned'
               }));
@@ -221,7 +221,7 @@ const create = module.exports = (function() {
           });
         } else {
           return reject(message.get({
-            topic: 'error',
+            type: 'error',
             command: 'template',
             message: 'notFound'
           }));

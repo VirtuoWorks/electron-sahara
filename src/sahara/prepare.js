@@ -31,14 +31,16 @@ const prepare = module.exports = (function() {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args)) {
           if (this.options) {
-            let [platform] = args || [process.platform];
-
+            let platform;
             if (!args.length) {
+              platform = process.platform;
               this.logger.debug(message.get({
-                topic: 'info',
+                type: 'info',
                 command: 'platform',
                 message: 'current'
               }), platform);
+            } else {
+              platform = args.shift();
             }
 
             if (this[`${platform}Prepare`]) {
@@ -53,7 +55,7 @@ const prepare = module.exports = (function() {
               .then((success) => {
                 this.logger.info(success);
                 return resolve(message.get({
-                  topic: 'done',
+                  type: 'done',
                   command: 'prepare',
                   message: 'success'
                 }));
@@ -61,7 +63,7 @@ const prepare = module.exports = (function() {
               .catch((error) => {
                 this.logger.error(error);
                 return reject(message.get({
-                  topic: 'error',
+                  type: 'error',
                   command: 'prepare',
                   message: 'failure'
                 }));
@@ -69,27 +71,27 @@ const prepare = module.exports = (function() {
 
             } else {
               this.logger.error(message.get({
-                topic: 'error',
+                type: 'error',
                 command: 'platform',
                 message: 'invalid'
               }), platform);
             }
           } else {
             this.logger.error(message.get({
-              topic: 'error',
+              type: 'error',
               command: 'sahara',
               message: 'notAProjectDirectory'
             }));
           }
         } else {
           this.logger.error(message.get({
-            topic: 'error',
+            type: 'error',
             command: 'argument',
             message: 'missing'
           }));
         }
         return reject(message.get({
-          topic: 'error',
+          type: 'error',
           command: 'prepare',
           message: 'failure'
         }));
@@ -98,7 +100,7 @@ const prepare = module.exports = (function() {
 
     this.preparePlatform = function(platform) {
       this.logger.debug(message.get({
-        topic: 'info',
+        type: 'info',
         command: 'platform',
         message: 'prepare'
       }), platform);
@@ -112,7 +114,8 @@ const prepare = module.exports = (function() {
               this.deleteDirectory(platformAbsolutePath)
             ]);
           })
-          .then(([platformAbsolutePath]) => {
+          .then((paths) => {
+            let platformAbsolutePath = paths.shift();
             return this.createDirectory(platformAbsolutePath);
           })
           .then((success) => {
@@ -122,10 +125,12 @@ const prepare = module.exports = (function() {
               this.getAbsolutePathTo(`platforms/${platform}/platform_app`)
             ]);
           })
-          .then(([appAbsolutePath, platformAppAbsolutePath]) => {
+          .then((paths) => {
+            let appAbsolutePath = paths.shift();
+            let platformAppAbsolutePath = paths.shift();
             let spinner = ora({
               text: chalk.yellow(message.get({
-                topic: 'info',
+                type: 'info',
                 command: 'files',
                 message: 'copy'
               })),
@@ -138,25 +143,25 @@ const prepare = module.exports = (function() {
             ncp(appAbsolutePath, platformAppAbsolutePath, (error) => {
               if (error) {
                 spinner.fail(chalk.red(message.get({
-                  topic: 'info',
+                  type: 'info',
                   command: 'files',
                   message: 'copy'
                 })));
                 this.logger.error(error);
                 return reject(message.get({
-                  topic: 'error',
+                  type: 'error',
                   command: 'platform',
                   message: 'prepare',
                   replacement: platform
                 }));
               } else {
                 spinner.succeed(chalk.green(message.get({
-                  topic: 'info',
+                  type: 'info',
                   command: 'files',
                   message: 'copy'
                 })));
                 return resolve(message.get({
-                  topic: 'done',
+                  type: 'done',
                   command: 'platform',
                   message: 'prepare',
                   replacement: platform
@@ -167,7 +172,7 @@ const prepare = module.exports = (function() {
           .catch((error) => {
             this.logger.error(error);
             return reject(message.get({
-              topic: 'error',
+              type: 'error',
               command: 'platform',
               message: 'prepare',
               replacement: platform
@@ -175,7 +180,7 @@ const prepare = module.exports = (function() {
           });
         } else {
           return reject(message.get({
-            topic: 'error',
+            type: 'error',
             command: 'platform',
             message: 'prepare',
             replacement: platform

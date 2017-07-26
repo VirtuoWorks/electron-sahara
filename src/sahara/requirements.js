@@ -26,18 +26,18 @@ const message = require('./sahara/message');
 const requirements = module.exports = (function() {
   let Requirements = function() {
     this.versions = {};
-    this.platform = {}
+    this.platform = {};
 
     this.exec = function(args) {
       return new Promise((resolve, reject) => {
         this.platform.current = process.platform;
         this.platform.architecture = process.arch;
         return Promise.all([this.getGitVersion(), this.getNodeVersion()])
-        .then(([git, node]) => {
-          this.versions.git = git;
-          this.versions.node = node;
+        .then((versions) => {
+          this.versions.git = versions.shift();
+          this.versions.node = versions.shift();
           return resolve(message.get({
-            topic: 'done',
+            type: 'done',
             command: 'requirements',
             message: 'success'
           }));
@@ -45,7 +45,7 @@ const requirements = module.exports = (function() {
         .catch((error) => {
           this.logger.error(error);
           return reject(message.get({
-            topic: 'done',
+            type: 'done',
             command: 'requirements',
             message: 'failure'
           }));
@@ -81,7 +81,7 @@ const requirements = module.exports = (function() {
             if (!isNaN(version)) {
               this.versions.git = version;
               this.logger.info(message.get({
-                topic: 'info',
+                type: 'info',
                 command: 'requirements',
                 message: 'programVersion'
               }), 'git', version);
@@ -89,7 +89,7 @@ const requirements = module.exports = (function() {
             }
           }
           return reject(message.get({
-            topic: 'error',
+            type: 'error',
             command: 'requirements',
             message: 'versionNotFound',
             replacement: 'git'
@@ -99,7 +99,7 @@ const requirements = module.exports = (function() {
             this.logger.error(error);
           }
           return reject(message.get({
-            topic: 'error',
+            type: 'error',
             command: 'requirements',
             message: 'programNotFound',
             replacement: 'git'
@@ -117,7 +117,7 @@ const requirements = module.exports = (function() {
             if (!isNaN(version)) {
               this.versions.node = version;
               this.logger.info(message.get({
-                topic: 'info',
+                type: 'info',
                 command: 'requirements',
                 message: 'programVersion'
               }), 'node', version);
@@ -125,7 +125,7 @@ const requirements = module.exports = (function() {
             }
           }
           return reject(message.get({
-            topic: 'error',
+            type: 'error',
             command: 'requirements',
             message: 'versionNotFound',
             replacement: 'node'
@@ -135,7 +135,7 @@ const requirements = module.exports = (function() {
             this.logger.error(error);
           }
           return reject(message.get({
-            topic: 'error',
+            type: 'error',
             command: 'requirements',
             message: 'programNotFound',
             replacement: 'node'

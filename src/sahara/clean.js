@@ -30,17 +30,19 @@ const clean = module.exports = (function() {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args)) {
           if (this.options) {
-            let toDelete = [];
-            let [platform] = args || [process.platform];
-
+            let platform;
             if (!args.length) {
+              platform = process.platform;
               this.logger.debug(message.get({
-                topic: 'info',
+                type: 'info',
                 command: 'platform',
                 message: 'current'
               }), platform);
+            } else {
+              platform = args.shift();
             }
 
+            let toDelete = [];
             if (platform === 'all') {
               toDelete.push('platforms' + path.sep + 'win32' + path.sep + 'build');
               toDelete.push('platforms' + path.sep + 'linux' + path.sep + 'build');
@@ -49,7 +51,7 @@ const clean = module.exports = (function() {
               toDelete.push('platforms' + path.sep + platform + path.sep + 'build');
             }
 
-            let iterable = []
+            let iterable = [];
             toDelete.forEach((path, index) => {
               iterable.push(new Promise((resolve, reject) => {
                 return this.getAbsolutePathTo(path)
@@ -69,27 +71,27 @@ const clean = module.exports = (function() {
 
             return Promise.all(iterable).then(() => {
               return resolve(message.get({
-                topic: 'done',
+                type: 'done',
                 command: 'clean',
                 message: 'success'
               }));
             });
           } else {
             this.logger.error(message.get({
-              topic: 'error',
+              type: 'error',
               command: 'sahara',
               message: 'notAProjectDirectory'
             }));
           }
         } else {
           this.logger.error(message.get({
-            topic: 'error',
+            type: 'error',
             command: 'argument',
             message: 'missing'
           }));
         }
         return reject(message.get({
-          topic: 'error',
+          type: 'error',
           command: 'clean',
           message: 'failure'
         }));

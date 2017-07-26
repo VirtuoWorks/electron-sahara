@@ -28,14 +28,16 @@ const build = module.exports = (function() {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args)) {
           if (this.options) {
-            let [platform] = args || [process.platform];
-
+            let platform;
             if (!args.length) {
+              platform = process.platform;
               this.logger.debug(message.get({
-                topic: 'info',
+                type: 'info',
                 command: 'platform',
                 message: 'current'
               }), platform);
+            } else {
+              platform = args.shift();
             }
 
             return prepare.exec([platform])
@@ -46,7 +48,7 @@ const build = module.exports = (function() {
             .then((success) => {
               this.logger.info(success);
               return resolve(message.get({
-                topic: 'done',
+                type: 'done',
                 command: 'build',
                 message: 'success'
               }));
@@ -54,27 +56,27 @@ const build = module.exports = (function() {
             .catch((error) => {
               this.logger.error(error);
               return reject(message.get({
-                topic: 'error',
+                type: 'error',
                 command: 'build',
                 message: 'failure'
               }));
             });
           } else {
             this.logger.error(message.get({
-              topic: 'error',
+              type: 'error',
               command: 'sahara',
               message: 'notAProjectDirectory'
             }));
           }
         } else {
           this.logger.error(message.get({
-            topic: 'error',
+            type: 'error',
             command: 'argument',
             message: 'missing'
           }));
         }
         return reject(message.get({
-          topic: 'error',
+          type: 'error',
           command: 'build',
           message: 'failure'
         }));

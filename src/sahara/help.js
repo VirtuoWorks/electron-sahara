@@ -46,7 +46,7 @@ const help = module.exports = (function() {
               fs.readFile(filePath, (error, data) => {
                 if (error) {
                   this.logger.error(message.get({
-                      topic: 'error',
+                      type: 'error',
                       command: 'help',
                       message: 'missingSaharaHelpFile'
                   }));
@@ -63,7 +63,7 @@ const help = module.exports = (function() {
                 fs.readFile(filePath, (error, data) => {
                   if (error) {
                     this.logger.error(message.get({
-                      topic: 'error',
+                      type: 'error',
                       command: 'help',
                       message: 'missingSaharaHelpFile'
                     }));

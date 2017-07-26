@@ -44,7 +44,7 @@ exports = module.exports = (function(argv) {
       this.argv = this.extractCliOptionsFrom(argv);
       return new Promise((resolve, reject) => {
         this.logger.debug(message.get({
-          topic: 'info',
+          type: 'info',
           command: 'exec'
         }));
         if (Array.isArray(this.argv) && this.argv.length > 2) {
@@ -53,7 +53,7 @@ exports = module.exports = (function(argv) {
             this.args = this.argv.slice(3, this.argv.length) || [];
             if (fs.existsSync(`${__dirname}/sahara/${this.command}.js`)) {
               this.logger.debug(message.get({
-                topic: 'info',
+                type: 'info',
                 command: 'command',
                 message: this.command
               }));
@@ -67,7 +67,7 @@ exports = module.exports = (function(argv) {
               });
             } else {
               this.logger.error(message.get({
-                topic: 'error',
+                type: 'error',
                 message: 'notFound'
               }));
               require('./sahara/help')
@@ -84,7 +84,7 @@ exports = module.exports = (function(argv) {
               this.args = this.argv.slice(2, this.argv.length) || [];
             } else {
               this.logger.error(message.get({
-                topic: 'error',
+                type: 'error',
                 message: 'notFound'
               }));
               this.args = [];
@@ -120,7 +120,7 @@ exports = module.exports = (function(argv) {
           }
         });
         this.logger.debug(message.get({
-          topic: 'info',
+          type: 'info',
           command: 'sahara',
           message: 'verboseEnabled'
         }));

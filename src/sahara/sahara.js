@@ -80,8 +80,8 @@ const command = module.exports = (function() {
 
       if (options) {
         // Options were already loaded.
-        this.logger.info(message.get({
-          topic: 'info',
+        this.logger.debug(message.get({
+          type: 'info',
           command: 'sahara',
           message: 'projectDirectory'
         }));
@@ -92,21 +92,21 @@ const command = module.exports = (function() {
           fs.accessSync(optionsFilePath);
           try {
             options = require(optionsFilePath);
-            this.logger.info(message.get({
-              topic: 'info',
+            this.logger.debug(message.get({
+              type: 'info',
               command: 'sahara',
               message: 'projectDirectory'
             }));
           } catch(exception) {
             this.logger.error(message.get({
-              topic: 'error',
+              type: 'error',
               command: 'sahara',
               message: 'configurationFile'
             }), exception.message);
           }
         } catch(exception) {
-          this.logger.info(message.get({
-            topic: 'info',
+          this.logger.debug(message.get({
+            type: 'info',
             command: 'sahara',
             message: 'notAProjectDirectory'
           }));
@@ -121,7 +121,7 @@ const command = module.exports = (function() {
       this.apiCall = apiCall || false;
       return new Promise((resolve, reject) => {
         return reject(message.get({
-          topic: 'error',
+          type: 'error',
           message: 'notImplemented'
         }));
       });
@@ -140,7 +140,7 @@ const command = module.exports = (function() {
               if (error) {
                 this.logger.error(error);
                 return reject(message.get({
-                  topic: 'error',
+                  type: 'error',
                   command: 'directory',
                   message: 'resolve',
                   replacement: normalizedPath
@@ -154,7 +154,7 @@ const command = module.exports = (function() {
           }
         } else {
           return reject(message.get({
-            topic: 'error',
+            type: 'error',
             command: 'directory',
             message: 'resolve',
             replacement: normalizedPath
@@ -165,7 +165,7 @@ const command = module.exports = (function() {
 
     Sahara.prototype.createDirectory = function(absolutePath) {
       this.logger.debug(message.get({
-        topic: 'info',
+        type: 'info',
         command: 'directory',
         message: 'create'
       }), absolutePath);
@@ -179,7 +179,7 @@ const command = module.exports = (function() {
                   return reject(error.message);
                 } else {
                   return resolve(message.get({
-                    topic: 'done',
+                    type: 'done',
                     command: 'directory',
                     message: 'created',
                     replacement: absolutePath
@@ -188,7 +188,7 @@ const command = module.exports = (function() {
               });
             } else {
               return resolve(message.get({
-                topic: 'done',
+                type: 'done',
                 command: 'directory',
                 message: 'created',
                 replacement: absolutePath
@@ -197,7 +197,7 @@ const command = module.exports = (function() {
           });
         } else {
           return reject(message.get({
-            topic: 'error',
+            type: 'error',
             command: 'directory',
             message: 'create',
             replacement: absolutePath
@@ -217,7 +217,7 @@ const command = module.exports = (function() {
               del([absolutePath])
               .then((paths) => {
                 return resolve(message.get({
-                  topic: 'done',
+                  type: 'done',
                   command: 'directory',
                   message: 'deleted',
                   replacement: absolutePath
@@ -225,7 +225,7 @@ const command = module.exports = (function() {
               }).catch((error) => {
                 this.logger.error(error);
                 return reject(message.get({
-                  topic: 'error',
+                  type: 'error',
                   command: 'directory',
                   message: 'deletion',
                   replacement: absolutePath
@@ -237,7 +237,7 @@ const command = module.exports = (function() {
                 type: 'confirm',
                 name: 'overwrite',
                 message: chalk.yellow(message.get({
-                  topic: 'prompt',
+                  type: 'prompt',
                   command: 'directory',
                   message: 'deletion',
                   replacement: paths.join(', ')
@@ -246,7 +246,7 @@ const command = module.exports = (function() {
                 if (answers.overwrite) {
                   let spinner = ora({
                     text: chalk.yellow(message.get({
-                      topic: 'info',
+                      type: 'info',
                       command: 'directory',
                       message: 'deletion',
                       replacement: absolutePath
@@ -258,35 +258,35 @@ const command = module.exports = (function() {
                   del([absolutePath])
                   .then((paths) => {
                     spinner.succeed(chalk.green(message.get({
-                      topic: 'info',
+                      type: 'info',
                       command: 'directory',
                       message: 'deletion',
                       replacement: absolutePath
                     })));
                     return resolve(message.get({
-                      topic: 'done',
+                      type: 'done',
                       command: 'directory',
                       message: 'deleted',
                       replacement: absolutePath
                     }));
                   }).catch((error) => {
                     spinner.fail(chalk.red(message.get({
-                      topic: 'info',
+                      type: 'info',
                       command: 'directory',
                       message: 'deletion',
                       replacement: absolutePath
                     })));
                     this.logger.error(error);
                     return reject(message.get({
-                      topic: 'error',
+                      type: 'error',
                       command: 'directory',
                       message: 'deletion',
-                      replacement: asolutePath
+                      replacement: absolutePath
                     }));
                   });
                 } else {
                   return reject(message.get({
-                      topic: 'error',
+                      type: 'error',
                       message: 'aborted'
                   }));
                 }
@@ -298,7 +298,7 @@ const command = module.exports = (function() {
         }).catch((error) => {
           this.logger.error(error);
           return reject(message.get({
-            topic: 'error',
+            type: 'error',
             command: 'directory',
             message: 'deletion',
             replacement: absolutePath

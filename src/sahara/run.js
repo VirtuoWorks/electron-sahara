@@ -44,7 +44,7 @@ const run = module.exports = (function() {
 
             if (!args.length) {
               this.logger.debug(message.get({
-                topic: 'info',
+                type: 'info',
                 command: 'platform',
                 message: 'current'
               }), platform);
@@ -59,7 +59,7 @@ const run = module.exports = (function() {
               .then((success) => {
                 this.logger.info(success);
                 return resolve(message.get({
-                  topic: 'done',
+                  type: 'done',
                   command: 'run',
                   message: 'success'
                 }));
@@ -67,34 +67,34 @@ const run = module.exports = (function() {
               .catch((error) => {
                 this.logger.error(error);
                 return reject(message.get({
-                  topic: 'error',
+                  type: 'error',
                   command: 'run',
                   message: 'failure'
                 }));
               });
             } else {
               this.logger.error(message.get({
-                topic: 'error',
+                type: 'error',
                 command: 'platform',
                 message: 'invalid'
               }), platform);
             }
           } else {
             this.logger.error(message.get({
-              topic: 'error',
+              type: 'error',
               command: 'sahara',
               message: 'notAProjectDirectory'
             }));
           }
         } else {
           this.logger.error(message.get({
-            topic: 'error',
+            type: 'error',
             command: 'argument',
             message: 'missing'
           }));
         }
         return reject(message.get({
-          topic: 'error',
+          type: 'error',
           command: 'run',
           message: 'failure'
         }));
@@ -107,7 +107,7 @@ const run = module.exports = (function() {
       if (packageInfo) {
         // Package information file was already loaded.
         this.logger.info(message.get({
-          topic: 'info',
+          type: 'info',
           command: 'run',
           message: 'packageFound'
         }));
@@ -119,20 +119,20 @@ const run = module.exports = (function() {
           try {
             packageInfo = require(packageInfoFilePath);
             this.logger.debug(message.get({
-              topic: 'info',
+              type: 'info',
               command: 'run',
               message: 'packageFound'
             }));
           } catch(exception) {
             this.logger.error(message.get({
-              topic: 'error',
+              type: 'error',
               command: 'run',
               message: 'packageFile'
             }), exception.message);
           }
         } catch(exception) {
           this.logger.error(message.get({
-            topic: 'error',
+            type: 'error',
             command: 'run',
             message: 'packageFileNotFound'
           }), packageInfoFilePath);
@@ -145,7 +145,7 @@ const run = module.exports = (function() {
     
     this.runPlatform = function(platform) {
       this.logger.debug(message.get({
-        topic: 'info',
+        type: 'info',
         command: 'platform',
         message: 'run'
       }), platform);
@@ -160,12 +160,12 @@ const run = module.exports = (function() {
           fs.readdir(this.buildPath, (error, files) => {
             if (error) {
               this.logger.error(message.get({
-                topic: 'error',
+                type: 'error',
                 command: 'directory',
                 message: 'fetch'
               }), this.buildPath);
               return reject(message.get({
-                topic: 'error',
+                type: 'error',
                 command: 'platform',
                 message: 'run',
                 replacement: platform
@@ -183,7 +183,7 @@ const run = module.exports = (function() {
                     }
                   } catch(exception) {
                     this.logger.notice(message.get({
-                      topic: 'error',
+                      type: 'error',
                       command: 'directory',
                       message: 'fetch'
                     }), toCheck);
@@ -207,7 +207,7 @@ const run = module.exports = (function() {
                   if (error) {
                     this.logger.error(error);
                     return reject(message.get({
-                      topic: 'error',
+                      type: 'error',
                       command: 'platform',
                       message: 'run',
                       replacement: platform
@@ -216,14 +216,14 @@ const run = module.exports = (function() {
                     if (stderr) {
                       this.logger.error(stderr);
                       return reject(message.get({
-                        topic: 'error',
+                        type: 'error',
                         command: 'platform',
                         message: 'run',
                         replacement: platform
                       }));
                     } else {
                       return resolve(message.get({
-                        topic: 'done',
+                        type: 'done',
                         command: 'platform',
                         message: 'run',
                         replacement: platform
@@ -233,12 +233,12 @@ const run = module.exports = (function() {
                 });
               } else {
                 this.logger.error(message.get({
-                  topic: 'error',
+                  type: 'error',
                   command: 'run',
                   message: 'noBuildDirectory'
                 }));
                 return reject(message.get({
-                  topic: 'error',
+                  type: 'error',
                   command: 'platform',
                   message: 'run',
                   replacement: platform
@@ -248,7 +248,7 @@ const run = module.exports = (function() {
           });
         } else {
           return reject(message.get({
-            topic: 'error',
+            type: 'error',
             command: 'platform',
             message: 'run',
             replacement: platform

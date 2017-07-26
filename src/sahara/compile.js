@@ -32,14 +32,16 @@ const compile = module.exports = (function() {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args)) {
           if (this.options) {
-            let [platform] = args || [process.platform];
-
+            let platform;
             if (!args.length) {
+              platform = process.platform;
               this.logger.debug(message.get({
-                topic: 'info',
+                type: 'info',
                 command: 'platform',
                 message: 'current'
               }), platform);
+            } else {
+              platform = args.shift();
             }
 
             if (this[`${platform}Compile`]) {
@@ -51,7 +53,7 @@ const compile = module.exports = (function() {
               .then((success) => {
                 this.logger.info(success);
                 return resolve(message.get({
-                  topic: 'done',
+                  type: 'done',
                   command: 'compile',
                   message: 'success'
                 }));
@@ -59,34 +61,34 @@ const compile = module.exports = (function() {
               .catch((error) => {
                 this.logger.error(error);
                 return reject(message.get({
-                  topic: 'error',
+                  type: 'error',
                   command: 'compile',
                   message: 'failure'
                 }));
               });
             } else {
               this.logger.error(message.get({
-                topic: 'error',
+                type: 'error',
                 command: 'action',
                 message: 'invalid'
               }));
             }
           } else {
             this.logger.error(message.get({
-              topic: 'error',
+              type: 'error',
               command: 'sahara',
               message: 'notAProjectDirectory'
             }));
           }
         } else {
           this.logger.error(message.get({
-            topic: 'error',
+            type: 'error',
             command: 'argument',
             message: 'missing'
           }));
         }
         return reject(message.get({
-          topic: 'error',
+          type: 'error',
           command: 'compile',
           message: 'failure'
         }));
@@ -95,7 +97,7 @@ const compile = module.exports = (function() {
 
     this.requireElectronPackager = function() {
       this.logger.debug(message.get({
-        topic: 'info',
+        type: 'info',
         command: 'packager',
         message: 'loading'
       }));
@@ -107,27 +109,27 @@ const compile = module.exports = (function() {
             try {
               this.electronPackager = require(electronPackagerPath);
               return resolve(message.get({
-                topic: 'done',
+                type: 'done',
                 command: 'packager',
                 message: 'loaded'
               }));
             } catch (error) {
               return reject(message.get({
-                topic: 'error',
+                type: 'error',
                 command: 'packager',
                 message: 'require'
               }));
             }
           }, (error) => {
             return reject(message.get({
-              topic: 'error',
+              type: 'error',
               command: 'packager',
               message: 'resolve'
             }));
           });
         } catch (error) {
           return reject(message.get({
-            topic: 'error',
+            type: 'error',
             command: 'packager',
             message: 'resolve'
           }));
@@ -142,7 +144,9 @@ const compile = module.exports = (function() {
           this.getAbsolutePathTo(`platforms/${platform}/platform_app`, true),
           this.getAbsolutePathTo(`platforms/${platform}/build`)
         ])
-        .then(([sourceDirectory, outputDirectory]) => {
+        .then((paths) => {
+          let sourceDirectory = paths.shift();
+          let outputDirectory = paths.shift();
           // Target platform
           options.platform = `${platform}`;
           // Source directory.
@@ -152,7 +156,7 @@ const compile = module.exports = (function() {
 
           let spinner = ora({
             text: chalk.yellow(message.get({
-              topic: 'info',
+              type: 'info',
               command: 'packager',
               message: 'building',
               replacement: platform
@@ -166,7 +170,7 @@ const compile = module.exports = (function() {
           this.electronPackager(options, (error, success) => {
             if (error) {
               spinner.fail(chalk.red(message.get({
-                topic: 'info',
+                type: 'info',
                 command: 'packager',
                 message: 'building',
                 replacement: platform
@@ -177,20 +181,20 @@ const compile = module.exports = (function() {
                 this.logger.error(error);
               }
               return reject(message.get({
-                topic: 'error',
+                type: 'error',
                 command: 'packager',
                 message: 'build',
                 replacement: platform
               }));
             } else {
               spinner.succeed(chalk.green(message.get({
-                topic: 'info',
+                type: 'info',
                 command: 'packager',
                 message: 'building',
                 replacement: platform
               })));
               return resolve(message.get({
-                topic: 'done',
+                type: 'done',
                 command: 'packager',
                 message: 'built',
                 replacement: platform
@@ -201,7 +205,7 @@ const compile = module.exports = (function() {
         .catch((error) => {
           this.logger.error(error);
           return reject(message.get({
-            topic: 'error',
+            type: 'error',
             command: 'packager',
             message: 'build',
             replacement: platform
