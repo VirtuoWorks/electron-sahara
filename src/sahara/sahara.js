@@ -206,14 +206,14 @@ const command = module.exports = (function() {
       });
     };
 
-    Sahara.prototype.deleteDirectory = function(absolutePath, force) {
+    Sahara.prototype.deleteDirectory = function(absolutePath, noConfirmation) {
       return new Promise((resolve, reject) => {
         del([absolutePath], {
           dryRun: true
         })
         .then((paths) => {
           if (paths.length) {
-            if (force || this.apiCall) {
+            if (noConfirmation || this.apiCall) {
               del([absolutePath])
               .then((paths) => {
                 return resolve(message.get({
