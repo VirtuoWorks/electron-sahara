@@ -99,7 +99,8 @@
       "fetch": "[ERROR] Could not fetch [%s] directory.",
       "create": "[ERROR] Could not create [%s] directory.",
       "deletion": "[ERROR] Could not delete [%s] directory.",
-      "resolve": "[ERROR] Could not resolve [%s] directory name."
+      "resolve": "[ERROR] Could not resolve [%s] directory name.",
+      "globbify": "[ERROR] Could not globbify [%s] file name."
     },
     "template": {
       "notFound": "[ERROR] Could not find this template.",

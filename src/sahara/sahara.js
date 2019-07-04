@@ -1,4 +1,4 @@
-/*!
+/*
  * Electron Sahara
  * @author sami.radi@virtuoworks.com (Sami Radi)
  * @company VirtuoWorks
@@ -30,9 +30,9 @@ const message = require('./sahara/message');
  * Expose `Command` object.
  * @public
  */
-const command = module.exports = (function() {
-  let sahara = function() {
-    let Sahara = function() {
+module.exports = (function() {
+  const sahara = function() {
+    const Sahara = function() {
       this.dir;
       this.cwd;
 
@@ -66,7 +66,7 @@ const command = module.exports = (function() {
     };
 
     Sahara.prototype.setCliOptions = function(cliOptions) {
-      for (let property in cliOptions) {
+      for (const property in cliOptions) {
         if (cliOptions.hasOwnProperty(property)) {
           this.cliOptions[property] = cliOptions[property];
         }
@@ -87,7 +87,7 @@ const command = module.exports = (function() {
         }));
       } else {
         // Loads Sahara options file if available.
-        let optionsFilePath = this.configurationFilePath;
+        const optionsFilePath = this.configurationFilePath;
         try {
           fs.accessSync(optionsFilePath);
           try {
@@ -97,14 +97,14 @@ const command = module.exports = (function() {
               command: 'sahara',
               message: 'projectDirectory'
             }));
-          } catch(exception) {
+          } catch (exception) {
             this.logger.error(message.get({
               type: 'error',
               command: 'sahara',
               message: 'configurationFile'
             }), exception.message);
           }
-        } catch(exception) {
+        } catch (exception) {
           this.logger.debug(message.get({
             type: 'info',
             command: 'sahara',
@@ -128,8 +128,8 @@ const command = module.exports = (function() {
     };
 
     Sahara.prototype.getAbsolutePathTo = function(file, checkAccess) {
-      let normalizedPath = path.normalize(this.cwd + file);
       let absolutePath;
+      const normalizedPath = path.normalize(this.cwd + file);
       if (normalizedPath) {
         absolutePath = path.resolve(normalizedPath);
       }
@@ -162,6 +162,34 @@ const command = module.exports = (function() {
         }
       });
     };
+
+    Sahara.prototype.getGlobbedPathTo = function(file, checkAccess) {
+      return new Promise((resolve, reject) => {
+        if ( path.isAbsolute(file) ) {
+          return resolve(file
+              .replace(this.cwd, '')
+              .replace(path.sep, '/')
+          );
+        } else {
+          this.getAbsolutePathTo(file, checkAccess)
+              .then((path) => {
+                return resolve(path
+                    .replace(this.cwd, '')
+                    .replace(path.sep, '/')
+                );
+              })
+              .catch((error) => {
+                this.logger.error(error);
+                return reject(message.get({
+                  type: 'error',
+                  command: 'directory',
+                  message: 'globbify',
+                  replacement: file
+                }));
+              });
+        }
+      });
+    }
 
     Sahara.prototype.createDirectory = function(absolutePath) {
       this.logger.debug(message.get({
@@ -208,74 +236,96 @@ const command = module.exports = (function() {
 
     Sahara.prototype.deleteDirectory = function(absolutePath, noConfirmation) {
       return new Promise((resolve, reject) => {
-        del([absolutePath], {
-          dryRun: true
-        })
-        .then((paths) => {
-          if (paths.length) {
-            if (noConfirmation || this.apiCall) {
-              del([absolutePath])
-              .then((paths) => {
-                return resolve(message.get({
-                  type: 'done',
-                  command: 'directory',
-                  message: 'deleted',
-                  replacement: absolutePath
-                }));
-              }).catch((error) => {
-                this.logger.error(error);
-                return reject(message.get({
-                  type: 'error',
-                  command: 'directory',
-                  message: 'deletion',
-                  replacement: absolutePath
-                }));
-              });
-            } else {
-              inquirer.prompt([{
-                default: false,
-                type: 'confirm',
-                name: 'overwrite',
-                message: chalk.yellow(message.get({
-                  type: 'prompt',
-                  command: 'directory',
-                  message: 'deletion',
-                  replacement: paths.join(', ')
-                }))
-              }]).then((answers) => {
-                if (answers.overwrite) {
-                  let spinner = ora({
-                    text: chalk.yellow(message.get({
-                      type: 'info',
-                      command: 'directory',
-                      message: 'deletion',
-                      replacement: absolutePath
-                    })),
-                    spinner: 'pong',
-                    color: 'yellow'
-                  });
-                  spinner.start();
-                  del([absolutePath])
+        this.getGlobbedPathTo(absolutePath)
+            .then((globbedPath) => {
+              del([globbedPath], {
+                dryRun: true
+              })
                   .then((paths) => {
-                    spinner.succeed(chalk.green(message.get({
-                      type: 'info',
-                      command: 'directory',
-                      message: 'deletion',
-                      replacement: absolutePath
-                    })));
-                    return resolve(message.get({
-                      type: 'done',
-                      command: 'directory',
-                      message: 'deleted',
-                      replacement: absolutePath
-                    }));
+                    if (paths.length) {
+                      if (noConfirmation || this.apiCall) {
+                        del([globbedPath])
+                            .then((paths) => {
+                              return resolve(message.get({
+                                type: 'done',
+                                command: 'directory',
+                                message: 'deleted',
+                                replacement: absolutePath
+                              }));
+                            }).catch((error) => {
+                              this.logger.error(error);
+                              return reject(message.get({
+                                type: 'error',
+                                command: 'directory',
+                                message: 'deletion',
+                                replacement: absolutePath
+                              }));
+                            });
+                      } else {
+                        inquirer.prompt([{
+                          default: false,
+                          type: 'confirm',
+                          name: 'overwrite',
+                          message: chalk.yellow(message.get({
+                            type: 'prompt',
+                            command: 'directory',
+                            message: 'deletion',
+                            replacement: paths.join(', ')
+                          }))
+                        }]).then((answers) => {
+                          if (answers.overwrite) {
+                            const spinner = ora({
+                              text: chalk.yellow(message.get({
+                                type: 'info',
+                                command: 'directory',
+                                message: 'deletion',
+                                replacement: absolutePath
+                              })),
+                              spinner: 'pong',
+                              color: 'yellow'
+                            });
+                            spinner.start();
+                            del([globbedPath])
+                                .then((paths) => {
+                                  spinner.succeed(chalk.green(message.get({
+                                    type: 'info',
+                                    command: 'directory',
+                                    message: 'deletion',
+                                    replacement: absolutePath
+                                  })));
+                                  return resolve(message.get({
+                                    type: 'done',
+                                    command: 'directory',
+                                    message: 'deleted',
+                                    replacement: absolutePath
+                                  }));
+                                }).catch((error) => {
+                                  spinner.fail(chalk.red(message.get({
+                                    type: 'info',
+                                    command: 'directory',
+                                    message: 'deletion',
+                                    replacement: absolutePath
+                                  })));
+                                  this.logger.error(error);
+                                  return reject(message.get({
+                                    type: 'error',
+                                    command: 'directory',
+                                    message: 'deletion',
+                                    replacement: absolutePath
+                                  }));
+                                });
+                          } else {
+                            return reject(message.get({
+                              type: 'error',
+                              message: 'aborted'
+                            }));
+                          }
+                        });
+                      }
+                    } else {
+                      return resolve();
+                    }
                   }).catch((error) => {
-                    spinner.fail(chalk.red(message.get({
-                      type: 'info',
-                      command: 'directory',
-                      message: 'deletion',
-                      replacement: absolutePath
-                    })));
                     this.logger.error(error);
                     return reject(message.get({
                       type: 'error',
@@ -284,33 +334,23 @@ const command = module.exports = (function() {
                       replacement: absolutePath
                     }));
                   });
-                } else {
-                  return reject(message.get({
-                      type: 'error',
-                      message: 'aborted'
-                  }));
-                }
-              });
-            }
-          } else {
-            return resolve();
-          }
-        }).catch((error) => {
-          this.logger.error(error);
-          return reject(message.get({
-            type: 'error',
-            command: 'directory',
-            message: 'deletion',
-            replacement: absolutePath
-          }));
-        });
+            })
+            .catch((error) => {
+              this.logger.error(error);
+              return reject(message.get({
+                type: 'error',
+                command: 'directory',
+                message: 'deletion',
+                replacement: absolutePath
+              }));
+            });
       });
     };
 
     return new Sahara();
   };
 
-  let Command = function() {};
+  const Command = function() {};
 
   Command.prototype = (function() {
     return sahara().init();
