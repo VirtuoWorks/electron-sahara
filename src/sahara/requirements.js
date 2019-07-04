@@ -1,4 +1,4 @@
-/*!
+/*
  * Electron Sahara
  * @author sami.radi@virtuoworks.com (Sami Radi)
  * @company VirtuoWorks
@@ -23,8 +23,8 @@ const message = require('./sahara/message');
  * Expose `Requirements` object.
  * @public
  */
-const requirements = module.exports = (function() {
-  let Requirements = function() {
+module.exports = (function() {
+  const Requirements = function() {
     this.versions = {};
     this.platform = {};
 
@@ -33,23 +33,23 @@ const requirements = module.exports = (function() {
         this.platform.current = process.platform;
         this.platform.architecture = process.arch;
         return Promise.all([this.getGitVersion(), this.getNodeVersion()])
-        .then((versions) => {
-          this.versions.git = versions.shift();
-          this.versions.node = versions.shift();
-          return resolve(message.get({
-            type: 'done',
-            command: 'requirements',
-            message: 'success'
-          }));
-        })
-        .catch((error) => {
-          this.logger.error(error);
-          return reject(message.get({
-            type: 'done',
-            command: 'requirements',
-            message: 'failure'
-          }));
-        });
+            .then((versions) => {
+              this.versions.git = versions.shift();
+              this.versions.node = versions.shift();
+              return resolve(message.get({
+                type: 'done',
+                command: 'requirements',
+                message: 'success'
+              }));
+            })
+            .catch((error) => {
+              this.logger.error(error);
+              return reject(message.get({
+                type: 'done',
+                command: 'requirements',
+                message: 'failure'
+              }));
+            });
       });
     };
 
@@ -75,9 +75,9 @@ const requirements = module.exports = (function() {
     this.getGitVersion = function() {
       return new Promise((resolve, reject) => {
         this.execFile('git', ['--version']).then((output) => {
-          let matches = output.match(/(\d+)\.(\d+)\.(\d+)/i);
+          const matches = output.match(/(\d+)\.(\d+)\.(\d+)/i);
           if (matches && matches.length) {
-            let version = parseFloat(matches[0]);
+            const version = parseFloat(matches[0]);
             if (!isNaN(version)) {
               this.versions.git = version;
               this.logger.info(message.get({
@@ -111,9 +111,9 @@ const requirements = module.exports = (function() {
     this.getNodeVersion = function() {
       return new Promise((resolve, reject) => {
         this.execFile('node', ['--version']).then((output) => {
-          let matches = output.match(/(\d+)\.(\d+)\.(\d+)/i);
+          const matches = output.match(/(\d+)\.(\d+)\.(\d+)/i);
           if (matches && matches.length) {
-            let version = parseFloat(matches[0]);
+            const version = parseFloat(matches[0]);
             if (!isNaN(version)) {
               this.versions.node = version;
               this.logger.info(message.get({

@@ -1,4 +1,4 @@
-/*!
+/*
  * Electron Sahara
  * @author sami.radi@virtuoworks.com (Sami Radi)
  * @company VirtuoWorks
@@ -11,12 +11,9 @@
  * Module dependencies.
  * @private
  */
- 
+
 // Core modules.
 const fs = require('fs');
-
-// Third party modules.
-const chalk = require('chalk');
 
 // Electron Sahara modules.
 const logger = require('./sahara/sahara/logger');
@@ -28,8 +25,8 @@ const message = require('./sahara/sahara/message');
  * @public
  */
 exports = module.exports = (function(argv) {
-  let cli = function() {
-    let Cli = function() {
+  const cli = function() {
+    const Cli = function() {
       this.args;
       this.argv;
 
@@ -58,26 +55,26 @@ exports = module.exports = (function(argv) {
                 message: this.command
               }));
               require(`./sahara/${this.command}.js`)
-              .setCliOptions(this.options)
-              .exec(this.args, this.apiCall)
-              .then((success) => {
-                return resolve(success);
-              }, (error) => {
-                return reject(error);
-              });
+                  .setCliOptions(this.options)
+                  .exec(this.args, this.apiCall)
+                  .then((success) => {
+                    return resolve(success);
+                  }, (error) => {
+                    return reject(error);
+                  });
             } else {
               this.logger.error(message.get({
                 type: 'error',
                 message: 'notFound'
               }));
               require('./sahara/help')
-              .setCliOptions(this.options)
-              .exec(this.args)
-              .then((success) => {
-                return resolve(success);
-              }, (error) => {
-                return reject(error);
-              });
+                  .setCliOptions(this.options)
+                  .exec(this.args)
+                  .then((success) => {
+                    return resolve(success);
+                  }, (error) => {
+                    return reject(error);
+                  });
             }
           } else {
             if (this.argv[2]) {
@@ -98,21 +95,21 @@ exports = module.exports = (function(argv) {
         } else {
           this.args = [];
           require('./sahara/help')
-          .setCliOptions(this.options)
-          .exec(this.args)
-          .then((success) => {
-            return resolve(success);
-          }, (error) => {
-            return reject(error);
-          });
+              .setCliOptions(this.options)
+              .exec(this.args)
+              .then((success) => {
+                return resolve(success);
+              }, (error) => {
+                return reject(error);
+              });
         }
       });
     };
 
     Cli.prototype.extractCliOptionsFrom = function(argv) {
       if (Array.isArray(argv)) {
-        let filtered = argv.filter((arg) => {
-          if(options[arg]) {
+        const filtered = argv.filter((arg) => {
+          if (options[arg]) {
             this.options[options[arg]] = true;
             return false;
           } else {
@@ -147,11 +144,11 @@ exports = module.exports = (function(argv) {
     Cli.prototype.start = function(args) {
       return new Promise((resolve, reject) => {
         this.exec(['', '', 'start'].concat(args))
-        .then((success) => {
-          return resolve(success);
-        }, (error) => {
-          return reject(error);
-        });
+            .then((success) => {
+              return resolve(success);
+            }, (error) => {
+              return reject(error);
+            });
       });
     };
 
@@ -160,11 +157,11 @@ exports = module.exports = (function(argv) {
     Cli.prototype.help = function(args) {
       return new Promise((resolve, reject) => {
         this.exec(['', '', 'help'].concat(args))
-        .then((success) => {
-          return resolve(success);
-        }, (error) => {
-          return reject(error);
-        });
+            .then((success) => {
+              return resolve(success);
+            }, (error) => {
+              return reject(error);
+            });
       });
     };
 
@@ -173,11 +170,11 @@ exports = module.exports = (function(argv) {
     Cli.prototype.info = function(args) {
       return new Promise((resolve, reject) => {
         this.exec(['', '', 'info'].concat(args))
-        .then((success) => {
-          return resolve(success);
-        }, (error) => {
-          return reject(error);
-        });
+            .then((success) => {
+              return resolve(success);
+            }, (error) => {
+              return reject(error);
+            });
       });
     };
 
@@ -186,11 +183,11 @@ exports = module.exports = (function(argv) {
     Cli.prototype.requirements = function(args) {
       return new Promise((resolve, reject) => {
         this.exec(['', '', 'requirements'].concat(args))
-        .then((success) => {
-          return resolve(success);
-        }, (error) => {
-          return reject(error);
-        });
+            .then((success) => {
+              return resolve(success);
+            }, (error) => {
+              return reject(error);
+            });
       });
     };
 
@@ -199,11 +196,11 @@ exports = module.exports = (function(argv) {
     Cli.prototype.platform = function(args) {
       return new Promise((resolve, reject) => {
         this.exec(['', '', 'platform'].concat(args))
-        .then((success) => {
-          return resolve(success);
-        }, (error) => {
-          return reject(error);
-        });
+            .then((success) => {
+              return resolve(success);
+            }, (error) => {
+              return reject(error);
+            });
       });
     };
 
@@ -212,11 +209,11 @@ exports = module.exports = (function(argv) {
     Cli.prototype.prepare = function(args) {
       return new Promise((resolve, reject) => {
         this.exec(['', '', 'prepare'].concat(args))
-        .then((success) => {
-          return resolve(success);
-        }, (error) => {
-          return reject(error);
-        });
+            .then((success) => {
+              return resolve(success);
+            }, (error) => {
+              return reject(error);
+            });
       });
     };
 
@@ -225,11 +222,11 @@ exports = module.exports = (function(argv) {
     Cli.prototype.compile = function(args) {
       return new Promise((resolve, reject) => {
         this.exec(['', '', 'compile'].concat(args))
-        .then((success) => {
-          return resolve(success);
-        }, (error) => {
-          return reject(error);
-        });
+            .then((success) => {
+              return resolve(success);
+            }, (error) => {
+              return reject(error);
+            });
       });
     };
 
@@ -237,11 +234,11 @@ exports = module.exports = (function(argv) {
     Cli.prototype.build = function(args) {
       return new Promise((resolve, reject) => {
         this.exec(['', '', 'build'].concat(args))
-        .then((success) => {
-          return resolve(success);
-        }, (error) => {
-          return reject(error);
-        });
+            .then((success) => {
+              return resolve(success);
+            }, (error) => {
+              return reject(error);
+            });
       });
     };
 
@@ -250,11 +247,11 @@ exports = module.exports = (function(argv) {
     Cli.prototype.clean = function(args) {
       return new Promise((resolve, reject) => {
         this.exec(['', '', 'clean'].concat(args))
-        .then((success) => {
-          return resolve(success);
-        }, (error) => {
-          return reject(error);
-        });
+            .then((success) => {
+              return resolve(success);
+            }, (error) => {
+              return reject(error);
+            });
       });
     };
 
@@ -263,11 +260,11 @@ exports = module.exports = (function(argv) {
     Cli.prototype.run = function(args) {
       return new Promise((resolve, reject) => {
         this.exec(['', '', 'run'].concat(args))
-        .then((success) => {
-          return resolve(success);
-        }, (error) => {
-          return reject(error);
-        });
+            .then((success) => {
+              return resolve(success);
+            }, (error) => {
+              return reject(error);
+            });
       });
     };
 
@@ -275,18 +272,18 @@ exports = module.exports = (function(argv) {
   };
 
   return function(argv) {
-    let sahara = cli();
+    const sahara = cli();
     if (Array.isArray(argv) && argv.length) {
       sahara.exec(argv)
-      .then((success) => {
-        if (success) {
-          sahara.logger.info(success);
-        }
-      }, (error) => {
-        if (error) {
-          sahara.logger.error(error);
-        }
-      });
+          .then((success) => {
+            if (success) {
+              sahara.logger.info(success);
+            }
+          }, (error) => {
+            if (error) {
+              sahara.logger.error(error);
+            }
+          });
     } else {
       sahara.apiCall = true;
     }

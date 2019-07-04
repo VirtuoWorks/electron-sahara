@@ -1,4 +1,4 @@
-/*!
+/*
  * Electron Sahara
  * @author sami.radi@virtuoworks.com (Sami Radi)
  * @company VirtuoWorks
@@ -24,8 +24,8 @@ const message = require('./sahara/message');
  * Expose `Help` object.
  * @public
  */
-const help = module.exports = (function() {
-  let Help = function() {
+module.exports = (function() {
+  const Help = function() {
     this.helpFilesFolder = path.normalize(this.dir + path.sep + 'help');
 
     this.exec = function(args) {
@@ -36,7 +36,7 @@ const help = module.exports = (function() {
         }
 
         if (this.cliOptions.version) {
-          let packageFile = require('../../package.json');
+          const packageFile = require('../../package.json');
           return resolve(packageFile.version);
         } else {
           let filePath = this.helpFilesFolder + path.sep + command;
@@ -46,9 +46,9 @@ const help = module.exports = (function() {
               fs.readFile(filePath, (error, data) => {
                 if (error) {
                   this.logger.error(message.get({
-                      type: 'error',
-                      command: 'help',
-                      message: 'missingSaharaHelpFile'
+                    type: 'error',
+                    command: 'help',
+                    message: 'missingSaharaHelpFile'
                   }));
                   return reject(error);
                 } else {
