@@ -1,4 +1,4 @@
-/*!
+/*
  * Electron Sahara
  * @author sami.radi@virtuoworks.com (Sami Radi)
  * @company VirtuoWorks
@@ -22,8 +22,8 @@ const message = require('./sahara/message');
  * Expose `Build` object.
  * @public
  */
-const build = module.exports = (function() {
-  let Build = function() {
+module.exports = (function() {
+  const Build = function() {
     this.exec = function(args) {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args)) {
@@ -41,26 +41,26 @@ const build = module.exports = (function() {
             }
 
             return prepare.exec([platform])
-            .then((success) => {
-              this.logger.info(success);
-              return compile.exec([platform]);
-            })
-            .then((success) => {
-              this.logger.info(success);
-              return resolve(message.get({
-                type: 'done',
-                command: 'build',
-                message: 'success'
-              }));
-            })
-            .catch((error) => {
-              this.logger.error(error);
-              return reject(message.get({
-                type: 'error',
-                command: 'build',
-                message: 'failure'
-              }));
-            });
+                .then((success) => {
+                  this.logger.info(success);
+                  return compile.exec([platform]);
+                })
+                .then((success) => {
+                  this.logger.info(success);
+                  return resolve(message.get({
+                    type: 'done',
+                    command: 'build',
+                    message: 'success'
+                  }));
+                })
+                .catch((error) => {
+                  this.logger.error(error);
+                  return reject(message.get({
+                    type: 'error',
+                    command: 'build',
+                    message: 'failure'
+                  }));
+                });
           } else {
             this.logger.error(message.get({
               type: 'error',
