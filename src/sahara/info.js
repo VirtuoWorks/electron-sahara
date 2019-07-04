@@ -1,4 +1,4 @@
-/*!
+/*
  * Electron Sahara
  * @author sami.radi@virtuoworks.com (Sami Radi)
  * @company VirtuoWorks
@@ -20,12 +20,13 @@ const message = require('./sahara/message');
  * Expose `Info` object.
  * @public
  */
-const info = module.exports = (function() {
-  let Info = function() {
+module.exports = (function() {
+  const Info = function() {
 
   };
 
   Info.prototype = command;
+  Info.prototype.constructor = Info;
 
   return new Info();
 }());

@@ -146,6 +146,7 @@ module.exports = (function() {
   };
 
   Requirements.prototype = command;
+  Requirements.prototype.constructor = Requirements;
 
   return new Requirements();
 }());

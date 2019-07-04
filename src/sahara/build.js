@@ -85,6 +85,7 @@ module.exports = (function() {
   };
 
   Build.prototype = command;
+  Build.prototype.constructor = Build;
 
   return new Build();
 }());

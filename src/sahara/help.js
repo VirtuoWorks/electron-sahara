@@ -81,6 +81,7 @@ module.exports = (function() {
   };
 
   Help.prototype = command;
+  Help.prototype.constructor = Help;
 
   return new Help();
 }());

@@ -1,4 +1,4 @@
-/*!
+/*
  * Electron Sahara
  * @author sami.radi@virtuoworks.com (Sami Radi)
  * @company VirtuoWorks
@@ -23,9 +23,8 @@ const message = require('./sahara/message');
  * Expose `Clean` object.
  * @public
  */
-const clean = module.exports = (function() {
-  let Clean = function() {
-
+module.exports = (function() {
+  const Clean = function() {
     this.exec = function(args) {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args)) {
@@ -42,7 +41,7 @@ const clean = module.exports = (function() {
               platform = args.shift();
             }
 
-            let toDelete = [];
+            const toDelete = [];
             if (platform === 'all') {
               toDelete.push('platforms' + path.sep + 'win32' + path.sep + 'build');
               toDelete.push('platforms' + path.sep + 'linux' + path.sep + 'build');
@@ -51,21 +50,21 @@ const clean = module.exports = (function() {
               toDelete.push('platforms' + path.sep + platform + path.sep + 'build');
             }
 
-            let iterable = [];
+            const iterable = [];
             toDelete.forEach((path, index) => {
               iterable.push(new Promise((resolve, reject) => {
                 return this.getAbsolutePathTo(path)
-                .then((absolutePath) => {
-                  return this.deleteDirectory(absolutePath, true);
-                })
-                .then((success) => {
-                  success && this.logger.info(success);
-                  return resolve();
-                })
-                .catch((error) => {
-                  error && this.logger.debug(error);
-                  return resolve();
-                });
+                    .then((absolutePath) => {
+                      return this.deleteDirectory(absolutePath, true);
+                    })
+                    .then((success) => {
+                      success && this.logger.info(success);
+                      return resolve();
+                    })
+                    .catch((error) => {
+                      error && this.logger.debug(error);
+                      return resolve();
+                    });
               }));
             });
 
@@ -97,10 +96,10 @@ const clean = module.exports = (function() {
         }));
       });
     };
-
   };
 
   Clean.prototype = command;
+  Clean.prototype.constructor = Clean;
 
   return new Clean();
 }());

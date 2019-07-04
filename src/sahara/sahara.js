@@ -356,5 +356,7 @@ module.exports = (function() {
     return sahara().init();
   }());
 
+  Command.prototype.constructor = Command;
+
   return new Command();
 }());

@@ -1,4 +1,4 @@
-/*!
+/*
  * Electron Sahara
  * @author sami.radi@virtuoworks.com (Sami Radi)
  * @company VirtuoWorks
@@ -24,8 +24,8 @@ const message = require('./sahara/message');
  * Expose `Clean` object.
  * @public
  */
-const compile = module.exports = (function() {
-  let Compile = function() {
+module.exports = (function() {
+  const Compile = function() {
     this.electronPackager;
 
     this.exec = function(args) {
@@ -46,26 +46,26 @@ const compile = module.exports = (function() {
 
             if (this[`${platform}Compile`]) {
               return this.requireElectronPackager()
-              .then((success) => {
-                this.logger.info(success);
-                return this[`${platform}Compile`]();
-              })
-              .then((success) => {
-                this.logger.info(success);
-                return resolve(message.get({
-                  type: 'done',
-                  command: 'compile',
-                  message: 'success'
-                }));
-              })
-              .catch((error) => {
-                this.logger.error(error);
-                return reject(message.get({
-                  type: 'error',
-                  command: 'compile',
-                  message: 'failure'
-                }));
-              });
+                  .then((success) => {
+                    this.logger.info(success);
+                    return this[`${platform}Compile`]();
+                  })
+                  .then((success) => {
+                    this.logger.info(success);
+                    return resolve(message.get({
+                      type: 'done',
+                      command: 'compile',
+                      message: 'success'
+                    }));
+                  })
+                  .catch((error) => {
+                    this.logger.error(error);
+                    return reject(message.get({
+                      type: 'error',
+                      command: 'compile',
+                      message: 'failure'
+                    }));
+                  });
             } else {
               this.logger.error(message.get({
                 type: 'error',
@@ -105,28 +105,28 @@ const compile = module.exports = (function() {
       return new Promise((resolve, reject) => {
         try {
           this.getAbsolutePathTo('node_modules/electron-packager', true)
-          .then((electronPackagerPath) => {
-            try {
-              this.electronPackager = require(electronPackagerPath);
-              return resolve(message.get({
-                type: 'done',
-                command: 'packager',
-                message: 'loaded'
-              }));
-            } catch (error) {
-              return reject(message.get({
-                type: 'error',
-                command: 'packager',
-                message: 'require'
-              }));
-            }
-          }, (error) => {
-            return reject(message.get({
-              type: 'error',
-              command: 'packager',
-              message: 'resolve'
-            }));
-          });
+              .then((electronPackagerPath) => {
+                try {
+                  this.electronPackager = require(electronPackagerPath);
+                  return resolve(message.get({
+                    type: 'done',
+                    command: 'packager',
+                    message: 'loaded'
+                  }));
+                } catch (error) {
+                  return reject(message.get({
+                    type: 'error',
+                    command: 'packager',
+                    message: 'require'
+                  }));
+                }
+              }, (error) => {
+                return reject(message.get({
+                  type: 'error',
+                  command: 'packager',
+                  message: 'resolve'
+                }));
+              });
         } catch (error) {
           return reject(message.get({
             type: 'error',
@@ -144,79 +144,79 @@ const compile = module.exports = (function() {
           this.getAbsolutePathTo(`platforms/${platform}/platform_app`, true),
           this.getAbsolutePathTo(`platforms/${platform}/build`)
         ])
-        .then((paths) => {
-          let sourceDirectory = paths.shift();
-          let outputDirectory = paths.shift();
-          // Target platform
-          options.platform = `${platform}`;
-          // Source directory.
-          options.dir = sourceDirectory;
-          // Target directory
-          options.out = outputDirectory;
+            .then((paths) => {
+              const sourceDirectory = paths.shift();
+              const outputDirectory = paths.shift();
+              // Target platform
+              options.platform = `${platform}`;
+              // Source directory.
+              options.dir = sourceDirectory;
+              // Target directory
+              options.out = outputDirectory;
 
-          let spinner = ora({
-            text: chalk.yellow(message.get({
-              type: 'info',
-              command: 'packager',
-              message: 'building',
-              replacement: platform
-            })),
-            spinner: 'pong',
-            color: 'yellow'
-          });
+              const spinner = ora({
+                text: chalk.yellow(message.get({
+                  type: 'info',
+                  command: 'packager',
+                  message: 'building',
+                  replacement: platform
+                })),
+                spinner: 'pong',
+                color: 'yellow'
+              });
 
-          spinner.start();
+              spinner.start();
 
-          this.electronPackager(options, (error, success) => {
-            if (error) {
-              spinner.fail(chalk.red(message.get({
-                type: 'info',
-                command: 'packager',
-                message: 'building',
-                replacement: platform
-              })));
-              if (error.message) {
-                this.logger.error(error.message);
-              } else {
-                this.logger.error(error);
-              }
+              this.electronPackager(options, (error, success) => {
+                if (error) {
+                  spinner.fail(chalk.red(message.get({
+                    type: 'info',
+                    command: 'packager',
+                    message: 'building',
+                    replacement: platform
+                  })));
+                  if (error.message) {
+                    this.logger.error(error.message);
+                  } else {
+                    this.logger.error(error);
+                  }
+                  return reject(message.get({
+                    type: 'error',
+                    command: 'packager',
+                    message: 'build',
+                    replacement: platform
+                  }));
+                } else {
+                  spinner.succeed(chalk.green(message.get({
+                    type: 'info',
+                    command: 'packager',
+                    message: 'building',
+                    replacement: platform
+                  })));
+                  return resolve(message.get({
+                    type: 'done',
+                    command: 'packager',
+                    message: 'built',
+                    replacement: platform
+                  }));
+                }
+              });
+            })
+            .catch((error) => {
+              this.logger.error(error);
               return reject(message.get({
                 type: 'error',
                 command: 'packager',
                 message: 'build',
                 replacement: platform
               }));
-            } else {
-              spinner.succeed(chalk.green(message.get({
-                type: 'info',
-                command: 'packager',
-                message: 'building',
-                replacement: platform
-              })));
-              return resolve(message.get({
-                type: 'done',
-                command: 'packager',
-                message: 'built',
-                replacement: platform
-              }));
-            }
-          });
-        })
-        .catch((error) => {
-          this.logger.error(error);
-          return reject(message.get({
-            type: 'error',
-            command: 'packager',
-            message: 'build',
-            replacement: platform
-          }));
-        });
+            });
       });
     };
 
     this.win32Compile = function() {
       return new Promise((resolve, reject) => {
-        let options = {
+        const options = {
           quiet: true,
           asar: true,
           arch: 'x64',
@@ -225,17 +225,17 @@ const compile = module.exports = (function() {
         };
 
         this.compilePlatform('win32', options)
-        .then((success) => {
-          return resolve(success);
-        }, (error) => {
-          return reject(error);
-        });
+            .then((success) => {
+              return resolve(success);
+            }, (error) => {
+              return reject(error);
+            });
       });
     };
 
     this.darwinCompile = function() {
       return new Promise((resolve, reject) => {
-        let options = {
+        const options = {
           quiet: true,
           asar: true,
           arch: 'x64',
@@ -244,17 +244,17 @@ const compile = module.exports = (function() {
         };
 
         this.compilePlatform('darwin', options)
-        .then((success) => {
-          return resolve(success);
-        }, (error) => {
-          return reject(error);
-        });
+            .then((success) => {
+              return resolve(success);
+            }, (error) => {
+              return reject(error);
+            });
       });
     };
 
     this.linuxCompile = function() {
       return new Promise((resolve, reject) => {
-        let options = {
+        const options = {
           quiet: true,
           asar: true,
           arch: 'x64',
@@ -263,16 +263,17 @@ const compile = module.exports = (function() {
         };
 
         this.compilePlatform('linux', options)
-        .then((success) => {
-          return resolve(success);
-        }, (error) => {
-          return reject(error);
-        });
+            .then((success) => {
+              return resolve(success);
+            }, (error) => {
+              return reject(error);
+            });
       });
     };
   };
 
   Compile.prototype = command;
+  Compile.prototype.constructor = Compile;
 
   return new Compile();
 }());

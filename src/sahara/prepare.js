@@ -223,6 +223,7 @@ module.exports = (function() {
   };
 
   Prepare.prototype = command;
+  Prepare.prototype.constructor = Prepare;
 
   return new Prepare();
 }());

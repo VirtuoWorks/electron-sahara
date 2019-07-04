@@ -1,4 +1,4 @@
-/*!
+/*
  * Electron Sahara
  * @author sami.radi@virtuoworks.com (Sami Radi)
  * @company VirtuoWorks

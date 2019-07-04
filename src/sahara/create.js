@@ -1,4 +1,4 @@
-/* !
+/*
  * Electron Sahara
  * @author sami.radi@virtuoworks.com (Sami Radi)
  * @company VirtuoWorks
@@ -29,8 +29,8 @@ const templates = require('./create/templates');
  * Expose `Create` object.
  * @public
  */
-const create = module.exports = (function() {
-  let Create = function() {
+module.exports = (function() {
+  const Create = function() {
     this.apiCall;
 
     this.exec = function(args, apiCall) {
@@ -38,42 +38,68 @@ const create = module.exports = (function() {
       return new Promise((resolve, reject) => {
         if (Array.isArray(args) && args.length > 0) {
           if (!this.options) {
-            let projectDirectoryName = args.shift();
-            let projectTemplate = args.shift() || 'vanilla';
+            const projectDirectoryName = args.shift();
+            const projectTemplate = args.shift() || 'vanilla';
             if (projectDirectoryName) {
               return this.getAbsolutePathTo(projectDirectoryName)
-              .then((projectAbsolutePath) => {
-                return this.deleteDirectory(projectAbsolutePath)
-                .then((success) => {
-                  this.logger.info(success);
-                  this.createDirectory(projectAbsolutePath)
-                  .then((success) => {
-                    this.logger.info(success);
-                    return this.cloneProjectTemplate(projectTemplate, projectAbsolutePath);
-                  })
-                  .then((success) => {
-                    this.logger.info(success);
-                    return this.installProjectDependencies(projectAbsolutePath);
-                  })
-                  .then((success) => {
-                    this.logger.info(success);
-                    return resolve(message.get({
-                      type: 'done',
-                      command: 'create',
-                      message: 'success'
-                    }));
-                  })
-                  .catch((error) => {
-                    this.logger.error(error);
-                    return this.deleteDirectory(projectAbsolutePath, true);
-                  })
-                  .then((success) => {
-                    this.logger.info(success);
-                    return reject(message.get({
-                      type: 'error',
-                      command: 'create',
-                      message: 'failure'
-                    }));
+                  .then((projectAbsolutePath) => {
+                    return this.deleteDirectory(projectAbsolutePath)
+                        .then((success) => {
+                          this.logger.info(success);
+                          this.createDirectory(projectAbsolutePath)
+                              .then((success) => {
+                                this.logger.info(success);
+                                return this.cloneProjectTemplate(
+                                    projectTemplate,
+                                    projectAbsolutePath
+                                );
+                              })
+                              .then((success) => {
+                                this.logger.info(success);
+                                return this.installProjectDependencies(
+                                    projectAbsolutePath
+                                );
+                              })
+                              .then((success) => {
+                                this.logger.info(success);
+                                return resolve(message.get({
+                                  type: 'done',
+                                  command: 'create',
+                                  message: 'success'
+                                }));
+                              })
+                              .catch((error) => {
+                                this.logger.error(error);
+                                return this.deleteDirectory(
+                                    projectAbsolutePath,
+                                    true
+                                );
+                              })
+                              .then((success) => {
+                                this.logger.info(success);
+                                return reject(message.get({
+                                  type: 'error',
+                                  command: 'create',
+                                  message: 'failure'
+                                }));
+                              })
+                              .catch((error) => {
+                                this.logger.error(error);
+                                return reject(message.get({
+                                  type: 'error',
+                                  command: 'create',
+                                  message: 'failure'
+                                }));
+                              });
+                        })
+                        .catch((error) => {
+                          this.logger.error(error);
+                          return reject(message.get({
+                            type: 'error',
+                            command: 'create',
+                            message: 'failure'
+                          }));
+                        });
                   })
                   .catch((error) => {
                     this.logger.error(error);
@@ -83,24 +109,6 @@ const create = module.exports = (function() {
                       message: 'failure'
                     }));
                   });
-                })
-                .catch((error) => {
-                  this.logger.error(error);
-                  return reject(message.get({
-                    type: 'error',
-                    command: 'create',
-                    message: 'failure'
-                  }));
-                });
-              })
-              .catch((error) => {
-                this.logger.error(error);
-                return reject(message.get({
-                  type: 'error',
-                  command: 'create',
-                  message: 'failure'
-                }));
-              });
             } else {
               this.logger.error(message.get({
                 type: 'error',
@@ -132,9 +140,9 @@ const create = module.exports = (function() {
 
     this.installProjectDependencies = function(projectAbsolutePath) {
       return new Promise((resolve, reject) => {
-        let command = `cd ${projectAbsolutePath} && npm install`;
+        const command = `cd ${projectAbsolutePath} && npm install`;
 
-        let spinner = ora({
+        const spinner = ora({
           text: chalk.yellow(message.get({
             type: 'info',
             command: 'dependencies',
@@ -203,22 +211,22 @@ const create = module.exports = (function() {
       return new Promise((resolve, reject) => {
         if (templates[projectTemplate]) {
           simpleGit().clone(templates[projectTemplate], projectAbsolutePath)
-          .then((error, success) => {
-            if (error) {
-              this.logger.error(error);
-              return reject(message.get({
-                type: 'error',
-                command: 'template',
-                message: 'clone'
-              }));
-            } else {
-              return resolve(message.get({
-                type: 'done',
-                command: 'template',
-                message: 'cloned'
-              }));
-            }
-          });
+              .then((error, success) => {
+                if (error) {
+                  this.logger.error(error);
+                  return reject(message.get({
+                    type: 'error',
+                    command: 'template',
+                    message: 'clone'
+                  }));
+                } else {
+                  return resolve(message.get({
+                    type: 'done',
+                    command: 'template',
+                    message: 'cloned'
+                  }));
+                }
+              });
         } else {
           return reject(message.get({
             type: 'error',
@@ -231,6 +239,7 @@ const create = module.exports = (function() {
   };
 
   Create.prototype = command;
+  Create.prototype.constructor = Create;
 
   return new Create();
 }());

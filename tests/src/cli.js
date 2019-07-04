@@ -1,9 +1,9 @@
 'use strict';
 
-let assert = require('assert');
-let childProcess = require('child_process');
+const assert = require('assert');
+const childProcess = require('child_process');
 
-let cliCommands = [
+const cliCommands = [
   'help',
   'requirements',
   'create',

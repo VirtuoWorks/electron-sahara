@@ -297,6 +297,7 @@ module.exports = (function() {
   };
 
   Run.prototype = command;
+  Run.prototype.constructor = Run;
 
   return new Run();
 }());
