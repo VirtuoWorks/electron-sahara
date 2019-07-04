@@ -83,10 +83,13 @@ module.exports = (function() {
       transports: [
         new winston.transports.Console({
           format: winston.format.combine(
-              winston.format.colorize({
+              winston.format.splat(),
+              winston.format.cli({
                 all: true
               }),
-              winston.format.simple()
+              winston.format.printf((log) => {
+                return `${log.message}`;
+              })
           )
         })
       ],
