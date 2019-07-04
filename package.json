@@ -61,7 +61,7 @@
     "ora": "^3.4.0",
     "sanitize-filename": "^1.6.1",
     "simple-git": "^1.118.0",
-    "winston": "^2.4.4"
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "coveralls": "^3.0.4",
