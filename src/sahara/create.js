@@ -92,7 +92,7 @@ module.exports = (function() {
                                     });
                               });
                         })
-                        .catch((error) => {q
+                        .catch((error) => {
                           this.logger.error(error);
                           return reject(message.get({
                             type: 'error',
