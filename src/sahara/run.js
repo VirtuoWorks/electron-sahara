@@ -113,7 +113,7 @@ module.exports = (function() {
       } else {
         // Loads package information file if available.
         const packageInfoFilePath = path.normalize(
-            this.platformsPath + path.sep + platform + path.sep + this.packageInfoFilePath
+            this.cwd + path.sep + this.platformsPath + path.sep + platform + path.sep + this.packageInfoFilePath
         );
         try {
           fs.accessSync(packageInfoFilePath);
@@ -158,7 +158,7 @@ module.exports = (function() {
             replacement: '-'
           });
           this.buildPath = path.normalize(
-              this.platformsPath + platform + path.sep + this.buildDirectory
+              this.cwd + path.sep + this.platformsPath + platform + path.sep + this.buildDirectory
           );
           fs.readdir(this.buildPath, (error, files) => {
             if (error) {
@@ -195,7 +195,7 @@ module.exports = (function() {
               });
               if (found && buildDirectory) {
                 let binary = path.normalize(
-                    buildDirectory + path.sep + binaryName
+                    this.cwd + path.sep + buildDirectory + path.sep + binaryName
                 );
                 switch (platform) {
                   case 'linux':

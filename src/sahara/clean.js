@@ -43,11 +43,11 @@ module.exports = (function() {
 
             const toDelete = [];
             if (platform === 'all') {
-              toDelete.push('platforms' + path.sep + 'win32' + path.sep + 'build');
-              toDelete.push('platforms' + path.sep + 'linux' + path.sep + 'build');
-              toDelete.push('platforms' + path.sep + 'darwin' + path.sep + 'build');
+              toDelete.push(this.cwd + path.sep + 'platforms' + path.sep + 'win32' + path.sep + 'build');
+              toDelete.push(this.cwd + path.sep + 'platforms' + path.sep + 'linux' + path.sep + 'build');
+              toDelete.push(this.cwd + path.sep + 'platforms' + path.sep + 'darwin' + path.sep + 'build');
             } else {
-              toDelete.push('platforms' + path.sep + platform + path.sep + 'build');
+              toDelete.push(this.cwd + path.sep + 'platforms' + path.sep + platform + path.sep + 'build');
             }
 
             const iterable = [];

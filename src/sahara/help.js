@@ -26,7 +26,7 @@ const message = require('./sahara/message');
  */
 module.exports = (function() {
   const Help = function() {
-    this.helpFilesFolder = path.normalize(this.dir + path.sep + 'help');
+    this.helpFilesDirectory = path.normalize(this.dir + path.sep + 'help');
 
     this.exec = function(args) {
       return new Promise((resolve, reject) => {
@@ -39,10 +39,10 @@ module.exports = (function() {
           const packageFile = require('../../package.json');
           return resolve(packageFile.version);
         } else {
-          let filePath = this.helpFilesFolder + path.sep + command;
+          let filePath = this.helpFilesDirectory + path.sep + command;
           fs.readFile(filePath, (error, data) => {
             if (error) {
-              filePath = this.helpFilesFolder + path.sep + 'sahara';
+              filePath = this.helpFilesDirectory + path.sep + 'sahara';
               fs.readFile(filePath, (error, data) => {
                 if (error) {
                   this.logger.error(message.get({
@@ -59,7 +59,7 @@ module.exports = (function() {
               if (data.toString()) {
                 return resolve(data.toString());
               } else {
-                filePath = this.helpFilesFolder + path.sep + 'sahara';
+                filePath = this.helpFilesDirectory + path.sep + 'sahara';
                 fs.readFile(filePath, (error, data) => {
                   if (error) {
                     this.logger.error(message.get({
