@@ -134,7 +134,7 @@ module.exports = (function() {
         absolutePath = path.resolve(normalizedPath);
       }
       return new Promise((resolve, reject) => {
-        if (absolutePath && absolutePath !== this.cwd) {
+        if (absolutePath && absolutePath !== path.resolve(this.cwd)) {
           if (checkAccess) {
             fs.access(absolutePath, (error) => {
               if (error) {
@@ -165,11 +165,20 @@ module.exports = (function() {
 
     Sahara.prototype.getGlobbedPathTo = function(file, checkAccess) {
       return new Promise((resolve, reject) => {
-        if ( path.isAbsolute(file) ) {
-          return resolve(file
-              .replace(this.cwd, '')
-              .replace(path.sep, '/')
-          );
+        if ( file && path.isAbsolute(file) ) {
+          if (path.resolve(file) !== path.resolve(this.cwd)) {
+            return resolve(file
+                .replace(this.cwd, '')
+                .replace(path.sep, '/')
+            );
+          } else {
+            return reject(message.get({
+              type: 'error',
+              command: 'directory',
+              message: 'globbify',
+              replacement: file
+            }));
+          }
         } else {
           this.getAbsolutePathTo(file, checkAccess)
               .then((path) => {

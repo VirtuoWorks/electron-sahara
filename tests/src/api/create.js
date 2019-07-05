@@ -1,6 +1,6 @@
 'use strict';
 
-let assert = require('assert');
+const assert = require('assert');
 
 describe('"create" method', function() {
   let sahara;
@@ -24,7 +24,7 @@ describe('"create" method', function() {
 
   it('Should be able to create a project with a valid directory name.', function(done) {
     this.timeout(0);
-    let dir = 'MyApp';
+    const dir = 'MyApp';
     sahara.cli().create([dir, '-d']).then(function(success) {
       done();
     }, function(error) {
@@ -38,8 +38,8 @@ describe('"create" method', function() {
 
   it('Should be able to create a project with a valid directory name and a valid template name.', function(done) {
     this.timeout(0);
-    let dir = 'MyApp';
-    let template = 'vanilla';
+    const dir = 'MyApp';
+    const template = 'vanilla';
     sahara.cli().create([dir, template, '-d']).then(function(success) {
       done();
     }, function(error) {
@@ -76,7 +76,7 @@ describe('"create" method', function() {
 
   it('Should not be able to create a project with an invalid directory name.', function(done) {
     this.timeout(0);
-    let invalidDirName = (process.platform === 'mac') ? ':' : '/';
+    const invalidDirName = (process.platform === 'mac') ? ':' : '/';
     sahara.cli().create([invalidDirName]).then(function(success) {
       done(new Error('Project created in invalid folder.'));
     }, function(error) {
@@ -90,8 +90,8 @@ describe('"create" method', function() {
 
   it('Should not be able to create a project with a valid directory name and an invalid template name.', function(done) {
     this.timeout(0);
-    let dir = 'MyApp';
-    let invalidTemplate = 'unknown';
+    const dir = 'MyApp';
+    const invalidTemplate = 'unknown';
     sahara.cli().create([dir, invalidTemplate]).then(function(success) {
       done(new Error('Project created with unknown template.'));
     }, function(error) {

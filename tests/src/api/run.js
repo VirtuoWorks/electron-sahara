@@ -22,5 +22,16 @@ describe('"run" method', function() {
     });
   });
 
-
+  it('Should be able to run a project build for current platform.', function(done) {
+    this.timeout(0);
+    sahara.cli().run(['-d']).then(function(success) {
+      done();
+    }, function(error) {
+      if (error === messages.error.run.failure) {
+        done(new Error('Project build was not run, Sahara reported an error.'));
+      } else {
+        done(new Error('Project build was not run. Sahara did not report an error.'));
+      }
+    });
+  });
 });
