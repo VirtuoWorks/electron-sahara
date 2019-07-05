@@ -253,7 +253,7 @@ module.exports = (function() {
                                 replacement: absolutePath
                               }));
                             }).catch((error) => {
-                              this.logger.error(error);
+                              this.logger.error(error.message);
                               return reject(message.get({
                                 type: 'error',
                                 command: 'directory',
@@ -306,7 +306,7 @@ module.exports = (function() {
                                     message: 'deletion',
                                     replacement: absolutePath
                                   })));
-                                  this.logger.error(error);
+                                  this.logger.error(error.message);
                                   return reject(message.get({
                                     type: 'error',
                                     command: 'directory',
@@ -323,10 +323,15 @@ module.exports = (function() {
                         });
                       }
                     } else {
-                      return resolve();
+                      return resolve(message.get({
+                        type: 'done',
+                        command: 'directory',
+                        message: 'deleted',
+                        replacement: absolutePath
+                      }));
                     }
                   }).catch((error) => {
-                    this.logger.error(error);
+                    this.logger.error(error.message);
                     return reject(message.get({
                       type: 'error',
                       command: 'directory',

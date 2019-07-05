@@ -73,23 +73,23 @@ module.exports = (function() {
                                 return this.deleteDirectory(
                                     projectAbsolutePath,
                                     true
-                                );
-                              })
-                              .then((success) => {
-                                this.logger.info(success);
-                                return reject(message.get({
-                                  type: 'error',
-                                  command: 'create',
-                                  message: 'failure'
-                                }));
-                              })
-                              .catch((error) => {
-                                this.logger.error(error);
-                                return reject(message.get({
-                                  type: 'error',
-                                  command: 'create',
-                                  message: 'failure'
-                                }));
+                                )
+                                    .then((success) => {
+                                      this.logger.info(success);
+                                      return reject(message.get({
+                                        type: 'error',
+                                        command: 'create',
+                                        message: 'failure'
+                                      }));
+                                    })
+                                    .catch((error) => {
+                                      this.logger.error(error);
+                                      return reject(message.get({
+                                        type: 'error',
+                                        command: 'create',
+                                        message: 'failure'
+                                      }));
+                                    });
                               });
                         })
                         .catch((error) => {

@@ -14,6 +14,7 @@
 
 // Core modules.
 const fs = require('fs');
+const path = require('path');
 
 // Electron Sahara modules.
 const logger = require('./sahara/sahara/logger');
@@ -48,13 +49,13 @@ exports = module.exports = (function(argv) {
           if (this[this.argv[2]]) {
             this.command = this.argv[2];
             this.args = this.argv.slice(3, this.argv.length) || [];
-            if (fs.existsSync(`${__dirname}/sahara/${this.command}.js`)) {
+            if (fs.existsSync(path.normalize(`${__dirname}/sahara/${this.command}.js`))) {
               this.logger.debug(message.get({
                 type: 'info',
                 command: 'command',
                 message: this.command
               }));
-              require(`./sahara/${this.command}.js`)
+              require(path.normalize(`${__dirname}/sahara/${this.command}.js`))
                   .setCliOptions(this.options)
                   .exec(this.args, this.apiCall)
                   .then((success) => {
